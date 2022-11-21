@@ -54,4 +54,5 @@ if __name__ == '__main__':
 
     x0 = vigur
     tolerance = 0.01
-    print(newtonmult(x0, tolerance))
+    svar = newtonmult(x0, tolerance)
+    print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
