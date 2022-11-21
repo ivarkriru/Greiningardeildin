@@ -27,6 +27,8 @@ def newton(x0, tolerance):
         x = x - f(x) / dF(x)
     return x
 
+
+
 if __name__ == '__main__':
     # fylki:
     # 1 2
