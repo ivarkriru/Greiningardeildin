@@ -1,10 +1,12 @@
 import numpy as np
+import math
 import numpy.linalg as la
 system = np.array([  [15600, 7540, 20140, 0.07074],
                      [18760, 2750, 18610, 0.07220],
                      [17610, 14630, 13480, 0.07690],
                      [19170, 610, 18390, 0.07242]])
 c = 299792.458
+constaltitude = 26570
 tolerance = 0.01
 vigur = np.array([0, 0, 6370, 0])
 
@@ -50,9 +52,16 @@ def newtonmult(x0, tol):
             break
     return (x)
 
-if __name__ == '__main__':
+def coords(theta,phi):
+    if 0<=phi<=math.pi/2 and 0<=theta<=math.pi*2:
+        return [constaltitude*math.sin(phi)*math.cos(theta),constaltitude*math.sin(phi)*math.sin(theta),constaltitude*math.cos(phi)]
+    else:
+        return "incorrect values"
 
+if __name__ == '__main__':
     x0 = vigur
     tolerance = 0.01
     svar = newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
+
+    print(coords(3,0.3))
