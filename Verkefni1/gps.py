@@ -65,14 +65,14 @@ def coords(phi,theta, altitude = constaltitude + earthaltitude):
         B = altitude * np.sin(phi) * np.sin(theta)
         C = altitude * np.cos(phi)
         #distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
-        distance = np.sqrt((A-0)**2 + (B-0)**2 + (C-6370)**2)
+        distance = np.sqrt((A-0)**2 + (B-0)**2 + (C-earthaltitude)**2)
         time = distance/c
 
         return [A,B,C,time, distance]
     else:
         return "incorrect values"
 
-def plot3d():
+def plot3d(system):
     fig = plt.figure()
 
     # syntax for 3-D projection
@@ -148,16 +148,28 @@ if __name__ == '__main__':
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
     svar_coords = coords(0,0)
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
-    #plot3d()
     #skekkja()
 
     new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
     print(new_system)
-    skekkja = 1e-10
+
+    skekkja = 1e-8
+    upphafsgildi = np.array([0, 0, 6370, 0])
     new_system_plus_skekkja = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
     print("skekkja í 0,0:", new_system_plus_skekkja[0,0] - new_system[0,0])
 
     svar = n.newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
+
+    plot3d(new_system)
+
+    # 4
+    if False:
+        for i in range(16):
+            new_systems_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1<<index)  else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+            # uncomment to verify if correct:
+            #new_systems_with_error = np.array([1 if i & (1<<index)  else 0 for index, sat in enumerate(new_sat_pos)])
+            #print(new_systems_with_error)
+
 
 
