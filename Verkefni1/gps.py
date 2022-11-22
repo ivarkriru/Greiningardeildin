@@ -75,6 +75,8 @@ class newton:
                 break
         return (x)
 
+def point_diff(A,B):
+    return np.sqrt((A[0] - B[0]) ** 2 + (A[2] - B[2]) ** 2 + (A[3] - B[3]) ** 2)
 
 def coords(phi, theta, altitude=constaltitude + earthaltitude):
     if 0 <= phi <= math.pi:
@@ -180,15 +182,23 @@ if __name__ == '__main__':
     for index, sat_pos in enumerate(new_system):
         new_system_plus_skekkja[index][-1] = sat_pos[-1]
 
-    svar = n.newtonmult(x0, tolerance)
-    print("lausnin með skekkju X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
+    n3 = newton(new_system)
+    svaran = n3.newtonmult(x0, tolerance)
+    print("lausnin án skekkju   X: " + '%.6f' % svaran[0] + " Y: " + '%.6f' % svaran[1] + " Z: " + '%.6f' % svaran[2] + " d: " + '%.6f' % svaran[3])
 
     #sp3skekkja()
     #plot3d(new_system)
 
     n2 = newton(new_system_plus_skekkja)
-    print(n2.newtonmult(x0, tolerance))
+    svarmed = n2.newtonmult(x0, tolerance)
+    print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[2] + " d: " + '%.6f' % svarmed[3])
+
+    print("Skekkjan sjálf : " + '%.6f' % point_diff(x0, svarmed) + " metrar")
+    print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " metrar")
+    print("Skekkjan sjálf : " + '%.6f' % point_diff(svarmed, svarmed) + " metrar")
     # 4
+
+    print("---- svar 4 ----- :")
     skekkja = 1e-8
     upphafsgildi = np.array([0, 0, 6370, 0])
     if True:
