@@ -48,7 +48,7 @@ def newtonmult(x0, tol):
         s = -la.solve(dF(x), fall(x))
         x = x + s
         counter +=1
-        if counter >=10 :
+        if counter >=15 :
             print("------------reiknaði of lengi------------")
             break
     return (x)
@@ -71,5 +71,5 @@ if __name__ == '__main__':
     tolerance = 0.01
     svar = newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
-
-    print(coords(0,0))
+    svar_coords = coords(0,0)
+    print("A: " + '%.6f' % svar_coords[0] + " B: " + '%.6f' % svar_coords[1] + " C: " + '%.6f' % svar_coords[2] + " d: " + '%.6f' % svar_coords[3] + " t: " + '%.6f' % svar_coords[4])
