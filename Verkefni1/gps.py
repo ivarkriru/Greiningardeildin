@@ -157,7 +157,7 @@ if __name__ == '__main__':
     new_system_plus_skekkja = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
     print("skekkja í 0,0:", new_system_plus_skekkja[0,0] - new_system[0,0])
 
-    svar = newtonmult(x0, tolerance, new_system_plus_skekkja)
+    svar = n.newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
 
 
