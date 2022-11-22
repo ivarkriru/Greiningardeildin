@@ -105,10 +105,10 @@ def skekkja():
     i2rangt = coords(math.pi/6, math.pi/2)
     i3rangt = coords(3 * math.pi / 8, 2 * math.pi / 3)
     i4rangt = coords(math.pi / 4, math.pi / 6)
-    i1rett = coords((math.pi / 8) + 0.000000001, -math.pi / 4)
-    i2rett = coords((math.pi / 6) + 0.000000001, math.pi / 2)
-    i3rett = coords((3 * math.pi / 8) + 0.000000001, 2 * math.pi / 3)
-    i4rett = coords((math.pi / 4) + 0.000000001, math.pi / 6)
+    i1rett = coords((math.pi / 8) + 1e-10 , -math.pi / 4)
+    i2rett = coords((math.pi / 6) + 1e-10, math.pi / 2)
+    i3rett = coords((3 * math.pi / 8) - 1e-10, 2 * math.pi / 3)
+    i4rett = coords((math.pi / 4) - 1e-10, math.pi / 6)
 
 
 if __name__ == '__main__':
