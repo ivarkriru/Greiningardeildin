@@ -57,7 +57,7 @@ def newtonmult(x0, tol):
     return (x)
 
 def coords(theta,phi):
-    if 0<=theta<=math.pi*2 and 0<=phi<=math.pi:
+    if -math.pi/2<=phi<= 2 * math.pi and 0 <= theta <= math.pi*2:
 
         A = constaltitude*math.sin(phi)*math.cos(theta)
         B = constaltitude*math.sin(phi)*math.sin(theta)
@@ -100,6 +100,16 @@ def plot3d():
     ax.scatter(x0[0], x0[1], x0[2], 'purple')
     ax.set_title('3D line plot geeks for geeks')
     plt.show()
+def skekkja():
+    i1rangt = coords(math.pi/8, -math.pi/4)
+    i2rangt = coords(math.pi/6, math.pi/2)
+    i3rangt = coords(3 * math.pi / 8, 2 * math.pi / 3)
+    i4rangt = coords(math.pi / 4, math.pi / 6)
+    i1rett = coords((math.pi / 8) + 0.000000001, -math.pi / 4)
+    i2rett = coords((math.pi / 6) + 0.000000001, math.pi / 2)
+    i3rett = coords((3 * math.pi / 8) + 0.000000001, 2 * math.pi / 3)
+    i4rett = coords((math.pi / 4) + 0.000000001, math.pi / 6)
+
 
 if __name__ == '__main__':
     x0 = vigur
@@ -109,3 +119,4 @@ if __name__ == '__main__':
     svar_coords = coords(0,0)
     print("A: " + '%.6f' % svar_coords[0] + " B: " + '%.6f' % svar_coords[1] + " C: " + '%.6f' % svar_coords[2] + " d: " + '%.6f' % svar_coords[3] + " t: " + '%.6f' % svar_coords[4])
     plot3d()
+    skekkja()
