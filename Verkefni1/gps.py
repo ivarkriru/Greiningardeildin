@@ -176,6 +176,10 @@ if __name__ == '__main__':
 
     new_system_plus_skekkja = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
 
+    # setja réttan tíma á skekkjukerfið
+    for index, sat_pos in enumerate(new_system):
+        new_system_plus_skekkja[index][-1] = sat_pos[-1]
+
     svar = n.newtonmult(x0, tolerance)
     print("lausnin með skekkju X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
 
@@ -197,12 +201,12 @@ if __name__ == '__main__':
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = newton(new_system_with_error)
             list_of_positions.append(n3.newtonmult(upphafsgildi, tolerance))
-        min_villa = [0, 10]
-        max_villa = [0, -10]
+        min_villa = [0, 0]
+        max_villa = [0, 0]
         for index, position in enumerate(list_of_positions):
-            villa_new = abs(position[0] + position[1] + (position[2] - earthaltitude) + position[3])
+            villa_new = position[0] + position[1] + (position[2] - earthaltitude) + position[3]
             # todo: min og max villa virkar ekki
-            if min_villa[1] < villa_new:
+            if min_villa[1] > villa_new:
                 min_villa = [index, villa_new]
 
             if max_villa[1] >= villa_new:
