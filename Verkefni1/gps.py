@@ -2,6 +2,9 @@ import numpy
 import numpy as np
 import math
 import numpy.linalg as la
+import matplotlib.pyplot as plt
+
+
 system = np.array([  [15600, 7540, 20140, 0.07074],
                      [18760, 2750, 18610, 0.07220],
                      [17610, 14630, 13480, 0.07690],
@@ -54,7 +57,7 @@ def newtonmult(x0, tol):
     return (x)
 
 def coords(theta,phi):
-    if 0<=phi<=math.pi/2 and 0<=theta<=math.pi*2:
+    if 0<=theta<=math.pi*2 and 0<=phi<=math.pi:
 
         A = constaltitude*math.sin(phi)*math.cos(theta)
         B = constaltitude*math.sin(phi)*math.sin(theta)
@@ -66,6 +69,38 @@ def coords(theta,phi):
     else:
         return "incorrect values"
 
+def plot3d():
+    fig = plt.figure()
+
+    # syntax for 3-D projection
+    ax = plt.axes(projection='3d')
+    xhnit = []
+    yhnit = []
+    zhnit = []
+
+    # defining all 3 axes
+    takmark = 1000
+    for x in range(0,takmark):
+        svar = coords((x*7)%math.pi*2,(x*113)%(math.pi))
+        xhnit.append(svar[0])
+        yhnit.append(svar[1])
+        zhnit.append(svar[2])
+
+    # plotting
+
+    ax.set_box_aspect((1,1,1))
+    ax.scatter(xhnit, yhnit, zhnit, 'green')
+
+    x0 = vigur
+    tolerance = 0.01
+    svar = newtonmult(x0, tolerance)
+    ax.scatter(svar[0], svar[1], svar[2], 'red')
+
+
+    ax.scatter(x0[0], x0[1], x0[2], 'purple')
+    ax.set_title('3D line plot geeks for geeks')
+    plt.show()
+
 if __name__ == '__main__':
     x0 = vigur
     tolerance = 0.01
@@ -73,3 +108,4 @@ if __name__ == '__main__':
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
     svar_coords = coords(0,0)
     print("A: " + '%.6f' % svar_coords[0] + " B: " + '%.6f' % svar_coords[1] + " C: " + '%.6f' % svar_coords[2] + " d: " + '%.6f' % svar_coords[3] + " t: " + '%.6f' % svar_coords[4])
+    plot3d()
