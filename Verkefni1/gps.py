@@ -11,6 +11,7 @@ system = np.array([  [15600, 7540, 20140, 0.07074],
                      [19170, 610, 18390, 0.07242]])
 c = 299792.458
 constaltitude = 26570
+earthaltitude = 6371
 tolerance = 0.01
 vigur = np.array([0, 0, 6370, 0])
 
@@ -56,12 +57,12 @@ def newtonmult(x0, tol):
             break
     return (x)
 
-def coords(theta,phi):
-    if 0<=theta<=math.pi*2 and 0<=phi<=math.pi:
+def coords(theta,phi,altitude = constaltitude + earthaltitude):
+    if 0<=phi<=math.pi:
 
-        A = constaltitude*math.sin(phi)*math.cos(theta)
-        B = constaltitude*math.sin(phi)*math.sin(theta)
-        C = constaltitude*math.cos(phi)
+        A = altitude*math.sin(phi)*math.cos(theta)
+        B = altitude*math.sin(phi)*math.sin(theta)
+        C = altitude*math.cos(phi)
         distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
         time = distance/c
 
@@ -81,24 +82,31 @@ def plot3d():
     # defining all 3 axes
     takmark = 1000
     for x in range(0,takmark):
-        svar = coords((x*7)%math.pi*2,(x*113)%(math.pi))
+        svar = coords((x*7)%math.pi*2,(x*113)%(math.pi),earthaltitude)
         xhnit.append(svar[0])
         yhnit.append(svar[1])
         zhnit.append(svar[2])
 
     # plotting
 
-    ax.set_box_aspect((1,1,1))
-    ax.scatter(xhnit, yhnit, zhnit, 'green')
+    ax.scatter(xhnit, yhnit, zhnit, c='blue',alpha=0.1)
 
     x0 = vigur
     tolerance = 0.01
     svar = newtonmult(x0, tolerance)
-    ax.scatter(svar[0], svar[1], svar[2], 'red')
+    ax.scatter(svar[0], svar[1], svar[2], c='red',s=300)
 
 
-    ax.scatter(x0[0], x0[1], x0[2], 'purple')
+
+    ax.scatter(x0[0], x0[1], x0[2], c='yellow',s=300)
     ax.set_title('3D line plot geeks for geeks')
+
+    for x in system:
+        ax.scatter(x[0], x[1], x[2], c='yellow', s=300)
+
+
+    ax.set_proj_type('ortho')
+    ax.set_box_aspect((1,1,1))
     plt.show()
 
 if __name__ == '__main__':
