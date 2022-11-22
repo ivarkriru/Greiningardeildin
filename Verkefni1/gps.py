@@ -141,10 +141,10 @@ def sp3skekkja():
 
     print("Svar án skekkju : " + str(svaranskekkju))
 
-    i1rangt = coords(-math.pi / 4, (math.pi / 8) + 0.000000001)[0:3]
-    i2rangt = coords(math.pi / 2, (math.pi / 6) + 0.000000001)[0:3]
-    i3rangt = coords(2 * math.pi / 3, (3 * math.pi / 8) + 0.000000001)[0:3]
-    i4rangt = coords(math.pi / 6, (math.pi / 4) + 0.000000001)[0:3]
+    i1rangt = coords( (math.pi / 8) + 0.000000001,-math.pi / 4)[0:4]
+    i2rangt = coords((math.pi / 6) + 0.000000001,math.pi / 2 )[0:4]
+    i3rangt = coords((3 * math.pi / 8) + 0.000000001,2 * math.pi / 3)[0:4]
+    i4rangt = coords((math.pi / 4) + 0.000000001,math.pi / 6 )[0:4]
 
     skekkju_system = np.array([i1rangt, i2rangt, i3rangt, i4rangt])
     n = newton(skekkju_system)
