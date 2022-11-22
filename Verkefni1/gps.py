@@ -196,23 +196,19 @@ if __name__ == '__main__':
         for i in range(16):
             new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1<<index)  else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
             # uncomment to verify if correct:
-            #new_systems_with_error = np.array([1 if i & (1<<index)  else 0 for index, sat in enumerate(new_sat_pos)])
+            new_systems_with_error = np.array([1 if not (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
+            print(new_systems_with_error)
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = newton(new_system_with_error)
             list_of_positions.append(n3.newtonmult(upphafsgildi, tolerance))
-        min_villa = [0, 0]
-        max_villa = [0, 0]
+        villu_positions = []
         for index, position in enumerate(list_of_positions):
-            villa_new = position[0] + position[1] + (position[2] - earthaltitude) + position[3]
-            # todo: min og max villa virkar ekki
-            if min_villa[1] > villa_new:
-                min_villa = [index, villa_new]
+            print(position)
+            villu_positions.append(position)
+            # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
 
-            if max_villa[1] >= villa_new:
-                max_villa = [index, villa_new]
-        print("min villa: ", min_villa[1], "á indexi: ", min_villa[0])
-        print("max villa: ", max_villa[1], "á indexi: ", max_villa[0])
-
-
+    A_dreifing = [position[0] for position in list_of_positions]
+    plt.plot(A_dreifing)
+    plt.show()
 
