@@ -1,3 +1,4 @@
+import numpy
 import numpy as np
 import math
 import numpy.linalg as la
@@ -54,7 +55,14 @@ def newtonmult(x0, tol):
 
 def coords(theta,phi):
     if 0<=phi<=math.pi/2 and 0<=theta<=math.pi*2:
-        return [constaltitude*math.sin(phi)*math.cos(theta),constaltitude*math.sin(phi)*math.sin(theta),constaltitude*math.cos(phi)]
+
+        A = constaltitude*math.sin(phi)*math.cos(theta)
+        B = constaltitude*math.sin(phi)*math.sin(theta)
+        C = constaltitude*math.cos(phi)
+        distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
+        time = distance/c
+
+        return [A,B,C,distance,time]
     else:
         return "incorrect values"
 
@@ -64,4 +72,4 @@ if __name__ == '__main__':
     svar = newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
 
-    print(coords(3,0.3))
+    print(coords(0,0))
