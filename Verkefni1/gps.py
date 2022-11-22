@@ -126,3 +126,9 @@ if __name__ == '__main__':
 
     new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
     print(new_system)
+    skekkja = 1e-10
+    new_system_plus_skekkja = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+    print("skekkja í 0,0:", new_system_plus_skekkja[0,0] - new_system[0,0])
+
+
+
