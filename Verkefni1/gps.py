@@ -14,48 +14,50 @@ constaltitude = 26570
 earthaltitude = 6371
 tolerance = 0.01
 vigur = np.array([0, 0, 6370, 0])
+class newton:
+    def __init__(self,system = system, vigur = vigur):
+        self.system = system
+    def fall(self, x):
+        return np.array([self.f1(x[0],x[1],x[2],x[3]),
+                         self.f2(x[0],x[1],x[2],x[3]),
+                         self.f3(x[0],x[1],x[2],x[3]),
+                         self.f4(x[0],x[1],x[2],x[3])])
 
-def fall(x, system):
-    return np.array([f1(x[0],x[1],x[2],x[3], system),
-                     f2(x[0],x[1],x[2],x[3], system),
-                     f3(x[0],x[1],x[2],x[3], system),
-                     f4(x[0],x[1],x[2],x[3], system)])
+    def f1(self, x,y,z,d):
+        return pow((x - system[0][0]),2) + pow((y - system[0][1]),2) + pow((z - system[0][2]),2) - pow(c,2)*pow((system[0][3]-d),2)
 
-def f1(x,y,z,d, system):
-    return pow((x - system[0][0]),2) + pow((y - system[0][1]),2) + pow((z - system[0][2]),2) - pow(c,2)*pow((system[0][3]-d),2)
+    def f2(self, x, y, z, d):
+        return pow((x - system[1][0]),2) + pow((y - system[1][1]),2) + pow((z - system[1][2]),2) - pow(c,2)*pow((system[1][3]-d),2)
 
-def f2(x, y, z, d, system):
-    return pow((x - system[1][0]),2) + pow((y - system[1][1]),2) + pow((z - system[1][2]),2) - pow(c,2)*pow((system[1][3]-d),2)
+    def f3(self, x, y, z, d):
+        return pow((x - system[2][0]),2) + pow((y - system[2][1]),2) + pow((z - system[2][2]),2) - pow(c,2)*pow((system[2][3]-d),2)
 
-def f3(x, y, z, d, system):
-    return pow((x - system[2][0]),2) + pow((y - system[2][1]),2) + pow((z - system[2][2]),2) - pow(c,2)*pow((system[2][3]-d),2)
-
-def f4(x, y, z, d, system):
-    return pow((x - system[3][0]),2) + pow((y - system[3][1]),2) + pow((z - system[3][2]),2) - pow(c,2)*pow((system[3][3]-d),2)
+    def f4(self,x, y, z, d):
+        return pow((x - system[3][0]),2) + pow((y - system[3][1]),2) + pow((z - system[3][2]),2) - pow(c,2)*pow((system[3][3]-d),2)
 
 
-def dF(vigur, system):
-    return np.array([[2*vigur[0]-2*system[0][0], 2*vigur[1]-2*system[0][1], 2*vigur[2]-2*system[0][2], 2*system[0][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
-                     [2*vigur[0]-2*system[1][0], 2*vigur[1]-2*system[1][1], 2*vigur[2]-2*system[1][2], 2*system[1][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
-                     [2*vigur[0]-2*system[2][0], 2*vigur[1]-2*system[2][1], 2*vigur[2]-2*system[2][2], 2*system[2][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
-                     [2*vigur[0]-2*system[3][0], 2*vigur[1]-2*system[3][1], 2*vigur[2]-2*system[3][2], 2*system[3][3]*pow(c,2)- 2*pow(c,2)*vigur[3]]])
+    def dF(self,vigur):
+        return np.array([[2*vigur[0]-2*system[0][0], 2*vigur[1]-2*system[0][1], 2*vigur[2]-2*system[0][2], 2*system[0][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
+                         [2*vigur[0]-2*system[1][0], 2*vigur[1]-2*system[1][1], 2*vigur[2]-2*system[1][2], 2*system[1][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
+                         [2*vigur[0]-2*system[2][0], 2*vigur[1]-2*system[2][1], 2*vigur[2]-2*system[2][2], 2*system[2][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
+                         [2*vigur[0]-2*system[3][0], 2*vigur[1]-2*system[3][1], 2*vigur[2]-2*system[3][2], 2*system[3][3]*pow(c,2)- 2*pow(c,2)*vigur[3]]])
 
-def newtonmult(x0, tol, system):
-    '''x0 er vigur i R^n skilgreindur t.d. sem
-    x0=np.array([1,2,3])
-    gert ráð fyrir að F(x) og Jacobi fylki DF(x) séu skilgreind annars staðar'''
-    x = x0
-    oldx = x + 2 * tol
-    counter = 0
-    while la.norm(x - oldx, np.inf) > tol:
-        oldx = x
-        s = -la.solve(dF(x, system), fall(x, system))
-        x = x + s
-        counter +=1
-        if counter >=15 :
-            print("------------reiknaði of lengi------------")
-            break
-    return (x)
+    def newtonmult(self, x0, tol):
+        '''x0 er vigur i R^n skilgreindur t.d. sem
+        x0=np.array([1,2,3])
+        gert ráð fyrir að F(x) og Jacobi fylki DF(x) séu skilgreind annars staðar'''
+        x = x0
+        oldx = x + 2 * tol
+        counter = 0
+        while la.norm(x - oldx, np.inf) > tol:
+            oldx = x
+            s = -la.solve(self.dF(x), self.fall(x))
+            x = x + s
+            counter +=1
+            if counter >=15 :
+                print("------------reiknaði of lengi------------")
+                break
+        return (x)
 
 def coords(phi,theta, altitude = constaltitude + earthaltitude):
     if 0 <= phi <= math.pi:
@@ -88,12 +90,11 @@ def plot3d():
         zhnit.append(svar[2])
 
     # plotting
-
+    n = newton(system)
     ax.scatter(xhnit, yhnit, zhnit, c='blue',alpha=0.1)
-
     x0 = vigur
     tolerance = 0.01
-    svar = newtonmult(x0, tolerance)
+    svar = n.newtonmult(x0, tolerance)
     ax.scatter(svar[0], svar[1], svar[2], c='red',s=300)
 
 
@@ -108,6 +109,30 @@ def plot3d():
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1,1,1))
     plt.show()
+def skekkja():
+    i1rett = coords(-math.pi/4,math.pi/8)
+    i1rettstutt=i1rett[0:3]
+    i2rett = coords(math.pi/2,math.pi/6)
+    i2rettstutt = i2rett[0:3]
+    i3rett = coords(2 * math.pi / 3,3 * math.pi / 8)
+    i3rettstutt = i3rett[0:3]
+    i4rett = coords(math.pi / 6, math.pi / 4)
+    i4rettstutt = i4rett[0:3]
+    systemnew = np.array([i1rettstutt,i2rettstutt,i3rettstutt,i4rettstutt])
+    n=newton(systemnew)
+    vigur = np.array([0, 0, 6370, 0])
+    x0 = vigur
+    tolerance = 0.01
+    svar = n.newtonmult(x0, tolerance)
+    print(svar)
+    i1rangt = coords((math.pi / 8) + 0.000000001, -math.pi / 4)
+    i2rangt = coords((math.pi / 6) + 0.000000001, math.pi / 2)
+    i3rangt = coords((3 * math.pi / 8) + 0.000000001, 2 * math.pi / 3)
+    i4rangt = coords((math.pi / 4) + 0.000000001, math.pi / 6)
+    print(i1rett)
+    print(i2rett)
+    print(i3rett)
+    print(i4rett)
 
 new_sat_pos = np.array([(np.pi/8, -np.pi/4),  # φ, θ, phi, theta
                         (np.pi/6, np.pi/2),
@@ -118,7 +143,8 @@ new_sat_pos = np.array([(np.pi/8, -np.pi/4),  # φ, θ, phi, theta
 if __name__ == '__main__':
     x0 = vigur
     tolerance = 0.01
-    svar = newtonmult(x0, tolerance, system)
+    n=newton(system)
+    svar = n.newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
     svar_coords = coords(0,0)
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
