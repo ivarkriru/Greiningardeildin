@@ -57,16 +57,15 @@ def newtonmult(x0, tol):
             break
     return (x)
 
-def coords(theta,phi,altitude = constaltitude + earthaltitude):
+def coords(phi,theta, altitude = constaltitude + earthaltitude):
     if 0<=phi<=math.pi:
-
         A = altitude*math.sin(phi)*math.cos(theta)
         B = altitude*math.sin(phi)*math.sin(theta)
         C = altitude*math.cos(phi)
         distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
         time = distance/c
 
-        return [A,B,C,distance,time]
+        return [A,B,C,time, distance]
     else:
         return "incorrect values"
 
@@ -82,7 +81,7 @@ def plot3d():
     # defining all 3 axes
     takmark = 1000
     for x in range(0,takmark):
-        svar = coords((x*7)%math.pi*2,(x*113)%(math.pi),earthaltitude)
+        svar = coords((x*113)%(math.pi), (x*7)%math.pi*2,earthaltitude)
         xhnit.append(svar[0])
         yhnit.append(svar[1])
         zhnit.append(svar[2])
@@ -108,20 +107,12 @@ def plot3d():
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1,1,1))
     plt.show()
-def skekkja():
-    i1rett = coords(math.pi/8, -math.pi/4)
-    i2rett = coords(math.pi/6, math.pi/2)
-    i3rett = coords(3 * math.pi / 8, 2 * math.pi / 3)
-    i4rett = coords(math.pi / 4, math.pi / 6)
-    i1rangt = coords((math.pi / 8) + 0.000000001, -math.pi / 4)
-    i2rangt = coords((math.pi / 6) + 0.000000001, math.pi / 2)
-    i3rangt = coords((3 * math.pi / 8) + 0.000000001, 2 * math.pi / 3)
-    i4rangt = coords((math.pi / 4) + 0.000000001, math.pi / 6)
-    print(i1rett)
-    print(i2rett)
-    print(i3rett)
-    print(i4rett)
 
+new_sat_pos = np.array([(np.pi/8, -np.pi/4),  # φ, θ, phi, theta
+                        (np.pi/6, np.pi/2),
+                        (3*np.pi/8, 2*np.pi/3),
+                        (np.pi/4, np.pi/6),
+                        ])
 
 if __name__ == '__main__':
     x0 = vigur
@@ -129,6 +120,9 @@ if __name__ == '__main__':
     svar = newtonmult(x0, tolerance)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
     svar_coords = coords(0,0)
-    print("A: " + '%.6f' % svar_coords[0] + " B: " + '%.6f' % svar_coords[1] + " C: " + '%.6f' % svar_coords[2] + " d: " + '%.6f' % svar_coords[3] + " t: " + '%.6f' % svar_coords[4])
-    plot3d()
-    skekkja()
+    print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
+    #plot3d()
+    #skekkja()
+
+    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+    print(new_system)
