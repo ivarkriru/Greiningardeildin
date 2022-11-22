@@ -15,32 +15,32 @@ earthaltitude = 6371
 tolerance = 0.01
 vigur = np.array([0, 0, 6370, 0])
 
-def fall(x):
-    return np.array([f1(x[0],x[1],x[2],x[3]),
-                     f2(x[0],x[1],x[2],x[3]),
-                     f3(x[0],x[1],x[2],x[3]),
-                     f4(x[0],x[1],x[2],x[3])])
+def fall(x, system):
+    return np.array([f1(x[0],x[1],x[2],x[3], system),
+                     f2(x[0],x[1],x[2],x[3], system),
+                     f3(x[0],x[1],x[2],x[3], system),
+                     f4(x[0],x[1],x[2],x[3], system)])
 
-def f1(x,y,z,d):
+def f1(x,y,z,d, system):
     return pow((x - system[0][0]),2) + pow((y - system[0][1]),2) + pow((z - system[0][2]),2) - pow(c,2)*pow((system[0][3]-d),2)
 
-def f2(x, y, z, d):
+def f2(x, y, z, d, system):
     return pow((x - system[1][0]),2) + pow((y - system[1][1]),2) + pow((z - system[1][2]),2) - pow(c,2)*pow((system[1][3]-d),2)
 
-def f3(x, y, z, d):
+def f3(x, y, z, d, system):
     return pow((x - system[2][0]),2) + pow((y - system[2][1]),2) + pow((z - system[2][2]),2) - pow(c,2)*pow((system[2][3]-d),2)
 
-def f4(x, y, z, d):
+def f4(x, y, z, d, system):
     return pow((x - system[3][0]),2) + pow((y - system[3][1]),2) + pow((z - system[3][2]),2) - pow(c,2)*pow((system[3][3]-d),2)
 
 
-def dF(vigur):
+def dF(vigur, system):
     return np.array([[2*vigur[0]-2*system[0][0], 2*vigur[1]-2*system[0][1], 2*vigur[2]-2*system[0][2], 2*system[0][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
                      [2*vigur[0]-2*system[1][0], 2*vigur[1]-2*system[1][1], 2*vigur[2]-2*system[1][2], 2*system[1][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
                      [2*vigur[0]-2*system[2][0], 2*vigur[1]-2*system[2][1], 2*vigur[2]-2*system[2][2], 2*system[2][3]*pow(c,2)- 2*pow(c,2)*vigur[3]],
                      [2*vigur[0]-2*system[3][0], 2*vigur[1]-2*system[3][1], 2*vigur[2]-2*system[3][2], 2*system[3][3]*pow(c,2)- 2*pow(c,2)*vigur[3]]])
 
-def newtonmult(x0, tol):
+def newtonmult(x0, tol, system):
     '''x0 er vigur i R^n skilgreindur t.d. sem
     x0=np.array([1,2,3])
     gert ráð fyrir að F(x) og Jacobi fylki DF(x) séu skilgreind annars staðar'''
@@ -49,7 +49,7 @@ def newtonmult(x0, tol):
     counter = 0
     while la.norm(x - oldx, np.inf) > tol:
         oldx = x
-        s = -la.solve(dF(x), fall(x))
+        s = -la.solve(dF(x, system), fall(x, system))
         x = x + s
         counter +=1
         if counter >=15 :
@@ -58,11 +58,12 @@ def newtonmult(x0, tol):
     return (x)
 
 def coords(phi,theta, altitude = constaltitude + earthaltitude):
-    if 0<=phi<=math.pi:
-        A = altitude*math.sin(phi)*math.cos(theta)
-        B = altitude*math.sin(phi)*math.sin(theta)
-        C = altitude*math.cos(phi)
-        distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
+    if 0 <= phi <= math.pi:
+        A = altitude * np.sin(phi) * np.cos(theta)
+        B = altitude * np.sin(phi) * np.sin(theta)
+        C = altitude * np.cos(phi)
+        #distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
+        distance = np.sqrt((A-0)**2 + (B-0)**2 + (C-6370)**2)
         time = distance/c
 
         return [A,B,C,time, distance]
@@ -117,7 +118,7 @@ new_sat_pos = np.array([(np.pi/8, -np.pi/4),  # φ, θ, phi, theta
 if __name__ == '__main__':
     x0 = vigur
     tolerance = 0.01
-    svar = newtonmult(x0, tolerance)
+    svar = newtonmult(x0, tolerance, system)
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
     svar_coords = coords(0,0)
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
@@ -130,5 +131,7 @@ if __name__ == '__main__':
     new_system_plus_skekkja = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
     print("skekkja í 0,0:", new_system_plus_skekkja[0,0] - new_system[0,0])
 
+    svar = newtonmult(x0, tolerance, new_system_plus_skekkja)
+    print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
 
 
