@@ -185,11 +185,30 @@ if __name__ == '__main__':
     n2 = newton(new_system_plus_skekkja)
     print(n2.newtonmult(x0, tolerance))
     # 4
-    if False:
+    skekkja = 1e-8
+    upphafsgildi = np.array([0, 0, 6370, 0])
+    if True:
+        list_of_positions = []
         for i in range(16):
-            new_systems_with_error = np.array(
-                [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
-                 for index, sat in enumerate(new_sat_pos)])
+            new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1<<index)  else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
             # uncomment to verify if correct:
-            # new_systems_with_error = np.array([1 if i & (1<<index)  else 0 for index, sat in enumerate(new_sat_pos)])
-            # print(new_systems_with_error)
+            #new_systems_with_error = np.array([1 if i & (1<<index)  else 0 for index, sat in enumerate(new_sat_pos)])
+            for index, sat_pos in enumerate(new_system):
+                new_system_with_error[index][-1] = sat_pos[-1]
+            n3 = newton(new_system_with_error)
+            list_of_positions.append(n3.newtonmult(upphafsgildi, tolerance))
+        min_villa = [0, 10]
+        max_villa = [0, -10]
+        for index, position in enumerate(list_of_positions):
+            villa_new = abs(position[0] + position[1] + (position[2] - earthaltitude) + position[3])
+            # todo: min og max villa virkar ekki
+            if min_villa[1] < villa_new:
+                min_villa = [index, villa_new]
+
+            if max_villa[1] >= villa_new:
+                max_villa = [index, villa_new]
+        print("min villa: ", min_villa[1], "á indexi: ", min_villa[0])
+        print("max villa: ", max_villa[1], "á indexi: ", max_villa[0])
+
+
+
