@@ -128,10 +128,10 @@ def plot3d(system):
 
 def sp3skekkja():
     print("Spurning 3")
-    i1rettstutt = coords(math.pi / 8, -math.pi / 4)[0:3]
-    i2rettstutt = coords(math.pi / 6, math.pi / 2)[0:3]
-    i3rettstutt = coords(3 * math.pi / 8, 2 * math.pi / 3)[0:3]
-    i4rettstutt = coords(math.pi / 4, math.pi / 6)[0:3]
+    i1rettstutt = coords(math.pi / 8, -math.pi / 4)[0:4]
+    i2rettstutt = coords(math.pi / 6, math.pi / 2)[0:4]
+    i3rettstutt = coords(3 * math.pi / 8, 2 * math.pi / 3)[0:4]
+    i4rettstutt = coords(math.pi / 4, math.pi / 6)[0:4]
 
     an_skekkju_system = np.array([i1rettstutt, i2rettstutt, i3rettstutt, i4rettstutt])
 
