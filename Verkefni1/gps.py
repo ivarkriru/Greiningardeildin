@@ -127,7 +127,6 @@ def plot3d(system):
 
 
 def sp3skekkja():
-    print("Spurning 3")
     i1rettstutt = coords(math.pi / 8, -math.pi / 4)[0:4]
     i2rettstutt = coords(math.pi / 6, math.pi / 2)[0:4]
     i3rettstutt = coords(3 * math.pi / 8, 2 * math.pi / 3)[0:4]
@@ -163,29 +162,28 @@ if __name__ == '__main__':
     x0 = vigur
     n = newton(system)
     svar = n.newtonmult(x0, tolerance)
+    print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
     svar_coords = coords(0, 0)
-    print(
-        f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
 
+    print("---- svar 2 ----- :")
+    print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
+
+
+    print("---- svar 3 ----- :")
     new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
-    print(new_system)
-
     skekkja = 1e-8
-    upphafsgildi = np.array([0, 0, 6370, 0])
-    new_system_plus_skekkja = np.array(
-        [coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in
-         enumerate(new_sat_pos)])
-    print("skekkja í 0,0:", new_system_plus_skekkja[0, 0] - new_system[0, 0])
+
+    new_system_plus_skekkja = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
 
     svar = n.newtonmult(x0, tolerance)
-    print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
+    print("lausnin með skekkju X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
 
-    sp3skekkja()
-    plot3d(new_system)
+    #sp3skekkja()
+    #plot3d(new_system)
 
     n2 = newton(new_system_plus_skekkja)
-    print(n2.newtonmult(upphafsgildi, tolerance))
+    print(n2.newtonmult(x0, tolerance))
     # 4
     if False:
         for i in range(16):
