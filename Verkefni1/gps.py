@@ -79,16 +79,16 @@ def nyttSatPos(pol=0):
     print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
     return nytt_loc
 
-def spurning1():
+def spurning1(plot=True):
     n = Newton(system)
     svar = n.GaussNewton(x0, tolerance)
     print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
-def spurning2():
+def spurning2(plot=True):
     svar_coords = coords(0, 0)
     print("---- svar 2 ----- :")
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
-def spurning3():
+def spurning3(plot=True):
     print("---- svar 3 ----- :")
 
     new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
@@ -110,7 +110,7 @@ def spurning3():
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[
         2] + " d: " + '%.6f' % svarmed[3])
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " kílómetrar")
-def spurning4():
+def spurning4(plot=True):
     print("---- svar 4 ----- :")
     skekkja = 1e-8
     upphafsgildi = np.array([0, 0, 6370, 0])
@@ -134,17 +134,19 @@ def spurning4():
     # plotta upp
     #plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
 
-    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
-    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
+    print(f"max: {max([point_diff(upphafsgildi, position) for position in list_of_positions]) * 1000:.04f}m")
+    print(f"min: {min([point_diff(upphafsgildi, position) for position in list_of_positions]) * 1000:.04f}m")
+    if plot:
+        A_dreifing = [position[0] for position in list_of_positions]
+        B_dreifing = [position[1] for position in list_of_positions]
+        C_dreifing = [position[2] - earthaltitude for position in list_of_positions]
+        plt.plot(A_dreifing)
+        plt.plot(B_dreifing)
+        plt.plot(C_dreifing)
+        plt.show()
+def spurning5(plot=True):
+    # ------------- 5 ---------------
 
-    A_dreifing = [position[0] for position in list_of_positions]
-    B_dreifing = [position[1] for position in list_of_positions]
-    C_dreifing = [position[2] - earthaltitude for position in list_of_positions]
-    plt.plot(A_dreifing)
-    plt.plot(B_dreifing)
-    plt.plot(C_dreifing)
-    plt.show()
-def spurning5():
 
     print("---- svar 5 ----- :")
     new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
@@ -176,57 +178,87 @@ def spurning5():
     n5system = [coords(phi, theta)[:-1] for phi, theta in new_sat_pos]
 
     n5 = Newton(n5system)
-
-    plot3d(n5.system)
+    if plot:
+        plot3d(n5.system)
     print(n5.GaussNewton(x0, tolerance))
     print(point_diff(x0,n5.GaussNewton(x0, tolerance)))
 
-def spurning6():
+
+# random sat positions hér svo hægt sé að nota í lið 7 og bera saman við lið 6
+random_sat_positions = np.array([[nyttSatPos(1) for _ in range(4)] for _ in range(8)])
+
+
+def spurning6(plot=True):
     print("---- svar 6 ----- :")
     skekkjusafn = []
 
 
-    for oft in range(0,5):
-        new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
+    for oft in range(0,4):
+        new_skekkja = (oft + 1) * skekkja
+        #new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
+        new_sat_pos = random_sat_positions[oft]
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
         for i in range(16):
-            new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+            new_system_with_error = np.array([coords(sat[0] + new_skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - new_skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = Newton(new_system_with_error)
-            print(x0)
+            # print(x0)
             print(n3.GaussNewton(x0, tolerance))
             skekkjusafn.append(point_diff(x0, n3.GaussNewton(x0, tolerance)))
             print(str(oft) + " , " + str(i))
+    # repeat with new error
+    for oft in range(4,8):
+        new_skekkja = (-oft - 1) * skekkja
+        #new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
+        new_sat_pos = random_sat_positions[oft]
+        new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+        for i in range(16):
+            new_system_with_error = np.array([coords(sat[0] + new_skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - new_skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+            for index, sat_pos in enumerate(new_system):
+                new_system_with_error[index][-1] = sat_pos[-1]
+            n3 = Newton(new_system_with_error)
+            # print(x0)
+            print(n3.GaussNewton(x0, tolerance))
+            skekkjusafn.append(point_diff(x0, n3.GaussNewton(x0, tolerance))*1000)  # breyta í metra
+            print(str(oft) + " , " + str(i))
+        print(f"number of skekkjur: {len(skekkjusafn)}")
+    if plot:
+        plt.style.use('fivethirtyeight')
+        plt.hist(skekkjusafn, bins=20, edgecolor='black', density=True)
+        plt.title('Means')
+        plt.xlabel('bins')
+        plt.ylabel('values')
+        #plt.tight_layout()
+        #x = np.arange(0, 1, 0.0001)
+        #x1 = stats.norm.pdf(x, 0.5, 1 / math.sqrt(12 * len(skekkjusafn)))
+        #plt.plot(x, x1, linewidth=1, color="black")
+        plt.show()
 
-    plt.style.use('fivethirtyeight')
-    plt.hist(skekkjusafn, bins=10, edgecolor='black', density=True)
-    plt.title('Means')
-    plt.xlabel('bins')
-    plt.ylabel('values')
-    plt.tight_layout()
-    x = np.arange(0, 1, 0.0001)
-    x1 = stats.norm.pdf(x, 0.5, 1 / math.sqrt(12 * len(skekkjusafn)))
-    plt.plot(x, x1, linewidth=1, color="black")
-    plt.show()
-
-def spurning7():
+def spurning7(plot=True):
     print("---- svar 7 ----- :")
-def spurning8():
+def spurning8(plot=True):
     print("---- svar 8 ----- :")
-def spurning9():
+def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
 if __name__ == '__main__':
-    spurning1()
-    spurning2()
-    spurning3()
-    spurning4()
-    spurning5()
-    #spurning6()
-    #spurning7()
-    #spurning8()
-    #spurning9()
+    spurningarlisti = [
+    spurning1,
+    spurning2,
+    spurning3,
+    spurning4,
+    spurning5,
+    spurning6,
+    spurning7,
+    spurning8,
+    spurning9,
+    ]
+
+    hvada_spurningar_a_ad_keyra = [6]  # <<<
+    plot = True
+    for spurningu in hvada_spurningar_a_ad_keyra:
+        spurningarlisti[spurningu-1](plot=plot)
 
     #plot3d(new_system)
 
