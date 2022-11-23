@@ -10,39 +10,25 @@ class Newton:
         j = 0
         n = []
         for i in self.system:
-            n.append(self.f(x[0], x[1], x[2], x[3], j))
+            if i is not None:
+                n.append(self.f(x[0], x[1], x[2], x[3], j))
             j = j + 1
         fall = np.array(n)
         return fall
-    def dFfall(self,x):
+    def dF(self,x):
         j = 0
         n = []
         for i in self.system:
-            n.append(self.dF(x[0], x[1], x[2], x[3], j))
+            if i is not None:
+                n.append(self.dFformula(x, j))
             j = j + 1
         fall = np.array(n)
         return fall
     def f(self, x, y, z, d, numOfFunInSys):
-        return pow((x - self.system[numOfFunInSys][0]), 2) + pow((y - self.system[numOfFunInSys][1]), 2) + pow((z - self.system[numOfFunInSys][2]),
-                                                                                       2) - pow(self.c, 2) * pow(
-            (self.system[numOfFunInSys][3] - d), 2)
+        return pow((x - self.system[numOfFunInSys][0]), 2) + pow((y - self.system[numOfFunInSys][1]), 2) + pow((z - self.system[numOfFunInSys][2]),2) - pow(self.c, 2) * pow((self.system[numOfFunInSys][3] - d), 2)
 
-    def nyttdF(self, vigur):
-        return 2 * vigur[0] - 2 * self.system[0][0], 2 * vigur[1] - 2 * self.system[0][1], 2 * vigur[2] - 2 * self.system[0][2],2 * self.system[0][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]
-
-    def dF(self, vigur):
-        return np.array([[2 * vigur[0] - 2 * self.system[0][0], 2 * vigur[1] - 2 * self.system[0][1],
-                          2 * vigur[2] - 2 * self.system[0][2],
-                          2 * self.system[0][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]],
-                         [2 * vigur[0] - 2 * self.system[1][0], 2 * vigur[1] - 2 * self.system[1][1],
-                          2 * vigur[2] - 2 * self.system[1][2],
-                          2 * self.system[1][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]],
-                         [2 * vigur[0] - 2 * self.system[2][0], 2 * vigur[1] - 2 * self.system[2][1],
-                          2 * vigur[2] - 2 * self.system[2][2],
-                          2 * self.system[2][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]],
-                         [2 * vigur[0] - 2 * self.system[3][0], 2 * vigur[1] - 2 * self.system[3][1],
-                          2 * vigur[2] - 2 * self.system[3][2],
-                          2 * self.system[3][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]]])
+    def dFformula(self, vigur, numOfFunInSys):
+        return 2 * vigur[0] - 2 * self.system[numOfFunInSys][0], 2 * vigur[1] - 2 * self.system[numOfFunInSys][1], 2 * vigur[2] - 2 * self.system[numOfFunInSys][2],2 * self.system[numOfFunInSys][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]
 
     def GaussNewton(self, x0, tol):
         '''x0 er vigur i R^n skilgreindur t.d. sem

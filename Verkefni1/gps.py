@@ -154,8 +154,7 @@ def spurning5():
     new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],
-                            [np.pi / 2, np.pi / 2],
-                            ])
+                            [np.pi / 2, np.pi / 2],])
     skekkja5 = 1e-5
     for i in range(4):
         new_sat_pos[i][0] += (random.random()-.5) * skekkja5
