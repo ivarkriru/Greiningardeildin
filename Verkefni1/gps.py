@@ -111,28 +111,25 @@ def spurning3():
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " metrar")
 def spurning4():
     print("---- svar 4 ----- :")
-    skekkja = 1e-8
     upphafsgildi = np.array([0, 0, 6370, 0])
-    if True:
-        list_of_positions = []
-        for i in range(16):
-            new_system_with_error = np.array(
-                [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
-                 for index, sat in enumerate(new_sat_pos)])
-            # uncomment to verify if correct:
-            # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
-            # print(new_systems_with_error)
-            for index, sat_pos in enumerate(new_system):
-                new_system_with_error[index][-1] = sat_pos[-1]
-            n3 = Newton(new_system_with_error)
-            list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
-        villu_positions = []
-        for index, position in enumerate(list_of_positions):
-            print(position)
-            villu_positions.append(position)
-            # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
+    list_of_positions = []
+    for i in range(16):
+        new_system_with_error = np.array(
+            [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
+             for index, sat in enumerate(new_sat_pos)])
+        # uncomment to verify if correct:
+        # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
+        # print(new_systems_with_error)
+        for index, sat_pos in enumerate(new_system):
+            new_system_with_error[index][-1] = sat_pos[-1]
+        n3 = Newton(new_system_with_error)
+        list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
+    villu_positions = []
+    for index, position in enumerate(list_of_positions):
+        villu_positions.append(position)
+        # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
     # plotta upp
-    plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
+    #plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
 
     print(f"max: {max([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
     print(f"min: {min([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
@@ -146,7 +143,7 @@ def spurning4():
     # plt.show()
 def spurning5():
     # ------------- 5 ---------------
-
+    print("---- svar 5 ----- :")
     new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],
@@ -158,13 +155,45 @@ def spurning5():
         new_sat_pos[i][1] + (random.randrange(-1, 1) * skekkja5)
     n5 = Newton(system)
 def spurning6():
-    pass
+    print("---- svar 6 ----- :")
+
+    upphafsgildi = np.array([0, 0, 6370, 0])
+
+    list_of_positions = []
+    for i in range(16):
+        new_system_with_error = np.array(
+            [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
+             for index, sat in enumerate(new_sat_pos)])
+        # uncomment to verify if correct:
+        # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
+        # print(new_systems_with_error)
+        for index, sat_pos in enumerate(new_system):
+            new_system_with_error[index][-1] = sat_pos[-1]
+        n3 = Newton(new_system_with_error)
+        list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
+    villu_positions = []
+    for index, position in enumerate(list_of_positions):
+        villu_positions.append(position)
+        # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
+    # plotta upp
+    # plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
+
+    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
+    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
+
+    A_dreifing = [position[0] for position in list_of_positions]
+    B_dreifing = [position[1] for position in list_of_positions]
+    C_dreifing = [position[2] - earthaltitude for position in list_of_positions]
+    # plt.plot(A_dreifing)
+    # plt.plot(B_dreifing)
+    # plt.plot(C_dreifing)
+    # plt.show()
 def spurning7():
-    pass
+    print("---- svar 7 ----- :")
 def spurning8():
-    pass
+    print("---- svar 8 ----- :")
 def spurning9():
-    pass
+    print("---- svar 9 ----- :")
 
 if __name__ == '__main__':
     spurning1()
@@ -176,7 +205,6 @@ if __name__ == '__main__':
     spurning7()
     spurning8()
     spurning9()
-
     plot3d(new_system)
 
 
