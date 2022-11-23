@@ -11,11 +11,11 @@ c = 299792.458
 constaltitude = 26570
 earthaltitude = 6370
 tolerance = 0.01
-vigur = np.array([0, 0, 6370, 0])
+x0 = np.array([0, 0, 6370, 0])
 
 
 class newton:
-    def __init__(self, system=system, vigur=vigur):
+    def __init__(self, system=system):
         self.system = system
 
     def fall(self, x):
@@ -58,16 +58,17 @@ class newton:
                           2 * vigur[2] - 2 * self.system[3][2],
                           2 * self.system[3][3] * pow(c, 2) - 2 * pow(c, 2) * vigur[3]]])
 
-    def newtonmult(self, x0, tol):
+    def GaussNewton(self, x0, tol):
         '''x0 er vigur i R^n skilgreindur t.d. sem
         x0=np.array([1,2,3])
         gert ráð fyrir að F(x) og Jacobi fylki DF(x) séu skilgreind annars staðar'''
         x = x0
         oldx = x + 2 * tol
         counter = 0
+        AT=np.transpose(self.dF(x0))
         while la.norm(x - oldx, np.inf) > tol:
             oldx = x
-            s = -la.solve(self.dF(x), self.fall(x))
+            s = -la.solve(np.matmul(AT,self.dF(x0)), np.matmul(AT,self.fall(x)))
             x = x + s
             counter += 1
             if counter >= 15:
@@ -112,9 +113,8 @@ def plot3d(system):
     # plotting
     n = newton(system)
     ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.1)
-    x0 = vigur
     tolerance = 0.01
-    svar = n.newtonmult(x0, tolerance)
+    svar = n.GaussNewton(x0, tolerance)
     ax.scatter(svar[0], svar[1], svar[2], c='red', s=300)
 
     ax.scatter(x0[0], x0[1], x0[2], c='yellow', s=300)
@@ -137,8 +137,8 @@ def sp3skekkja():
     an_skekkju_system = np.array([i1rettstutt, i2rettstutt, i3rettstutt, i4rettstutt])
 
     n = newton(an_skekkju_system)
-    x0 = vigur
-    svaranskekkju = n.newtonmult(x0, tolerance)
+
+    svaranskekkju = n.GaussNewton(x0, tolerance)
 
     print("Svar án skekkju : " + str(svaranskekkju))
 
@@ -149,7 +149,7 @@ def sp3skekkja():
 
     skekkju_system = np.array([i1rangt, i2rangt, i3rangt, i4rangt])
     n = newton(skekkju_system)
-    svarmedskekkju = n.newtonmult(x0, tolerance)
+    svarmedskekkju = n.GaussNewton(x0, tolerance)
 
     print("Svar með skekkju : " + str(svarmedskekkju))
 
@@ -161,13 +161,13 @@ new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ, phi, theta
                         ])
 
 if __name__ == '__main__':
-    x0 = vigur
+
     n = newton(system)
-    svar = n.newtonmult(x0, tolerance)
+    svar = n.GaussNewton(x0, tolerance)
     print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
-    svar_coords = coords(0, 0)
 
+    svar_coords = coords(0, 0)
     print("---- svar 2 ----- :")
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
 
@@ -183,14 +183,14 @@ if __name__ == '__main__':
         new_system_plus_skekkja[index][-1] = sat_pos[-1]
 
     n3 = newton(new_system)
-    svaran = n3.newtonmult(x0, tolerance)
+    svaran = n3.GaussNewton(x0, tolerance)
     print("lausnin án skekkju   X: " + '%.6f' % svaran[0] + " Y: " + '%.6f' % svaran[1] + " Z: " + '%.6f' % svaran[2] + " d: " + '%.6f' % svaran[3])
 
     #sp3skekkja()
     #plot3d(new_system)
 
     n2 = newton(new_system_plus_skekkja)
-    svarmed = n2.newtonmult(x0, tolerance)
+    svarmed = n2.GaussNewton(x0, tolerance)
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[2] + " d: " + '%.6f' % svarmed[3])
 
     print("Skekkjan sjálf : " + '%.6f' % point_diff(x0, svarmed) + " metrar")
@@ -211,7 +211,7 @@ if __name__ == '__main__':
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = newton(new_system_with_error)
-            list_of_positions.append(n3.newtonmult(upphafsgildi, tolerance))
+            list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
         villu_positions = []
         for index, position in enumerate(list_of_positions):
             print(position)
