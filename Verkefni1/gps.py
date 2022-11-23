@@ -1,6 +1,5 @@
 import numpy as np
 import math
-import numpy.linalg as la
 import matplotlib.pyplot as plt
 import random
 from newton import Newton
@@ -10,7 +9,7 @@ system = np.array([[15600, 7540, 20140, 0.07074],
                    [17610, 14630, 13480, 0.07690],
                    [19170, 610, 18390, 0.07242]])
 
-new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ, phi, theta
+new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ eða phi, theta
                         (np.pi / 6, np.pi / 2),
                         (3 * np.pi / 8, 2 * np.pi / 3),
                         (np.pi / 4, np.pi / 6),
@@ -23,10 +22,8 @@ x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
 
-
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
-
 def coords(phi, theta, altitude=constaltitude + earthaltitude):
     if 0 <= phi <= math.pi:
         A = altitude * np.sin(phi) * np.cos(theta)
@@ -75,7 +72,6 @@ def plot3d(sys):
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
-
 def nyttSatPos():
     nytt_loc = coords(math.pi*random.random(), random.random()*10000, constaltitude)
     global sat_teljari
@@ -88,12 +84,10 @@ def spurning1():
     svar = n.GaussNewton(x0, tolerance)
     print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
-
 def spurning2():
     svar_coords = coords(0, 0)
     print("---- svar 2 ----- :")
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
-
 def spurning3():
     print("---- svar 3 ----- :")
 
@@ -115,7 +109,6 @@ def spurning3():
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[
         2] + " d: " + '%.6f' % svarmed[3])
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " metrar")
-
 def spurning4():
     print("---- svar 4 ----- :")
     skekkja = 1e-8
@@ -151,7 +144,6 @@ def spurning4():
     # plt.plot(B_dreifing)
     # plt.plot(C_dreifing)
     # plt.show()
-
 def spurning5():
     # ------------- 5 ---------------
 
@@ -164,7 +156,7 @@ def spurning5():
     for i in range(4):
         new_sat_pos[i][0] + (random.randrange(-1, 1) * skekkja5)
         new_sat_pos[i][1] + (random.randrange(-1, 1) * skekkja5)
-    n5 = Newton()
+    n5 = Newton(system)
 def spurning6():
     pass
 def spurning7():
