@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import math
 import numpy.linalg as la
@@ -12,7 +14,7 @@ constaltitude = 26570
 earthaltitude = 6370
 tolerance = 0.01
 x0 = np.array([0, 0, 6370, 0])
-
+sat_teljari = 0
 
 class newton:
     def __init__(self, system=system):
@@ -77,7 +79,7 @@ class newton:
         return (x)
 
 def point_diff(A,B):
-    return np.sqrt((A[0] - B[0]) ** 2 + (A[2] - B[2]) ** 2 + (A[3] - B[3]) ** 2)
+    return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
 
 def coords(phi, theta, altitude=constaltitude + earthaltitude):
     if 0 <= phi <= math.pi:
@@ -92,7 +94,6 @@ def coords(phi, theta, altitude=constaltitude + earthaltitude):
     else:
         return "incorrect values"
 
-
 def plot3d(system):
     fig = plt.figure()
 
@@ -103,7 +104,7 @@ def plot3d(system):
     zhnit = []
 
     # defining all 3 axes
-    takmark = 1000
+    takmark = 300
     for x in range(0, takmark):
         svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
         xhnit.append(svar[0])
@@ -112,7 +113,7 @@ def plot3d(system):
 
     # plotting
     n = newton(system)
-    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.1)
+    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
     tolerance = 0.01
     svar = n.GaussNewton(x0, tolerance)
     ax.scatter(svar[0], svar[1], svar[2], c='red', s=300)
@@ -126,7 +127,6 @@ def plot3d(system):
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
-
 
 def sp3skekkja():
     i1rettstutt = coords(math.pi / 8, -math.pi / 4)[0:4]
@@ -153,6 +153,12 @@ def sp3skekkja():
 
     print("Svar með skekkju : " + str(svarmedskekkju))
 
+def nyttSatPos():
+    nytt_loc = coords(math.pi*random.random(), random.random()*10000, constaltitude)
+    global sat_teljari
+    sat_teljari = sat_teljari + 1
+    print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
+    return nytt_loc
 
 new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ, phi, theta
                         (np.pi / 6, np.pi / 2),
@@ -187,15 +193,12 @@ if __name__ == '__main__':
     print("lausnin án skekkju   X: " + '%.6f' % svaran[0] + " Y: " + '%.6f' % svaran[1] + " Z: " + '%.6f' % svaran[2] + " d: " + '%.6f' % svaran[3])
 
     #sp3skekkja()
-    #plot3d(new_system)
+    plot3d(new_system)
 
     n2 = newton(new_system_plus_skekkja)
     svarmed = n2.GaussNewton(x0, tolerance)
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[2] + " d: " + '%.6f' % svarmed[3])
-
-    print("Skekkjan sjálf : " + '%.6f' % point_diff(x0, svarmed) + " metrar")
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " metrar")
-    print("Skekkjan sjálf : " + '%.6f' % point_diff(svarmed, svarmed) + " metrar")
     # 4
 
     print("---- svar 4 ----- :")
