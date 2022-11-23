@@ -37,7 +37,6 @@ def coords(phi, theta, altitude=constaltitude + earthaltitude):
     else:
         return "incorrect values"
 
-new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
 
 def plot3d(sys):
     fig = plt.figure()
@@ -91,6 +90,7 @@ def spurning2():
 def spurning3():
     print("---- svar 3 ----- :")
 
+    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
     new_system_plus_skekkja = np.array(
         [coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in
          enumerate(new_sat_pos)])
@@ -113,24 +113,24 @@ def spurning4():
     print("---- svar 4 ----- :")
     skekkja = 1e-8
     upphafsgildi = np.array([0, 0, 6370, 0])
-    if True:
-        list_of_positions = []
-        for i in range(16):
-            new_system_with_error = np.array(
-                [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
-                 for index, sat in enumerate(new_sat_pos)])
-            # uncomment to verify if correct:
-            # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
-            # print(new_systems_with_error)
-            for index, sat_pos in enumerate(new_system):
-                new_system_with_error[index][-1] = sat_pos[-1]
-            n3 = Newton(new_system_with_error)
-            list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
-        villu_positions = []
-        for index, position in enumerate(list_of_positions):
-            print(position)
-            villu_positions.append(position)
-            # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
+    list_of_positions = []
+    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+    for i in range(16):
+        new_system_with_error = np.array(
+            [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
+             for index, sat in enumerate(new_sat_pos)])
+        # uncomment to verify if correct:
+        # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
+        # print(new_systems_with_error)
+        for index, sat_pos in enumerate(new_system):
+            new_system_with_error[index][-1] = sat_pos[-1]
+        n3 = Newton(new_system_with_error)
+        list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
+    villu_positions = []
+    for index, position in enumerate(list_of_positions):
+        print(position)
+        villu_positions.append(position)
+        # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
     # plotta upp
     plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
 
@@ -140,23 +140,31 @@ def spurning4():
     A_dreifing = [position[0] for position in list_of_positions]
     B_dreifing = [position[1] for position in list_of_positions]
     C_dreifing = [position[2] - earthaltitude for position in list_of_positions]
-    # plt.plot(A_dreifing)
-    # plt.plot(B_dreifing)
-    # plt.plot(C_dreifing)
-    # plt.show()
+    plt.plot(A_dreifing)
+    plt.plot(B_dreifing)
+    plt.plot(C_dreifing)
+    plt.show()
 def spurning5():
     # ------------- 5 ---------------
+    def create_new_system_with_tolerance(sat_positions):
+        pass
+
 
     new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],
                             ])
-    skekkja5 = 1e-5
+    skekkja5 = 1e-4
     for i in range(4):
-        new_sat_pos[i][0] + (random.randrange(-1, 1) * skekkja5)
-        new_sat_pos[i][1] + (random.randrange(-1, 1) * skekkja5)
-    n5 = Newton(system)
+        new_sat_pos[i][0] += (random.random()-.5) * skekkja5
+        new_sat_pos[i][1] += (random.random()-.5) * skekkja5
+    n5 = Newton([coords(phi, theta)[:-1] for phi, theta in new_sat_pos])
+    print(new_sat_pos)
+    print(n5.system)
+    print(n5.GaussNewton(x0, tolerance))
+    print(n5.count)
+    plot3d(n5.system)
 def spurning6():
     pass
 def spurning7():
@@ -177,6 +185,6 @@ if __name__ == '__main__':
     spurning8()
     spurning9()
 
-    plot3d(new_system)
+    #plot3d(new_system)
 
 
