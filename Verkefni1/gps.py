@@ -3,6 +3,7 @@ import math
 import matplotlib.pyplot as plt
 import random
 from newton import Newton
+from scipy import stats as stats
 
 system = np.array([[15600, 7540, 20140, 0.07074],
                    [18760, 2750, 18610, 0.07220],
@@ -17,14 +18,14 @@ new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ eða phi, theta
 c = 299792.458
 constaltitude = 26570
 earthaltitude = 6370
-tolerance = 0.01
+tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
-def coords(phi, theta, altitude=constaltitude + earthaltitude):
+def coords(phi, theta, altitude=constaltitude):
     if 0 <= phi <= math.pi:
         A = altitude * np.sin(phi) * np.cos(theta)
         B = altitude * np.sin(phi) * np.sin(theta)
@@ -59,10 +60,6 @@ def plot3d(sys):
     n = Newton(sys)
     ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
     tolerance = 0.01
-    svar = n.GaussNewton(x0, tolerance)
-    ax.scatter(svar[0], svar[1], svar[2], c='red', s=300)
-
-    ax.scatter(x0[0], x0[1], x0[2], c='yellow', s=300)
     ax.set_title('3D line plot geeks for geeks')
 
     for x in sys:
@@ -71,8 +68,12 @@ def plot3d(sys):
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
-def nyttSatPos():
+
+def nyttSatPos(pol=0):
+
     nytt_loc = coords(math.pi*random.random(), random.random()*10000, constaltitude)
+    if pol==1:
+        return np.array([math.pi*random.random(), random.random()*10000, constaltitude])
     global sat_teljari
     sat_teljari = sat_teljari + 1
     print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
@@ -108,7 +109,7 @@ def spurning3():
     svarmed = n2.GaussNewton(x0, tolerance)
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[
         2] + " d: " + '%.6f' % svarmed[3])
-    print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " metrar")
+    print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " kílómetrar")
 def spurning4():
     print("---- svar 4 ----- :")
     skekkja = 1e-8
@@ -128,7 +129,6 @@ def spurning4():
         list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
     villu_positions = []
     for index, position in enumerate(list_of_positions):
-        print(position)
         villu_positions.append(position)
         # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
     # plotta upp
@@ -145,61 +145,71 @@ def spurning4():
     plt.plot(C_dreifing)
     plt.show()
 def spurning5():
-    # ------------- 5 ---------------
-    def create_new_system_with_tolerance(sat_positions):
-        pass
-
 
     print("---- svar 5 ----- :")
     new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],])
-    skekkja5 = 1e-5
+
+    '''
+    skekkja5 = 0.1
     for i in range(4):
         new_sat_pos[i][0] += (random.random()-.5) * skekkja5
         new_sat_pos[i][1] += (random.random()-.5) * skekkja5
-    n5 = Newton([coords(phi, theta)[:-1] for phi, theta in new_sat_pos])
     print(new_sat_pos)
-    print(n5.system)
-    print(n5.GaussNewton(x0, tolerance))
-    #print(n5.count)
+    '''
+
+    # skekkja = 0.1
+    '''
+    new_sat_pos = np.array([ [[1.55285912 1.599031 ],
+                             [1.53712495 1.62040946],
+                             [1.57151953 1.61481681],
+                             [1.56491249 1.53779567]],])
+    '''
+    # skekkja = 0.01
+    new_sat_pos = np.array([ [1.57098865 ,1.57282701],
+                             [1.57508225 ,1.57233899],
+                             [1.5707446  ,1.56733488],
+                             [1.56586073 ,1.56823521],])
+
+    n5system = [coords(phi, theta)[:-1] for phi, theta in new_sat_pos]
+
+    n5 = Newton(n5system)
+
     plot3d(n5.system)
+    print(n5.GaussNewton(x0, tolerance))
+    print(point_diff(x0,n5.GaussNewton(x0, tolerance)))
+
 def spurning6():
     print("---- svar 6 ----- :")
+    skekkjusafn = []
 
-    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
-    upphafsgildi = np.array([0, 0, 6370, 0])
 
-    list_of_positions = []
-    for i in range(16):
-        new_system_with_error = np.array(
-            [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
-             for index, sat in enumerate(new_sat_pos)])
-        # uncomment to verify if correct:
-        # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
-        # print(new_systems_with_error)
-        for index, sat_pos in enumerate(new_system):
-            new_system_with_error[index][-1] = sat_pos[-1]
-        n3 = Newton(new_system_with_error)
-        list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
-    villu_positions = []
-    for index, position in enumerate(list_of_positions):
-        villu_positions.append(position)
-        # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
-    # plotta upp
-    # plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
+    for oft in range(0,5):
+        new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
+        new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+        for i in range(16):
+            new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+            for index, sat_pos in enumerate(new_system):
+                new_system_with_error[index][-1] = sat_pos[-1]
+            n3 = Newton(new_system_with_error)
+            print(x0)
+            print(n3.GaussNewton(x0, tolerance))
+            skekkjusafn.append(point_diff(x0, n3.GaussNewton(x0, tolerance)))
+            print(str(oft) + " , " + str(i))
 
-    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
-    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
+    plt.style.use('fivethirtyeight')
+    plt.hist(skekkjusafn, bins=10, edgecolor='black', density=True)
+    plt.title('Means')
+    plt.xlabel('bins')
+    plt.ylabel('values')
+    plt.tight_layout()
+    x = np.arange(0, 1, 0.0001)
+    x1 = stats.norm.pdf(x, 0.5, 1 / math.sqrt(12 * len(skekkjusafn)))
+    plt.plot(x, x1, linewidth=1, color="black")
+    plt.show()
 
-    A_dreifing = [position[0] for position in list_of_positions]
-    B_dreifing = [position[1] for position in list_of_positions]
-    C_dreifing = [position[2] - earthaltitude for position in list_of_positions]
-    # plt.plot(A_dreifing)
-    # plt.plot(B_dreifing)
-    # plt.plot(C_dreifing)
-    # plt.show()
 def spurning7():
     print("---- svar 7 ----- :")
 def spurning8():
@@ -213,10 +223,10 @@ if __name__ == '__main__':
     spurning3()
     spurning4()
     spurning5()
-    spurning6()
-    spurning7()
-    spurning8()
-    spurning9()
+    #spurning6()
+    #spurning7()
+    #spurning8()
+    #spurning9()
 
     #plot3d(new_system)
 

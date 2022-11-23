@@ -24,8 +24,10 @@ class Newton:
             j = j + 1
         fall = np.array(n)
         return fall
+
     def f(self, x, y, z, d, numOfFunInSys):
         return pow((x - self.system[numOfFunInSys][0]), 2) + pow((y - self.system[numOfFunInSys][1]), 2) + pow((z - self.system[numOfFunInSys][2]),2) - pow(self.c, 2) * pow((self.system[numOfFunInSys][3] - d), 2)
+
 
     def dFformula(self, vigur, numOfFunInSys):
         return 2 * vigur[0] - 2 * self.system[numOfFunInSys][0], 2 * vigur[1] - 2 * self.system[numOfFunInSys][1], 2 * vigur[2] - 2 * self.system[numOfFunInSys][2],2 * self.system[numOfFunInSys][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]
@@ -37,13 +39,14 @@ class Newton:
         x = x0
         oldx = x + 2 * tol
         counter = 0
-        AT=np.transpose(self.dF(x0))
+
         while la.norm(x - oldx, np.inf) > tol:
+            AT = np.transpose(self.dF(x))
             oldx = x
-            s = -la.solve(np.matmul(AT,self.dF(x0)), np.matmul(AT,self.fall(x)))
+            s = -la.solve(np.matmul(AT,self.dF(x)), np.matmul(AT,self.fall(x)))
             x = x + s
             counter += 1
-            if counter >= 15:
+            if counter >= 10:
                 print("------------reiknaði of lengi------------")
                 break
         return x
