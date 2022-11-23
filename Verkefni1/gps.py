@@ -5,6 +5,7 @@ import math
 import numpy.linalg as la
 import matplotlib.pyplot as plt
 import random
+from newton import Newton
 
 system = np.array([[15600, 7540, 20140, 0.07074],
                    [18760, 2750, 18610, 0.07220],
@@ -17,67 +18,6 @@ tolerance = 0.01
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 
-class newton:
-    def __init__(self, system=system):
-        self.system = system
-
-    def fall(self, x):
-        return np.array([self.f1(x[0], x[1], x[2], x[3]),
-                         self.f2(x[0], x[1], x[2], x[3]),
-                         self.f3(x[0], x[1], x[2], x[3]),
-                         self.f4(x[0], x[1], x[2], x[3])])
-
-    def f1(self, x, y, z, d):
-        return pow((x - self.system[0][0]), 2) + pow((y - self.system[0][1]), 2) + pow((z - self.system[0][2]),
-                                                                                       2) - pow(c, 2) * pow(
-            (self.system[0][3] - d), 2)
-
-    def f2(self, x, y, z, d):
-        return pow((x - self.system[1][0]), 2) + pow((y - self.system[1][1]), 2) + pow((z - self.system[1][2]),
-                                                                                       2) - pow(c, 2) * pow(
-            (self.system[1][3] - d), 2)
-
-    def f3(self, x, y, z, d):
-        return pow((x - self.system[2][0]), 2) + pow((y - self.system[2][1]), 2) + pow((z - self.system[2][2]),
-                                                                                       2) - pow(c, 2) * pow(
-            (self.system[2][3] - d), 2)
-
-    def f4(self, x, y, z, d):
-        return pow((x - self.system[3][0]), 2) + pow((y - self.system[3][1]), 2) + pow((z - self.system[3][2]),
-                                                                                       2) - pow(c, 2) * pow(
-            (self.system[3][3] - d), 2)
-
-    def dF(self, vigur):
-        return np.array([[2 * vigur[0] - 2 * self.system[0][0], 2 * vigur[1] - 2 * self.system[0][1],
-                          2 * vigur[2] - 2 * self.system[0][2],
-                          2 * self.system[0][3] * pow(c, 2) - 2 * pow(c, 2) * vigur[3]],
-                         [2 * vigur[0] - 2 * self.system[1][0], 2 * vigur[1] - 2 * self.system[1][1],
-                          2 * vigur[2] - 2 * self.system[1][2],
-                          2 * self.system[1][3] * pow(c, 2) - 2 * pow(c, 2) * vigur[3]],
-                         [2 * vigur[0] - 2 * self.system[2][0], 2 * vigur[1] - 2 * self.system[2][1],
-                          2 * vigur[2] - 2 * self.system[2][2],
-                          2 * self.system[2][3] * pow(c, 2) - 2 * pow(c, 2) * vigur[3]],
-                         [2 * vigur[0] - 2 * self.system[3][0], 2 * vigur[1] - 2 * self.system[3][1],
-                          2 * vigur[2] - 2 * self.system[3][2],
-                          2 * self.system[3][3] * pow(c, 2) - 2 * pow(c, 2) * vigur[3]]])
-
-    def GaussNewton(self, x0, tol):
-        '''x0 er vigur i R^n skilgreindur t.d. sem
-        x0=np.array([1,2,3])
-        gert ráð fyrir að F(x) og Jacobi fylki DF(x) séu skilgreind annars staðar'''
-        x = x0
-        oldx = x + 2 * tol
-        counter = 0
-        AT=np.transpose(self.dF(x0))
-        while la.norm(x - oldx, np.inf) > tol:
-            oldx = x
-            s = -la.solve(np.matmul(AT,self.dF(x0)), np.matmul(AT,self.fall(x)))
-            x = x + s
-            counter += 1
-            if counter >= 15:
-                print("------------reiknaði of lengi------------")
-                break
-        return (x)
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
@@ -113,7 +53,7 @@ def plot3d(system):
         zhnit.append(svar[2])
 
     # plotting
-    n = newton(system)
+    n = Newton(system)
     ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
     tolerance = 0.01
     svar = n.GaussNewton(x0, tolerance)
@@ -137,7 +77,7 @@ def sp3skekkja():
 
     an_skekkju_system = np.array([i1rettstutt, i2rettstutt, i3rettstutt, i4rettstutt])
 
-    n = newton(an_skekkju_system)
+    n = Newton(an_skekkju_system)
 
     svaranskekkju = n.GaussNewton(x0, tolerance)
 
@@ -149,7 +89,7 @@ def sp3skekkja():
     i4rangt = coords((math.pi / 4) + 0.000000001,math.pi / 6 )[0:4]
 
     skekkju_system = np.array([i1rangt, i2rangt, i3rangt, i4rangt])
-    n = newton(skekkju_system)
+    n = Newton(skekkju_system)
     svarmedskekkju = n.GaussNewton(x0, tolerance)
 
     print("Svar með skekkju : " + str(svarmedskekkju))
@@ -169,7 +109,7 @@ new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ, phi, theta
 
 if __name__ == '__main__':
 
-    n = newton(system)
+    n = Newton(system)
     svar = n.GaussNewton(x0, tolerance)
     print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
@@ -189,14 +129,14 @@ if __name__ == '__main__':
     for index, sat_pos in enumerate(new_system):
         new_system_plus_skekkja[index][-1] = sat_pos[-1]
 
-    n3 = newton(new_system)
+    n3 = Newton(new_system)
     svaran = n3.GaussNewton(x0, tolerance)
     print("lausnin án skekkju   X: " + '%.6f' % svaran[0] + " Y: " + '%.6f' % svaran[1] + " Z: " + '%.6f' % svaran[2] + " d: " + '%.6f' % svaran[3])
 
     #sp3skekkja()
     plot3d(new_system)
 
-    n2 = newton(new_system_plus_skekkja)
+    n2 = Newton(new_system_plus_skekkja)
     svarmed = n2.GaussNewton(x0, tolerance)
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[2] + " d: " + '%.6f' % svarmed[3])
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " metrar")
@@ -214,7 +154,7 @@ if __name__ == '__main__':
             # print(new_systems_with_error)
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
-            n3 = newton(new_system_with_error)
+            n3 = Newton(new_system_with_error)
             list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
         villu_positions = []
         for index, position in enumerate(list_of_positions):
@@ -246,6 +186,5 @@ if __name__ == '__main__':
     for i in range(4):
         new_sat_pos[i][0] + (random.randrange(-1, 1)*skekkja5)
         new_sat_pos[i][1] + (random.randrange(-1, 1)*skekkja5)
-    n5 = newton()
 
 
