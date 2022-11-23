@@ -164,7 +164,7 @@ def spurning5():
     print(new_sat_pos)
     print(n5.system)
     print(n5.GaussNewton(x0, tolerance))
-    print(n5.count)
+    #print(n5.count)
     plot3d(n5.system)
 def spurning6():
     print("---- svar 6 ----- :")

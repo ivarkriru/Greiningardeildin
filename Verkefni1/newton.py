@@ -7,30 +7,28 @@ class Newton:
         self.c = 299792.458
 
     def fall(self, x):
-        return np.array([self.f1(x[0], x[1], x[2], x[3]),
-                         self.f2(x[0], x[1], x[2], x[3]),
-                         self.f3(x[0], x[1], x[2], x[3]),
-                         self.f4(x[0], x[1], x[2], x[3])])
-
-    def f1(self, x, y, z, d):
-        return pow((x - self.system[0][0]), 2) + pow((y - self.system[0][1]), 2) + pow((z - self.system[0][2]),
+        j = 0
+        n = []
+        for i in self.system:
+            n.append(self.f(x[0], x[1], x[2], x[3], j))
+            j = j + 1
+        fall = np.array(n)
+        return fall
+    def dFfall(self,x):
+        j = 0
+        n = []
+        for i in self.system:
+            n.append(self.dF(x[0], x[1], x[2], x[3], j))
+            j = j + 1
+        fall = np.array(n)
+        return fall
+    def f(self, x, y, z, d, numOfFunInSys):
+        return pow((x - self.system[numOfFunInSys][0]), 2) + pow((y - self.system[numOfFunInSys][1]), 2) + pow((z - self.system[numOfFunInSys][2]),
                                                                                        2) - pow(self.c, 2) * pow(
-            (self.system[0][3] - d), 2)
+            (self.system[numOfFunInSys][3] - d), 2)
 
-    def f2(self, x, y, z, d):
-        return pow((x - self.system[1][0]), 2) + pow((y - self.system[1][1]), 2) + pow((z - self.system[1][2]),
-                                                                                       2) - pow(self.c, 2) * pow(
-            (self.system[1][3] - d), 2)
-
-    def f3(self, x, y, z, d):
-        return pow((x - self.system[2][0]), 2) + pow((y - self.system[2][1]), 2) + pow((z - self.system[2][2]),
-                                                                                       2) - pow(self.c, 2) * pow(
-            (self.system[2][3] - d), 2)
-
-    def f4(self, x, y, z, d):
-        return pow((x - self.system[3][0]), 2) + pow((y - self.system[3][1]), 2) + pow((z - self.system[3][2]),
-                                                                                       2) - pow(self.c, 2) * pow(
-            (self.system[3][3] - d), 2)
+    def nyttdF(self, vigur):
+        return 2 * vigur[0] - 2 * self.system[0][0], 2 * vigur[1] - 2 * self.system[0][1], 2 * vigur[2] - 2 * self.system[0][2],2 * self.system[0][3] * pow(self.c, 2) - 2 * pow(self.c, 2) * vigur[3]
 
     def dF(self, vigur):
         return np.array([[2 * vigur[0] - 2 * self.system[0][0], 2 * vigur[1] - 2 * self.system[0][1],
