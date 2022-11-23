@@ -2,6 +2,7 @@ import numpy as np
 import math
 import numpy.linalg as la
 import matplotlib.pyplot as plt
+import random
 
 system = np.array([[15600, 7540, 20140, 0.07074],
                    [18760, 2750, 18610, 0.07220],
@@ -76,7 +77,7 @@ class newton:
         return (x)
 
 def point_diff(A,B):
-    return np.sqrt((A[0] - B[0]) ** 2 + (A[2] - B[2]) ** 2 + (A[3] - B[3]) ** 2)
+    return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
 
 def coords(phi, theta, altitude=constaltitude + earthaltitude):
     if 0 <= phi <= math.pi:
@@ -206,8 +207,8 @@ if __name__ == '__main__':
         for i in range(16):
             new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1<<index)  else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
             # uncomment to verify if correct:
-            new_systems_with_error = np.array([1 if not (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
-            print(new_systems_with_error)
+            # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
+            # print(new_systems_with_error)
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = newton(new_system_with_error)
@@ -217,8 +218,31 @@ if __name__ == '__main__':
             print(position)
             villu_positions.append(position)
             # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
+    # plotta upp
+    plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
+
+    print(f"max: {max([point_diff(x0, position) for position in list_of_positions])*1000:.04f}m")
+    print(f"min: {min([point_diff(x0, position) for position in list_of_positions])*1000:.04f}m")
 
     A_dreifing = [position[0] for position in list_of_positions]
-    plt.plot(A_dreifing)
-    plt.show()
+    B_dreifing = [position[1] for position in list_of_positions]
+    C_dreifing = [position[2]-earthaltitude for position in list_of_positions]
+    #plt.plot(A_dreifing)
+    #plt.plot(B_dreifing)
+    #plt.plot(C_dreifing)
+    #plt.show()
+
+    # ------------- 5 ---------------
+
+    new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
+                            [np.pi / 2, np.pi / 2],
+                            [np.pi / 2, np.pi / 2],
+                            [np.pi / 2, np.pi / 2],
+                        ])
+    skekkja5 = 1e-5
+    for i in range(4):
+        new_sat_pos[i][0] + (random.randrange(-1, 1)*skekkja5)
+        new_sat_pos[i][1] + (random.randrange(-1, 1)*skekkja5)
+    n5 = newton()
+
 
