@@ -169,6 +169,7 @@ def spurning5():
 def spurning6():
     print("---- svar 6 ----- :")
 
+    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
     upphafsgildi = np.array([0, 0, 6370, 0])
 
     list_of_positions = []
