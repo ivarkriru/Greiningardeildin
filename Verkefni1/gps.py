@@ -270,7 +270,7 @@ def spurning8(plot=True):
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
-    start_tungl = 5
+    start_tungl = 6
     fig = plt.figure()
     ax = fig.add_subplot(111)
     skekkjusafn = []
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     #spurning5()
     #spurning6(plot=False)
     #spurning7()
-    spurning8()
+    #spurning8()
     #spurning9()
 
     #plot3d(new_system)
