@@ -206,8 +206,9 @@ def spurning5(plot = True):
 
 random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
 
-def spurning6(plot=True, calculate_sats=4):
-    print("---- svar 6 ----- :")
+def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
+    if plot:
+        print("---- svar 6 ----- :")
     skekkjusafn = []
     for oft in range(0,sample_fjoldi):
         #if oft %100 == 0:
@@ -252,18 +253,62 @@ def spurning6(plot=True, calculate_sats=4):
 
 def spurning7(plot=True):
     print("---- svar 7 ----- :")
+    def bisection(f,a,b,tol):
+        '''gert ráð fyrir að búið se að skilgreina f(x) fyrir utan t.d.
+        def f(x):
+            return(x**2-2)
+        '''
+        if np.max(f(skekkja=a))*np.max(f(skekkja=b)) >= 0:
+            print(a, b)
+            print("Bisection method fails.")
+            return None
+        else:
+            fa = np.max(f(skekkja=a, plot=False))
+            while (b-a)/2>tol:
+                c = (a+b)/2
+                fc = np.max(f(skekkja=c, plot=False))
+                if fc == 0:
+                    break
+                if fc*fa < 0:
+                    b = c
+                else:
+                    a = c
+                    fa = fc
+                print(a,b)
+        return (a+b)/2
+    a = 1e-8
+    b = 1e-30
+    tol = 0.1  # [m]
+    print(bisection(spurning6, a, b, tol))
+
+
+
+
 def spurning8(plot=True):
-    print("---- svar 8 ----- :")
+    if plot:
+        print("---- svar 8 ----- :")
+    start_tungl = 4
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    skekkjusafn = []
+    for i in range(start_tungl, start_tungl+2):
+        skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
+    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, start_tungl + 2)])
+    ax.set_xlabel("Fjöldi tungla")
+    ax.set_ylabel("skekkja[m]")
+    plt.show()
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
-    fig, ax = plt.subplots()
+    start_tungl = 6
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
     skekkjusafn = []
-    for i in range(4,10, 1):
-        skekkjusafn.append([spurning6(plot=False, calculate_sats=i)])
-    print(len(skekkjusafn), len(skekkjusafn[0]))
-    ax.boxplot(skekkjusafn)
-
+    for i in range(start_tungl,satkerfi_fjoldi+1, 1):
+        skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
+    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, satkerfi_fjoldi+1)])
+    ax.set_xlabel("Fjöldi tungla")
+    ax.set_ylabel("skekkja[m]")
     plt.show()
 
 if __name__ == '__main__':
@@ -272,21 +317,11 @@ if __name__ == '__main__':
     #spurning3()
     #spurning4()
     #spurning5()
-    #spurning6()
-    #spurning7()
+    #spurning6(plot=False)
+    spurning7()
     #spurning8()
-   # random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
-    #satkerfi_fjoldi = 5
     #spurning9()
 
     #plot3d(new_system)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    u = np.linspace(0, 2 * np.pi, 100)
-    v = np.linspace(0, np.pi, 100)
-    x = 10 * np.outer(np.cos(u), np.sin(v))
-    y = 10 * np.outer(np.sin(u), np.sin(v))
-    z = 10 * np.outer(np.ones(np.size(u)), np.cos(v))
-    ax.plot_surface(x, y, z, rstride=4, cstride=4, color='b')
-    plt.show()
+
