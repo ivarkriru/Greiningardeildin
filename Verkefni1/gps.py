@@ -22,7 +22,7 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 4
+satkerfi_fjoldi = 5
 sample_fjoldi = 100
 
 def point_diff(A,B):
