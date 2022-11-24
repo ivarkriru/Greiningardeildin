@@ -253,34 +253,27 @@ def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
 
 def spurning7(plot=True):
     print("---- svar 7 ----- :")
-    def bisection(f,a,b,tol):
-        '''gert ráð fyrir að búið se að skilgreina f(x) fyrir utan t.d.
-        def f(x):
-            return(x**2-2)
-        '''
-        if (np.max(f(skekkja=a))-tol)*(np.max(f(skekkja=b))-tol) >= 0:
-            print(a, b)
+    def bisection(f,a,b,tol, hlidrun=0.1):
+        if (np.max(f(skekkja=a))-hlidrun)*(np.max(f(skekkja=b))-hlidrun) >= 0:
             print("Bisection method fails.")
             return None
         else:
-            fa = np.max(f(skekkja=a, plot=False))-tol
-            print(a, b)
-            while abs((b-a)/2)>1e-30:
+            fa = np.max(f(skekkja=a))-hlidrun
+            while (b-a)/2 > tol:
                 c = (a+b)/2
-                fc = np.max(f(skekkja=c, plot=False))-tol
-                if abs(fc) < tol/2:
-                    print(a,b,c)
+                fc = np.max(f(skekkja=c))-hlidrun
+                if fc == 0:
                     break
-                if fc*fa < 0:
+                if fc * fa<0:
                     b = c
                 else:
                     a = c
                     fa = fc
         return (a+b)/2
-    a = 1e-8
-    b = 1e-16
+    b = 1e-8
+    a = 1e-12
     tol = 0.1  # [m]
-    ideal_skekkja = (bisection(spurning6, b, a, tol))
+    ideal_skekkja = (bisection(spurning6, a, b, 1e-12))
     print(ideal_skekkja)
     print(np.max(spurning6(skekkja=ideal_skekkja)))
     ii = []
@@ -339,4 +332,22 @@ if __name__ == '__main__':
 
     #plot3d(new_system)
 
+
+def bisection(f,a,b,tol):
+    if f(a)*f(b) >= 0:
+        print("Bisection method fails.")
+        return None
+    else:
+        fa = f(a)
+        while (b-a)/2 > tol:
+            c = (a+b)/2
+            fc = f(c)
+            if fc == 0:
+                break
+            if fc * fa<0:
+                b = c
+            else:
+                a = c
+                fa = fc
+    return (a+b)/2
 
