@@ -25,6 +25,7 @@ skekkja = 1e-8
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
+
 def coords(phi, theta, altitude=constaltitude):
     if 0 <= phi <= math.pi:
         A = altitude * np.sin(phi) * np.cos(theta)
@@ -37,7 +38,6 @@ def coords(phi, theta, altitude=constaltitude):
         return [A, B, C, time, distance]
     else:
         return "incorrect values"
-
 
 def plot3d(sys):
     fig = plt.figure()
@@ -64,13 +64,14 @@ def plot3d(sys):
 
     for x in sys:
         ax.scatter(x[0], x[1], x[2], c='yellow', s=300)
-
+    ax.set_xlim(-constaltitude, constaltitude)
+    ax.set_ylim(-constaltitude, constaltitude)
+    ax.set_zlim(-constaltitude, constaltitude)
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
 
 def nyttSatPos(pol=0):
-
     nytt_loc = coords(math.pi*random.random(), random.random()*10000, constaltitude)
     if pol==1:
         return np.array([math.pi*random.random(), random.random()*10000, constaltitude])
@@ -84,10 +85,12 @@ def spurning1(plot=True):
     svar = n.GaussNewton(x0, tolerance)
     print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
+
 def spurning2(plot=True):
     svar_coords = coords(0, 0)
     print("---- svar 2 ----- :")
     print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
+
 def spurning3(plot=True):
     print("---- svar 3 ----- :")
 
@@ -110,6 +113,7 @@ def spurning3(plot=True):
     print("lausnin með skekkju  X: " + '%.6f' % svarmed[0] + " Y: " + '%.6f' % svarmed[1] + " Z: " + '%.6f' % svarmed[
         2] + " d: " + '%.6f' % svarmed[3])
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " kílómetrar")
+
 def spurning4(plot=True):
     print("---- svar 4 ----- :")
     list_of_positions = []
@@ -117,7 +121,6 @@ def spurning4(plot=True):
 
     for i in range(16):
         new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(sp3_initial_sat)])
-
         # setja réttan tíma á skekkjukerfið
         for index, sat_pos in enumerate(new_system_with_error):
             print(new_system_with_error[index][-1])
@@ -128,6 +131,7 @@ def spurning4(plot=True):
         list_of_positions.append(n4error.GaussNewton(x0, tolerance))
     print(f"max: {max([point_diff(x0, position) for position in list_of_positions]):.7f}")
     print(f"min: {min([point_diff(x0, position) for position in list_of_positions]):.7f}")
+
 def spurning5(plot = True):
 
     print("---- svar 5 ----- :")
@@ -196,27 +200,31 @@ def spurning6(plot=True):
     print("---- svar 6 ----- :")
     skekkjusafn = []
 
-    for oft in range(0,5):
+    for oft in range(0, 10000):
+        if oft %100 == 0:
+            print(oft)
         new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+
         for i in range(16):
             new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
 
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
-            n3 = Newton(new_system_with_error)
-            # print(x0)
-            print(n3.GaussNewton(x0, tolerance))
-            skekkjusafn.append(point_diff(x0, n3.GaussNewton(x0, tolerance)))
-            print(str(oft) + " , " + str(i))
+
+            n6 = Newton(new_system_with_error)
+
+            #print("Staðsetning með error " + str(n6.GaussNewton(x0, tolerance)))
+            mismunur = point_diff(x0, n6.GaussNewton(x0, tolerance))*1000
+            if mismunur > 1000:
+                print(str(mismunur) + " er mismunurinn á skekkju númer - >" +str(i))
+                plot3d(new_system_with_error)
+            skekkjusafn.append(mismunur)
+            #print(str(oft) + " , " + str(i))
 
     if plot:
-        plt.style.use('fivethirtyeight')
-        plt.hist(skekkjusafn, bins=20, edgecolor='black', density=True)
-        plt.title('Means')
-        plt.xlabel('bins')
-        plt.ylabel('values')
-        # plt.tight_layout()
+        plt.hist(skekkjusafn, bins=20, edgecolor='black')
+        #plt.tight_layout()
         # x = np.arange(0, 1, 0.0001)
         # x1 = stats.norm.pdf(x, 0.5, 1 / math.sqrt(12 * len(skekkjusafn)))
         # plt.plot(x, x1, linewidth=1, color="black")
