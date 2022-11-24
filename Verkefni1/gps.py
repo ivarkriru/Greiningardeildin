@@ -207,7 +207,8 @@ def spurning5(plot = True):
 random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
 
 def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
-    print("---- svar 6 ----- :")
+    if plot:
+        print("---- svar 6 ----- :")
     skekkjusafn = []
     for oft in range(0,sample_fjoldi):
         #if oft %100 == 0:
@@ -251,6 +252,7 @@ def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
     return skekkjusafn
 
 def spurning7(plot=True):
+    print("---- svar 7 ----- :")
     def bisection(f,a,b,tol):
         '''gert ráð fyrir að búið se að skilgreina f(x) fyrir utan t.d.
         def f(x):
@@ -281,8 +283,20 @@ def spurning7(plot=True):
 
 
 
+
 def spurning8(plot=True):
-    print("---- svar 8 ----- :")
+    if plot:
+        print("---- svar 8 ----- :")
+    start_tungl = 4
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    skekkjusafn = []
+    for i in range(start_tungl, start_tungl+2):
+        skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
+    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, start_tungl + 2)])
+    ax.set_xlabel("Fjöldi tungla")
+    ax.set_ylabel("skekkja[m]")
+    plt.show()
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
