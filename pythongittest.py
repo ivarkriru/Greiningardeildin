@@ -27,3 +27,5 @@ f = lambda x, y: pow(x,3) - 3*pow(x,2)*pow(y,2) + x*y + 1
 if __name__ == '__main__':
     tolerance = 0.01
     print(bisection(f,-4,0,tolerance))
+
+

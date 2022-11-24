@@ -272,13 +272,21 @@ if __name__ == '__main__':
     #spurning3()
     #spurning4()
     #spurning5()
-    spurning6()
+    #spurning6()
     #spurning7()
     #spurning8()
-    random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
-    satkerfi_fjoldi = 5
-    spurning9()
+   # random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
+    #satkerfi_fjoldi = 5
+    #spurning9()
 
     #plot3d(new_system)
 
-
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    u = np.linspace(0, 2 * np.pi, 100)
+    v = np.linspace(0, np.pi, 100)
+    x = 10 * np.outer(np.cos(u), np.sin(v))
+    y = 10 * np.outer(np.sin(u), np.sin(v))
+    z = 10 * np.outer(np.ones(np.size(u)), np.cos(v))
+    ax.plot_surface(x, y, z, rstride=4, cstride=4, color='b')
+    plt.show()
