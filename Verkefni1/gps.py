@@ -64,7 +64,9 @@ def plot3d(sys):
 
     for x in sys:
         ax.scatter(x[0], x[1], x[2], c='yellow', s=300)
-
+    ax.set_xlim(-constaltitude, constaltitude)
+    ax.set_ylim(-constaltitude, constaltitude)
+    ax.set_zlim(-constaltitude, constaltitude)
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
@@ -185,7 +187,7 @@ def spurning5(plot=True):
 
 
 # random sat positions hér svo hægt sé að nota í lið 7 og bera saman við lið 6
-random_sat_positions = np.array([[nyttSatPos(1) for _ in range(4)] for _ in range(8)])
+random_sat_positions = np.array([[nyttSatPos(1) for _ in range(4)] for _ in range(100)])
 
 
 def spurning6(plot=True):
@@ -193,13 +195,23 @@ def spurning6(plot=True):
     skekkjusafn = []
 
 
-    for oft in range(0,4):
+    for oft in range(0,100):
         new_skekkja = (oft + 1) * skekkja
         #new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
         new_sat_pos = random_sat_positions[oft]
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
         for i in range(16):
-            new_system_with_error = np.array([coords(sat[0] + new_skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - new_skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+            new_system_with_error = np.empty((0,4))
+            for index, sat in enumerate(new_sat_pos):
+                if i & (1 << index):
+                    new_phi = sat[0] + skekkja
+                    print("+ ", end="")
+                else:
+                    new_phi = sat[0] - skekkja
+                    print("- ", end="")
+                new_system_with_error = np.append(new_system_with_error, [coords(new_phi, sat[1])[:-1]], axis=0)
+
+            print()
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = Newton(new_system_with_error)
@@ -243,22 +255,15 @@ def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
 if __name__ == '__main__':
-    spurningarlisti = [
-    spurning1,
-    spurning2,
-    spurning3,
-    spurning4,
-    spurning5,
-    spurning6,
-    spurning7,
-    spurning8,
-    spurning9,
-    ]
-
-    hvada_spurningar_a_ad_keyra = [6]  # <<<
-    plot = True
-    for spurningu in hvada_spurningar_a_ad_keyra:
-        spurningarlisti[spurningu-1](plot=plot)
+    spurning1()
+    spurning2()
+    spurning3()
+    spurning4()
+    spurning5()
+    #spurning6()
+    #spurning7()
+    #spurning8()
+    #spurning9()
 
     #plot3d(new_system)
 
