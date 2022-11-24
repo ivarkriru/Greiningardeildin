@@ -1,3 +1,5 @@
+import statistics
+
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -22,7 +24,7 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 5
+satkerfi_fjoldi = 9
 sample_fjoldi = 100
 
 def point_diff(A,B):
@@ -208,8 +210,8 @@ def spurning6(plot=True):
     print("---- svar 6 ----- :")
     skekkjusafn = []
     for oft in range(0,sample_fjoldi):
-        if oft %10 == 0:
-            print(oft)
+        #if oft %100 == 0:
+        #    print(oft)
 
         new_sat_pos = random_sat_positions[oft]
 
@@ -226,18 +228,25 @@ def spurning6(plot=True):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n6 = Newton(new_system_with_error)
             mismunur = point_diff(x0, n6.GaussNewton(x0, tolerance))*1000
-            if mismunur > 0.005 * 2*100*1000:
+
+            #skoða skekkju outliers
+            if mismunur > 0.005 * 2*10 and plot and False:
                 print(str(mismunur) + " er mismunurinn á skekkju númer - >" +str(i))
                 plot3d(new_system_with_error)
+
             skekkjusafn.append(mismunur)
-        #print(str(oft) + " , " + str(i))
+
+    '''
+    print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+    print("meðalskekkjan er " + str(statistics.mean(skekkjusafn)))
+    print("min er " + str(min(skekkjusafn)))
+    print("max er " + str(max(skekkjusafn)))
+    print("milligildi er " + str(statistics.median(skekkjusafn)))
+    print("staðalfrávik er " + str(statistics.stdev(skekkjusafn)))
+    '''
 
     if plot:
         plt.hist(skekkjusafn, bins=20, edgecolor='black')
-        #plt.tight_layout()
-        # x = np.arange(0, 1, 0.0001)
-        # x1 = stats.norm.pdf(x, 0.5, 1 / math.sqrt(12 * len(skekkjusafn)))
-        # plt.plot(x, x1, linewidth=1, color="black")
         plt.show()
 
 def spurning7(plot=True):
