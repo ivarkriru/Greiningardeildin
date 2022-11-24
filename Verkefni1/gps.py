@@ -258,28 +258,43 @@ def spurning7(plot=True):
         def f(x):
             return(x**2-2)
         '''
-        if np.max(f(skekkja=a))*np.max(f(skekkja=b)) >= 0:
+        if (np.max(f(skekkja=a))-tol)*(np.max(f(skekkja=b))-tol) >= 0:
             print(a, b)
             print("Bisection method fails.")
             return None
         else:
-            fa = np.max(f(skekkja=a, plot=False))
-            while (b-a)/2>tol:
+            fa = np.max(f(skekkja=a, plot=False))-tol
+            print(a, b)
+            while abs((b-a)/2)>1e-30:
                 c = (a+b)/2
-                fc = np.max(f(skekkja=c, plot=False))
-                if fc == 0:
+                fc = np.max(f(skekkja=c, plot=False))-tol
+                if abs(fc) < tol/2:
+                    print(a,b,c)
                     break
                 if fc*fa < 0:
                     b = c
                 else:
                     a = c
                     fa = fc
-                print(a,b)
         return (a+b)/2
     a = 1e-8
-    b = 1e-30
+    b = 1e-16
     tol = 0.1  # [m]
-    print(bisection(spurning6, a, b, tol))
+    ideal_skekkja = (bisection(spurning6, b, a, tol))
+    print(ideal_skekkja)
+    print(np.max(spurning6(skekkja=ideal_skekkja)))
+    ii = []
+    vals = []
+    exit()
+    for i in range(0, 100, 10):
+        i = 1e-12 * i
+        ii.append(i)
+        vals.append(np.max(spurning6(plot=False, skekkja=i)))
+    print(ii)
+    print(vals)
+    plt.scatter(ii, vals)
+    plt.show()
+
 
 
 
