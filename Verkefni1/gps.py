@@ -257,13 +257,13 @@ def spurning8(plot=True):
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
-    # fig, ax = plt.subplots()
+    start_tungl = 5
     fig = plt.figure()
     ax = fig.add_subplot(111)
     skekkjusafn = []
-    for i in range(4,satkerfi_fjoldi+1, 1):
+    for i in range(start_tungl,satkerfi_fjoldi+1, 1):
         skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
-    ax.boxplot(skekkjusafn, positions=[i for i in range(4, satkerfi_fjoldi+1)])
+    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, satkerfi_fjoldi+1)])
     ax.set_xlabel("Fjöldi tungla")
     ax.set_ylabel("skekkja[m]")
     plt.show()
