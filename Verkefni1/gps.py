@@ -10,11 +10,11 @@ system = np.array([[15600, 7540, 20140, 0.07074],
                    [17610, 14630, 13480, 0.07690],
                    [19170, 610, 18390, 0.07242]])
 
-new_sat_pos = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ eða phi, theta
-                        (np.pi / 6, np.pi / 2),
-                        (3 * np.pi / 8, 2 * np.pi / 3),
-                        (np.pi / 4, np.pi / 6),
-                        ])
+sp3_initial_sat = np.array([(np.pi / 8, -np.pi / 4),  # φ, θ eða phi, theta
+                            (np.pi / 6, np.pi / 2),
+                            (3 * np.pi / 8, 2 * np.pi / 3),
+                            (np.pi / 4, np.pi / 6),
+                            ])
 c = 299792.458
 constaltitude = 26570
 earthaltitude = 6370
@@ -91,10 +91,10 @@ def spurning2():
 def spurning3():
     print("---- svar 3 ----- :")
 
-    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+    new_system = np.array([coords(*sat)[:-1] for sat in sp3_initial_sat])
     new_system_plus_skekkja = np.array(
         [coords(sat[0] + skekkja, sat[1])[:-1] if index < 2 else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in
-         enumerate(new_sat_pos)])
+         enumerate(sp3_initial_sat)])
 
     # setja réttan tíma á skekkjukerfið
     for index, sat_pos in enumerate(new_system):
@@ -112,85 +112,95 @@ def spurning3():
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " kílómetrar")
 def spurning4():
     print("---- svar 4 ----- :")
-    skekkja = 1e-8
-    upphafsgildi = np.array([0, 0, 6370, 0])
     list_of_positions = []
-    new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+    new_system = np.array([coords(*sat)[:-1] for sat in sp3_initial_sat])
+
     for i in range(16):
-        new_system_with_error = np.array(
-            [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1]
-             for index, sat in enumerate(new_sat_pos)])
-        # uncomment to verify if correct:
-        # new_systems_with_error = np.array([1 if (i & (1<<index))  else 0 for index, sat in enumerate(new_sat_pos)])
-        # print(new_systems_with_error)
-        for index, sat_pos in enumerate(new_system):
-            new_system_with_error[index][-1] = sat_pos[-1]
-        n3 = Newton(new_system_with_error)
-        list_of_positions.append(n3.GaussNewton(upphafsgildi, tolerance))
-    villu_positions = []
-    for index, position in enumerate(list_of_positions):
-        villu_positions.append(position)
-        # villa_new = abs(position[0]) + abs(position[1]) + abs((position[2] - earthaltitude)) + abs(position[3])
-    # plotta upp
-    #plt.scatter([i for i in range(16)], [point_diff(x0, position) for position in list_of_positions])
+        new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(sp3_initial_sat)])
 
-    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
-    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]) * 1000:.04f}m")
+        # setja réttan tíma á skekkjukerfið
+        for index, sat_pos in enumerate(new_system_with_error):
+            print(new_system_with_error[index][-1])
+            print(new_system[-1])
+            sat_pos[-1] = new_system[index][-1]
 
-    A_dreifing = [position[0] for position in list_of_positions]
-    B_dreifing = [position[1] for position in list_of_positions]
-    C_dreifing = [position[2] - earthaltitude for position in list_of_positions]
-    plt.plot(A_dreifing)
-    plt.plot(B_dreifing)
-    plt.plot(C_dreifing)
-    plt.show()
+        n4error = Newton(new_system_with_error)
+        list_of_positions.append(n4error.GaussNewton(x0, tolerance))
+    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]):.7f}")
+    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]):.7f}")
 def spurning5():
 
     print("---- svar 5 ----- :")
-    new_sat_pos = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
+
+    sp5_initial_sat = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],
                             [np.pi / 2, np.pi / 2],])
 
     '''
-    skekkja5 = 0.1
+    # búa til staðsetningu frá akkúrat sama stað, og breyta henni smá
+    skekkja5 = 1
+    #skekkja5 er scali fyrir breytinguna
     for i in range(4):
-        new_sat_pos[i][0] += (random.random()-.5) * skekkja5
-        new_sat_pos[i][1] += (random.random()-.5) * skekkja5
-    print(new_sat_pos)
+        sp5_initial_sat[i][0] += (random.random()-.5) * skekkja5
+        sp5_initial_sat[i][1] += (random.random()-.5) * skekkja5
+    print(sp5_initial_sat)
+
     '''
 
-    # skekkja = 0.1
     '''
-    new_sat_pos = np.array([ [[1.55285912 1.599031 ],
-                             [1.53712495 1.62040946],
-                             [1.57151953 1.61481681],
-                             [1.56491249 1.53779567]],])
+    # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 1
+    sp5_initial_sat = np.array([[1.52934999, 1.77616402],
+                                [1.64586837, 1.54972977],
+                                [1.23058977, 1.25151246],
+                                [1.76452598, 1.96492466], ])
+    
+
     '''
-    # skekkja = 0.01
-    new_sat_pos = np.array([ [1.57098865 ,1.57282701],
-                             [1.57508225 ,1.57233899],
-                             [1.5707446  ,1.56733488],
-                             [1.56586073 ,1.56823521],])
+    # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.1
+    sp5_initial_sat = np.array([ [1.55285912, 1.599031  ],
+                                 [1.53712495, 1.62040946],
+                                 [1.57151953, 1.61481681],
+                                 [1.56491249, 1.53779567],])
+    '''
 
-    n5system = [coords(phi, theta)[:-1] for phi, theta in new_sat_pos]
+    # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.01
+    sp5_initial_sat = np.array([ [1.57098865 ,1.57282701],
+                                 [1.57508225 ,1.57233899],
+                                 [1.5707446  ,1.56733488],
+                                 [1.56586073 ,1.56823521],])
+    '''
 
-    n5 = Newton(n5system)
+
+    n5system = [coords(phi, theta)[:-1] for phi, theta in sp5_initial_sat]
+
+    for x in sp5_initial_sat:
+        x[0] = x[0] + random.randrange(-1,2,2)*skekkja
+
+    n5systemsat_med_skekkju = sp5_initial_sat
+
+    n5system_skekkju = [coords(phi, theta)[:-1] for phi, theta in n5systemsat_med_skekkju]
+
+    # set inn tímanna án skekkjunnar
+    for index, sat_pos in enumerate(n5system):
+        n5system_skekkju[index][-1] = sat_pos[-1]
+
+
+    n5 = Newton(n5system_skekkju)
 
     plot3d(n5.system)
     print(n5.GaussNewton(x0, tolerance))
-    print(point_diff(x0,n5.GaussNewton(x0, tolerance)))
-
+    print(f"Skekkja: {point_diff(x0,n5.GaussNewton(x0, tolerance)):.7f}")
 def spurning6():
     print("---- svar 6 ----- :")
     skekkjusafn = []
-
 
     for oft in range(0,5):
         new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
         for i in range(16):
             new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n3 = Newton(new_system_with_error)
@@ -209,7 +219,6 @@ def spurning6():
     x1 = stats.norm.pdf(x, 0.5, 1 / math.sqrt(12 * len(skekkjusafn)))
     plt.plot(x, x1, linewidth=1, color="black")
     plt.show()
-
 def spurning7():
     print("---- svar 7 ----- :")
 def spurning8():
@@ -218,12 +227,12 @@ def spurning9():
     print("---- svar 9 ----- :")
 
 if __name__ == '__main__':
-    spurning1()
-    spurning2()
-    spurning3()
-    spurning4()
-    spurning5()
-    #spurning6()
+    #spurning1()
+    #spurning2()
+    #spurning3()
+    #spurning4()
+    #spurning5()
+    spurning6()
     #spurning7()
     #spurning8()
     #spurning9()
