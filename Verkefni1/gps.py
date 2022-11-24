@@ -238,7 +238,16 @@ def spurning6(plot=True):
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
 
         for i in range(16):
-            new_system_with_error = np.array([coords(sat[0] + new_skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - new_skekkja, sat[1])[:-1] for index, sat in enumerate(new_sat_pos)])
+            new_system_with_error = np.empty((0,4))
+            for index, sat in enumerate(new_sat_pos):
+                if i & (1 << index):
+                    new_phi = sat[0] + skekkja
+                    print("+ ", end="")
+                else:
+                    new_phi = sat[0] - skekkja
+                    print("- ", end="")
+                new_system_with_error = np.append(new_system_with_error, [coords(new_phi, sat[1])[:-1]], axis=0)
+
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
 
