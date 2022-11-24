@@ -206,14 +206,14 @@ def spurning5(plot = True):
 
 random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
 
-def spurning6(plot=True):
+def spurning6(plot=True, calculate_sats=4):
     print("---- svar 6 ----- :")
     skekkjusafn = []
     for oft in range(0,sample_fjoldi):
         #if oft %100 == 0:
         #    print(oft)
 
-        new_sat_pos = random_sat_positions[oft]
+        new_sat_pos = random_sat_positions[oft][:calculate_sats]
 
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
         for i in range(16):
@@ -248,6 +248,7 @@ def spurning6(plot=True):
     if plot:
         plt.hist(skekkjusafn, bins=20, edgecolor='black')
         plt.show()
+    return skekkjusafn
 
 def spurning7(plot=True):
     print("---- svar 7 ----- :")
@@ -255,6 +256,15 @@ def spurning8(plot=True):
     print("---- svar 8 ----- :")
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
+
+    fig, ax = plt.subplots()
+    skekkjusafn = []
+    for i in range(4,10, 1):
+        skekkjusafn.append([spurning6(plot=False, calculate_sats=i)])
+    print(len(skekkjusafn), len(skekkjusafn[0]))
+    ax.boxplot(skekkjusafn)
+
+    plt.show()
 
 if __name__ == '__main__':
     #spurning1()
@@ -265,7 +275,9 @@ if __name__ == '__main__':
     spurning6()
     #spurning7()
     #spurning8()
-    #spurning9()
+    random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
+    satkerfi_fjoldi = 5
+    spurning9()
 
     #plot3d(new_system)
 
