@@ -257,13 +257,15 @@ def spurning8(plot=True):
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
-    fig, ax = plt.subplots()
+    # fig, ax = plt.subplots()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
     skekkjusafn = []
-    for i in range(4,10, 1):
-        skekkjusafn.append([spurning6(plot=False, calculate_sats=i)])
-    print(len(skekkjusafn), len(skekkjusafn[0]))
-    ax.boxplot(skekkjusafn)
-
+    for i in range(4,satkerfi_fjoldi+1, 1):
+        skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
+    ax.boxplot(skekkjusafn, positions=[i for i in range(4, satkerfi_fjoldi+1)])
+    ax.set_xlabel("Fjöldi tungla")
+    ax.set_ylabel("skekkja[m]")
     plt.show()
 
 if __name__ == '__main__':
@@ -272,11 +274,9 @@ if __name__ == '__main__':
     #spurning3()
     #spurning4()
     #spurning5()
-    spurning6()
+    spurning6(plot=False)
     #spurning7()
     #spurning8()
-    random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
-    satkerfi_fjoldi = 5
     spurning9()
 
     #plot3d(new_system)
