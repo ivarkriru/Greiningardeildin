@@ -22,6 +22,8 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
+satkerfi_fjoldi = 4
+sample_fjoldi = 100
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
@@ -39,7 +41,9 @@ def coords(phi, theta, altitude=constaltitude):
     else:
         return "incorrect values"
 
-def plot3d(sys):
+def plot3d(sys,halfur=0):
+    if halfur != 1:
+        halfur = 0.5
     fig = plt.figure()
 
     # syntax for 3-D projection
@@ -51,7 +55,7 @@ def plot3d(sys):
     # defining all 3 axes
     takmark = 300
     for x in range(0, takmark):
-        svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
+        svar = coords((x * 113) % (math.pi*halfur), (x * 7) % math.pi * 2, earthaltitude)
         xhnit.append(svar[0])
         yhnit.append(svar[1])
         zhnit.append(svar[2])
@@ -71,12 +75,14 @@ def plot3d(sys):
     ax.set_box_aspect((1, 1, 1))
     plt.show()
 
-def nyttSatPos(pol=0):
-    nytt_loc = coords(math.pi*random.random(), random.random()*10000, constaltitude)
+def nyttSatPos(pol=0,halfur=0):
+    if halfur != 1:
+        halfur = 0.5
     if pol==1:
-        return np.array([math.pi*random.random(), random.random()*10000, constaltitude])
+        return np.array([math.pi*halfur*random.random(), random.random()*10000, constaltitude])
     global sat_teljari
     sat_teljari = sat_teljari + 1
+    nytt_loc = coords(math.pi*halfur * random.random(), random.random() * 10000, constaltitude)
     print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
     return nytt_loc
 
@@ -195,71 +201,36 @@ def spurning5(plot = True):
         plot3d(n5.system)
     print(n5.GaussNewton(x0, tolerance))
     print(f"Skekkja: {point_diff(x0,n5.GaussNewton(x0, tolerance)):.7f}")
-random_sat_positions = np.array([[nyttSatPos(1) for _ in range(4)] for _ in range(100)])
+
+random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
 
 def spurning6(plot=True):
     print("---- svar 6 ----- :")
     skekkjusafn = []
-
-    for oft in range(0, 10000):
-        if oft %100 == 0:
+    for oft in range(0,sample_fjoldi):
+        if oft %10 == 0:
             print(oft)
-        new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
 
-    for oft in range(0,100):
-        new_skekkja = (oft + 1) * skekkja
-        #new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
         new_sat_pos = random_sat_positions[oft]
+
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
         for i in range(16):
             new_system_with_error = np.empty((0,4))
             for index, sat in enumerate(new_sat_pos):
                 if i & (1 << index):
                     new_phi = sat[0] + skekkja
-                    print("+ ", end="")
                 else:
                     new_phi = sat[0] - skekkja
-                    print("- ", end="")
                 new_system_with_error = np.append(new_system_with_error, [coords(new_phi, sat[1])[:-1]], axis=0)
-
-            print()
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
-            n3 = Newton(new_system_with_error)
-            # print(x0)
-            print(n3.GaussNewton(x0, tolerance))
-            skekkjusafn.append(point_diff(x0, n3.GaussNewton(x0, tolerance)))
-            print(str(oft) + " , " + str(i))
-    # repeat with new error
-    for oft in range(4,8):
-        new_skekkja = (-oft - 1) * skekkja
-        #new_sat_pos = np.array([nyttSatPos(1),nyttSatPos(1),nyttSatPos(1),nyttSatPos(1)])
-        new_sat_pos = random_sat_positions[oft]
-        new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
-
-        for i in range(16):
-            new_system_with_error = np.empty((0,4))
-            for index, sat in enumerate(new_sat_pos):
-                if i & (1 << index):
-                    new_phi = sat[0] + skekkja
-                    print("+ ", end="")
-                else:
-                    new_phi = sat[0] - skekkja
-                    print("- ", end="")
-                new_system_with_error = np.append(new_system_with_error, [coords(new_phi, sat[1])[:-1]], axis=0)
-
-            for index, sat_pos in enumerate(new_system):
-                new_system_with_error[index][-1] = sat_pos[-1]
-
             n6 = Newton(new_system_with_error)
-
-            #print("Staðsetning með error " + str(n6.GaussNewton(x0, tolerance)))
             mismunur = point_diff(x0, n6.GaussNewton(x0, tolerance))*1000
-            if mismunur > 1000:
+            if mismunur > 0.005 * 2*100*1000:
                 print(str(mismunur) + " er mismunurinn á skekkju númer - >" +str(i))
                 plot3d(new_system_with_error)
             skekkjusafn.append(mismunur)
-            #print(str(oft) + " , " + str(i))
+        #print(str(oft) + " , " + str(i))
 
     if plot:
         plt.hist(skekkjusafn, bins=20, edgecolor='black')
