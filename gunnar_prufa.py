@@ -43,3 +43,8 @@ def manual_sphere(image_file):
     # caveat 2: if prevent_seam is 1 (default), half the image is used to map half the sphere
     cylinder_mapper.prevent_seam = 0 # use 360 degrees, might cause seam but no fake data
     #cylinder_mapper.center = np.array([0,0,0])  # set non-trivial center for the mapping sphere if necessary
+
+    if __name__ == "__main__":
+        image_file = 'blue_marble.jpg'
+        mpl_sphere(image_file)
+        plt.show()
