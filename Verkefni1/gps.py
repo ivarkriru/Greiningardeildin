@@ -25,10 +25,12 @@ x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
 satkerfi_fjoldi = 9
-sample_fjoldi = 100
+sample_fjoldi = 10
 
-def point_diff(A,B):
+
+def point_diff(A, B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
+
 
 def coords(phi, theta, altitude=constaltitude):
     if 0 <= phi <= math.pi:
@@ -43,7 +45,8 @@ def coords(phi, theta, altitude=constaltitude):
     else:
         return "incorrect values"
 
-def plot3d(sys,halfur=0):
+
+def plot3d(sys, halfur=0):
     if halfur != 1:
         halfur = 0.5
     fig = plt.figure()
@@ -57,7 +60,7 @@ def plot3d(sys,halfur=0):
     # defining all 3 axes
     takmark = 300
     for x in range(0, takmark):
-        svar = coords((x * 113) % (math.pi*halfur), (x * 7) % math.pi * 2, earthaltitude)
+        svar = coords((x * 113) % (math.pi * halfur), (x * 7) % math.pi * 2, earthaltitude)
         xhnit.append(svar[0])
         yhnit.append(svar[1])
         zhnit.append(svar[2])
@@ -77,16 +80,18 @@ def plot3d(sys,halfur=0):
     ax.set_box_aspect((1, 1, 1))
     plt.show()
 
-def nyttSatPos(pol=0,halfur=0):
+
+def nyttSatPos(pol=0, halfur=0):
     if halfur != 1:
         halfur = 0.5
-    if pol==1:
-        return np.array([math.pi*halfur*random.random(), random.random()*10000, constaltitude])
+    if pol == 1:
+        return np.array([math.pi * halfur * random.random(), random.random() * 10000, constaltitude])
     global sat_teljari
     sat_teljari = sat_teljari + 1
-    nytt_loc = coords(math.pi*halfur * random.random(), random.random() * 10000, constaltitude)
+    nytt_loc = coords(math.pi * halfur * random.random(), random.random() * 10000, constaltitude)
     print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
     return nytt_loc
+
 
 def spurning1(plot=True):
     n = Newton(system)
@@ -94,10 +99,13 @@ def spurning1(plot=True):
     print("---- svar 1 ----- :")
     print("X: " + '%.6f' % svar[0] + " Y: " + '%.6f' % svar[1] + " Z: " + '%.6f' % svar[2] + " d: " + '%.6f' % svar[3])
 
+
 def spurning2(plot=True):
     svar_coords = coords(0, 0)
     print("---- svar 2 ----- :")
-    print(f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
+    print(
+        f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
+
 
 def spurning3(plot=True):
     print("---- svar 3 ----- :")
@@ -122,13 +130,16 @@ def spurning3(plot=True):
         2] + " d: " + '%.6f' % svarmed[3])
     print("Skekkjan sjálf : " + '%.6f' % point_diff(svaran, svarmed) + " kílómetrar")
 
+
 def spurning4(plot=True):
     print("---- svar 4 ----- :")
     list_of_positions = []
     new_system = np.array([coords(*sat)[:-1] for sat in sp3_initial_sat])
 
     for i in range(16):
-        new_system_with_error = np.array([coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for index, sat in enumerate(sp3_initial_sat)])
+        new_system_with_error = np.array(
+            [coords(sat[0] + skekkja, sat[1])[:-1] if i & (1 << index) else coords(sat[0] - skekkja, sat[1])[:-1] for
+             index, sat in enumerate(sp3_initial_sat)])
         # setja réttan tíma á skekkjukerfið
         for index, sat_pos in enumerate(new_system_with_error):
             print(new_system_with_error[index][-1])
@@ -140,14 +151,14 @@ def spurning4(plot=True):
     print(f"max: {max([point_diff(x0, position) for position in list_of_positions]):.7f}")
     print(f"min: {min([point_diff(x0, position) for position in list_of_positions]):.7f}")
 
-def spurning5(plot = True):
 
+def spurning5(plot=True):
     print("---- svar 5 ----- :")
 
     sp5_initial_sat = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
-                            [np.pi / 2, np.pi / 2],
-                            [np.pi / 2, np.pi / 2],
-                            [np.pi / 2, np.pi / 2],])
+                                [np.pi / 2, np.pi / 2],
+                                [np.pi / 2, np.pi / 2],
+                                [np.pi / 2, np.pi / 2], ])
 
     '''
     # búa til staðsetningu frá akkúrat sama stað, og breyta henni smá
@@ -166,14 +177,14 @@ def spurning5(plot = True):
                                 [1.64586837, 1.54972977],
                                 [1.23058977, 1.25151246],
                                 [1.76452598, 1.96492466], ])
-    
+
 
     '''
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.1
-    sp5_initial_sat = np.array([ [1.55285912, 1.599031  ],
-                                 [1.53712495, 1.62040946],
-                                 [1.57151953, 1.61481681],
-                                 [1.56491249, 1.53779567],])
+    sp5_initial_sat = np.array([[1.55285912, 1.599031],
+                                [1.53712495, 1.62040946],
+                                [1.57151953, 1.61481681],
+                                [1.56491249, 1.53779567], ])
     '''
 
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.01
@@ -183,11 +194,10 @@ def spurning5(plot = True):
                                  [1.56586073 ,1.56823521],])
     '''
 
-
     n5system = [coords(phi, theta)[:-1] for phi, theta in sp5_initial_sat]
 
     for x in sp5_initial_sat:
-        x[0] = x[0] + random.randrange(-1,2,2)*skekkja
+        x[0] = x[0] + random.randrange(-1, 2, 2) * skekkja
 
     n5systemsat_med_skekkju = sp5_initial_sat
 
@@ -197,28 +207,29 @@ def spurning5(plot = True):
     for index, sat_pos in enumerate(n5system):
         n5system_skekkju[index][-1] = sat_pos[-1]
 
-
     n5 = Newton(n5system_skekkju)
     if plot:
         plot3d(n5.system)
     print(n5.GaussNewton(x0, tolerance))
-    print(f"Skekkja: {point_diff(x0,n5.GaussNewton(x0, tolerance)):.7f}")
+    print(f"Skekkja: {point_diff(x0, n5.GaussNewton(x0, tolerance)):.7f}")
+
 
 random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
+
 
 def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
     if plot:
         print("---- svar 6 ----- :")
     skekkjusafn = []
-    for oft in range(0,sample_fjoldi):
-        #if oft %100 == 0:
+    for oft in range(0, sample_fjoldi):
+        # if oft %100 == 0:
         #    print(oft)
 
         new_sat_pos = random_sat_positions[oft][:calculate_sats]
 
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
         for i in range(16):
-            new_system_with_error = np.empty((0,4))
+            new_system_with_error = np.empty((0, 4))
             for index, sat in enumerate(new_sat_pos):
                 if i & (1 << index):
                     new_phi = sat[0] + skekkja
@@ -228,11 +239,11 @@ def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
             for index, sat_pos in enumerate(new_system):
                 new_system_with_error[index][-1] = sat_pos[-1]
             n6 = Newton(new_system_with_error)
-            mismunur = point_diff(x0, n6.GaussNewton(x0, tolerance))*1000
+            mismunur = point_diff(x0, n6.GaussNewton(x0, tolerance)) * 1000
 
-            #skoða skekkju outliers
-            if mismunur > 0.005 * 2*10 and plot and False:
-                print(str(mismunur) + " er mismunurinn á skekkju númer - >" +str(i))
+            # skoða skekkju outliers
+            if mismunur > 0.005 * 2 * 10 and plot and True:
+                print(str(mismunur) + " er mismunurinn á skekkju númer - >" + str(i))
                 plot3d(new_system_with_error)
 
             skekkjusafn.append(mismunur)
@@ -246,34 +257,38 @@ def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
     print("staðalfrávik er " + str(statistics.stdev(skekkjusafn)))
     '''
 
-    if plot:
-        plt.hist(skekkjusafn, bins=20, edgecolor='black')
-        plt.show()
+#    if plot:
+#        plt.hist(skekkjusafn, bins=20, edgecolor='black')
+#        plt.show()
     return skekkjusafn
+
 
 def spurning7(plot=True):
     print("---- svar 7 ----- :")
-    def bisection(f,a,b,tol, hlidrun=0.1):
-        if (np.max(f(skekkja=a))-hlidrun)*(np.max(f(skekkja=b))-hlidrun) >= 0:
+    def bisecfall(skekkja):
+        return np.max(spurning6(skekkja=skekkja)) - 0.1
+    def bisection(f, a, b, tol, hlidrun=0.1):
+        if f(a) * f(b) >= 0:
             print("Bisection method fails.")
             return None
         else:
-            fa = np.max(f(skekkja=a))-hlidrun
-            while (b-a)/2 > tol:
-                c = (a+b)/2
-                fc = np.max(f(skekkja=c))-hlidrun
+            fa = f(a)
+            while (b - a) / 2 > tol:
+                c = (a + b) / 2
+                fc = f(c)
                 if fc == 0:
                     break
-                if fc * fa<0:
+                if fc * fa < 0:
                     b = c
                 else:
                     a = c
                     fa = fc
-        return (a+b)/2
+        return (a + b) / 2
+
     b = 1e-8
     a = 1e-12
     tol = 0.1  # [m]
-    ideal_skekkja = (bisection(spurning6, a, b, 1e-12))
+    ideal_skekkja = (bisection(bisecfall, a, b, 1e-12))
     print(ideal_skekkja)
     print(np.max(spurning6(skekkja=ideal_skekkja)))
     ii = []
@@ -289,9 +304,6 @@ def spurning7(plot=True):
     plt.show()
 
 
-
-
-
 def spurning8(plot=True):
     if plot:
         print("---- svar 8 ----- :")
@@ -299,12 +311,14 @@ def spurning8(plot=True):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     skekkjusafn = []
-    for i in range(start_tungl, start_tungl+2):
+    for i in range(start_tungl, start_tungl + 2):
         skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
     ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, start_tungl + 2)])
     ax.set_xlabel("Fjöldi tungla")
     ax.set_ylabel("skekkja[m]")
     plt.show()
+
+
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
@@ -312,42 +326,42 @@ def spurning9(plot=True):
     fig = plt.figure()
     ax = fig.add_subplot(111)
     skekkjusafn = []
-    for i in range(start_tungl,satkerfi_fjoldi+1, 1):
+    for i in range(start_tungl, satkerfi_fjoldi + 1, 1):
         skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
-    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, satkerfi_fjoldi+1)])
+    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, satkerfi_fjoldi + 1)])
     ax.set_xlabel("Fjöldi tungla")
     ax.set_ylabel("skekkja[m]")
     plt.show()
 
+
 if __name__ == '__main__':
-    #spurning1()
-    #spurning2()
-    #spurning3()
-    #spurning4()
-    #spurning5()
-    #spurning6(plot=False)
+    # spurning1()
+    # spurning2()
+    # spurning3()
+    # spurning4()
+    # spurning5()
+    # spurning6(plot=False)
     spurning7()
-    #spurning8()
-    #spurning9()
+    # spurning8()
+    # spurning9()
 
-    #plot3d(new_system)
+    # plot3d(new_system)
 
 
-def bisection(f,a,b,tol):
-    if f(a)*f(b) >= 0:
+def bisection(f, a, b, tol):
+    if f(a) * f(b) >= 0:
         print("Bisection method fails.")
         return None
     else:
         fa = f(a)
-        while (b-a)/2 > tol:
-            c = (a+b)/2
+        while (b - a) / 2 > tol:
+            c = (a + b) / 2
             fc = f(c)
             if fc == 0:
                 break
-            if fc * fa<0:
+            if fc * fa < 0:
                 b = c
             else:
                 a = c
                 fa = fc
-    return (a+b)/2
-
+    return (a + b) / 2
