@@ -5,6 +5,7 @@ import math
 import matplotlib.pyplot as plt
 import random
 from newton import Newton
+import time
 from scipy import stats as stats
 
 system = np.array([[15600, 7540, 20140, 0.07074],
@@ -69,7 +70,7 @@ def plot3d(sys,halfur=0):
     ax.set_title('3D line plot geeks for geeks')
 
     for x in sys:
-        ax.scatter(x[0], x[1], x[2], c='yellow', s=300)
+        ax.scatter(x[0], x[1], x[2], s=100)
     ax.set_xlim(-constaltitude, constaltitude)
     ax.set_ylim(-constaltitude, constaltitude)
     ax.set_zlim(-constaltitude, constaltitude)
@@ -78,6 +79,7 @@ def plot3d(sys,halfur=0):
     plt.show()
 
 def nyttSatPos(pol=0,halfur=0):
+    random.seed(time.time())
     if halfur != 1:
         halfur = 0.5
     if pol==1:
@@ -321,6 +323,47 @@ def spurning9(plot=True):
 
 
 def spurning10():
+    def plot3d10(sys,halfur=0):
+        if halfur != 1:
+            halfur = 0.5
+        fig = plt.figure()
+
+        # syntax for 3-D projection
+        ax = plt.axes(projection='3d')
+        xhnit = []
+        yhnit = []
+        zhnit = []
+
+        # defining all 3 axes
+        takmark = 300
+        for x in range(0, takmark):
+            svar = coords((x * 113) % (math.pi*2), (x * 7) % math.pi * 2, earthaltitude)
+            xhnit.append(svar[0])
+            yhnit.append(svar[1])
+            zhnit.append(svar[2])
+
+        # plotting
+        n = Newton(sys)
+        #ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
+        ax.scatter(0,0,0, c='blue', s=earthaltitude/2, alpha=0.3)
+        tolerance = 0.01
+        ax.set_title('3D line plot geeks for geeks')
+        for sy in sys:
+            ax.line(sy[0], sy[1], sy[2], s=100)
+        ax.set_xlim(-constaltitude, constaltitude)
+        ax.set_ylim(-constaltitude, constaltitude)
+        ax.set_zlim(-constaltitude, constaltitude)
+        ax.set_proj_type('ortho')
+        ax.set_box_aspect((1, 1, 1))
+        plt.show()
+    def nyttSatPos10(pol=0, halfur=1):
+        if pol==1:
+            return np.array([2*np.pi*random.random(), 2*np.pi*random.random(), constaltitude])
+        global sat_teljari
+        sat_teljari = sat_teljari + 1
+        nytt_loc = coords(math.pi*halfur * random.random(), random.random() * 10000, constaltitude)
+        print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
+        return nytt_loc
     skekkja = 1e-7
     def coords10(phi, theta, position, altitude=constaltitude):
         A = altitude * np.sin(phi) * np.cos(theta)
@@ -331,9 +374,17 @@ def spurning10():
         time = distance / c
 
         return [A, B, C, time]
+
     def get_position_abc(index):
-        return [0, np.sin(np.pi/180*index)*earthaltitude, np.cos(np.pi/180*index)*earthaltitude, 0]
-    def new_system_with_skekkja(index: int, position, initial_sat_pos=sp3_initial_sat, skekkja=skekkja):
+        coordinates = coords10(np.pi/180*index, 0, [0, 0, 0], altitude=earthaltitude)  # theta er 0
+        coordinates[-1] = 0  # setja d = 0
+        return np.array(coordinates), (np.pi/180*index, 0)
+        # return [0, np.sin(np.pi/180*index)*earthaltitude, np.cos(np.pi/180*index)*earthaltitude, 0]
+
+    def get_position_phi_theta(index):
+        return np.pi/180*index, np.pi/180*index
+
+    def new_system_with_skekkja(index: int, position, initial_sat_pos=sp3_initial_sat, skekkja_=skekkja):
         new_sat_pos = initial_sat_pos
 
         # tungl á að ferðast 30° á unit, er rétt að bæta við 15° og 15° við hvort?
@@ -341,10 +392,10 @@ def spurning10():
 
         new_system = np.array([coords10(*sat, position) for sat in new_sat_pos])
 
-        new_system_with_error = np.array([coords10(sat[0] + skekkja, sat[1], position) if 12 & (1 << index) else coords10(sat[0] - skekkja, sat[1], position) for index, sat in enumerate(new_sat_pos)])
+        new_system_with_error = np.array([coords10(sat[0] + skekkja_, sat[1], position) if 12 & (1 << index) else coords10(sat[0] - skekkja_, sat[1], position) for index, sat in enumerate(new_sat_pos)])
         for index, sat_pos in enumerate(new_system):
             new_system_with_error[index][-1] = sat_pos[-1]
-        return new_system_with_error
+        return new_system_with_error, new_sat_pos
         # tekur inn index og skilar nýrri staðsetningu á gervitunglum með fastri skekkju !!! kannski breytilegri skekkju síðar
 
 
@@ -355,13 +406,46 @@ def spurning10():
     # gerum ráð fyrir að við ferðumst 10000km á 90klst ~= 111km/h,  eitt hopp sé 1 klst
     # eitt tungl ferðast 14000km/h, sem er ca 30°
     # gerum ráð fyrir að merkið berist í gegnum jörðina til að byrja með
-    for i in range(0, 90):
-        earth_location = np.array(get_position_abc(i))
-        new_sys = new_system_with_skekkja(i, earth_location, skekkja=skekkja)
+    satkerfi_fjoldi10 = 4
+    new_random_sat_positions = np.array([nyttSatPos10(pol=1, halfur=2) for _ in range(satkerfi_fjoldi10)])
+    counter  = 0
+    # for i in range(0, 91):
+    systems = []
+    for i in range(0, 10):
+        okkar_location, okkar_polar_hnit = get_position_abc(i)
+        print(okkar_location, okkar_polar_hnit)
+        new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)
+        if i == 0:
+            systems.append(new_sys)
+        else:
+            systems.append(new_sys)
+
+        # trimma new_sys ef við sjáum ekki tunglin
+        # theta er alltaf 0
+        exclude_sats = []
+        for index, sat in enumerate(sat_polar_hnit):
+
+            phi = okkar_polar_hnit[0]
+            phi_sat = np.arcsin(np.sin(sat[0])) - phi
+
+            if np.cos(sat[1]) < 0:  # ef kósínusinn á sat_theta er <0
+                exclude_sats.append(index)
+            elif np.cos(phi_sat) < 0:
+                exclude_sats.append(index)
+
+        print(exclude_sats)
+        # if len(exclude_sats) > satkerfi_fjoldi10 - 4:
+        #     counter += 1
+        #     plot3d(new_sys)
+        #     break
+        #     #plot3d(new_sys)
+
         n10 = Newton(new_sys)
-        print(point_diff(n10.GaussNewton(earth_location, 0.1), earth_location)*1000)
+        print(point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000)
         # todo: búa til 3d plot animation
-        #plot3d(new_sys)
+    print(counter)
+    print(systems)
+    plot3d(systems, halfur=1)
 
 
 
