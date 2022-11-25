@@ -319,6 +319,53 @@ def spurning9(plot=True):
     ax.set_ylabel("skekkja[m]")
     plt.show()
 
+
+def spurning10():
+    skekkja = 1e-7
+    def coords10(phi, theta, position, altitude=constaltitude):
+        A = altitude * np.sin(phi) * np.cos(theta)
+        B = altitude * np.sin(phi) * np.sin(theta)
+        C = altitude * np.cos(phi)
+        # distance = numpy.sqrt(numpy.power((A-0),2)+numpy.power((B-0),2)+numpy.power((C-6370),2))
+        distance = np.sqrt((A - position[0]) ** 2 + (B - position[1]) ** 2 + (C - position[2]) ** 2)
+        time = distance / c
+
+        return [A, B, C, time]
+    def get_position_abc(index):
+        return [0, np.sin(np.pi/180*index)*earthaltitude, np.cos(np.pi/180*index)*earthaltitude, 0]
+    def new_system_with_skekkja(index: int, position, initial_sat_pos=sp3_initial_sat, skekkja=skekkja):
+        new_sat_pos = initial_sat_pos
+
+        # tungl á að ferðast 30° á unit, er rétt að bæta við 15° og 15° við hvort?
+        new_sat_pos = [[sat[0]+ np.pi/12*index, sat[1] + np.pi/12*index] for sat in new_sat_pos]
+
+        new_system = np.array([coords10(*sat, position) for sat in new_sat_pos])
+
+        new_system_with_error = np.array([coords10(sat[0] + skekkja, sat[1], position) if 12 & (1 << index) else coords10(sat[0] - skekkja, sat[1], position) for index, sat in enumerate(new_sat_pos)])
+        for index, sat_pos in enumerate(new_system):
+            new_system_with_error[index][-1] = sat_pos[-1]
+        return new_system_with_error
+        # tekur inn index og skilar nýrri staðsetningu á gervitunglum með fastri skekkju !!! kannski breytilegri skekkju síðar
+
+
+    # þetta á að simulera ferðalag frá norðurpól á miðbaug
+    # einhversstaðar á leiðinni á eitt tungl að bila, annaðhvort tíminn að byrja að drifta eða hoppa í tíma
+    # eftir einhvern tíma þá á bilaða tunglið að verða tekið út og hætta að senda merki
+    # plotta upp meðalskekkju á leiðinni, etv. plotta staðsetningu á hnetti með kúlum þar sem stærð kúlu sýnir mestu eða meðalskekkju
+    # gerum ráð fyrir að við ferðumst 10000km á 90klst ~= 111km/h,  eitt hopp sé 1 klst
+    # eitt tungl ferðast 14000km/h, sem er ca 30°
+    # gerum ráð fyrir að merkið berist í gegnum jörðina til að byrja með
+    for i in range(0, 90):
+        earth_location = np.array(get_position_abc(i))
+        new_sys = new_system_with_skekkja(i, earth_location, skekkja=skekkja)
+        n10 = Newton(new_sys)
+        print(point_diff(n10.GaussNewton(earth_location, 0.1), earth_location)*1000)
+        # todo: búa til 3d plot animation
+        #plot3d(new_sys)
+
+
+
+
 if __name__ == '__main__':
     #spurning1()
     #spurning2()
@@ -326,28 +373,9 @@ if __name__ == '__main__':
     #spurning4()
     #spurning5()
     #spurning6(plot=False)
-    spurning7()
+    #spurning7()
     #spurning8()
     #spurning9()
+    spurning10()
 
     #plot3d(new_system)
-
-
-def bisection(f,a,b,tol):
-    if f(a)*f(b) >= 0:
-        print("Bisection method fails.")
-        return None
-    else:
-        fa = f(a)
-        while (b-a)/2 > tol:
-            c = (a+b)/2
-            fc = f(c)
-            if fc == 0:
-                break
-            if fc * fa<0:
-                b = c
-            else:
-                a = c
-                fa = fc
-    return (a+b)/2
-
