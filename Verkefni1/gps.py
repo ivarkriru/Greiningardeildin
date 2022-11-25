@@ -5,6 +5,7 @@ import math
 import matplotlib.pyplot as plt
 import random
 from newton import Newton
+from newton import bisection
 from scipy import stats as stats
 
 system = np.array([[15600, 7540, 20140, 0.07074],
@@ -242,7 +243,7 @@ def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
             mismunur = point_diff(x0, n6.GaussNewton(x0, tolerance)) * 1000
 
             # skoða skekkju outliers
-            if mismunur > 0.005 * 2 * 10 and plot and True:
+            if mismunur > 0.005 * 2 * 10 and plot and False:
                 print(str(mismunur) + " er mismunurinn á skekkju númer - >" + str(i))
                 plot3d(new_system_with_error)
 
@@ -267,24 +268,6 @@ def spurning7(plot=True):
     print("---- svar 7 ----- :")
     def bisecfall(skekkja):
         return np.max(spurning6(skekkja=skekkja)) - 0.1
-    def bisection(f, a, b, tol, hlidrun=0.1):
-        if f(a) * f(b) >= 0:
-            print("Bisection method fails.")
-            return None
-        else:
-            fa = f(a)
-            while (b - a) / 2 > tol:
-                c = (a + b) / 2
-                fc = f(c)
-                if fc == 0:
-                    break
-                if fc * fa < 0:
-                    b = c
-                else:
-                    a = c
-                    fa = fc
-        return (a + b) / 2
-
     b = 1e-8
     a = 1e-12
     tol = 0.1  # [m]
@@ -347,21 +330,3 @@ if __name__ == '__main__':
 
     # plot3d(new_system)
 
-
-def bisection(f, a, b, tol):
-    if f(a) * f(b) >= 0:
-        print("Bisection method fails.")
-        return None
-    else:
-        fa = f(a)
-        while (b - a) / 2 > tol:
-            c = (a + b) / 2
-            fc = f(c)
-            if fc == 0:
-                break
-            if fc * fa < 0:
-                b = c
-            else:
-                a = c
-                fa = fc
-    return (a + b) / 2
