@@ -72,7 +72,18 @@ def plot3d(sys,halfur=0):
     ax.set_title('3D line plot geeks for geeks')
 
     for x in sys:
-        ax.scatter(x[0], x[1], x[2], s=100)
+        print(x[0])
+            #ax.plot3D(system_[0], system_[1], system_[2])
+    #for i in range(len(sys)):
+    #    x = []
+    #    y = []
+    #    z = []
+    #    for j in range(len(sys[0])):
+    #        x.append(sys[i][0][0])
+    #        y.append(sys[i][0][1])
+    #        z.append(sys[i][0][2])
+
+    ax.plot3D(x, y, z)
     ax.set_xlim(-constaltitude, constaltitude)
     ax.set_ylim(-constaltitude, constaltitude)
     ax.set_zlim(-constaltitude, constaltitude)
@@ -381,7 +392,8 @@ def spurning10():
         new_sat_pos = initial_sat_pos
 
         # tungl á að ferðast 30° á unit, er rétt að bæta við 15° og 15° við hvort?
-        new_sat_pos = [[sat[0]+ np.pi/12*index, sat[1] + np.pi/12*index] for sat in new_sat_pos]
+        #new_sat_pos = [[sat[0]+ np.pi/12*index, sat[1] + np.pi/12*index] for sat in new_sat_pos]
+        new_sat_pos = [[sat[0]+ np.pi/12*index, sat[1]] for sat in new_sat_pos]
 
         new_system = np.array([coords10(*sat, position) for sat in new_sat_pos])
 
@@ -399,19 +411,14 @@ def spurning10():
     # gerum ráð fyrir að við ferðumst 10000km á 90klst ~= 111km/h,  eitt hopp sé 1 klst
     # eitt tungl ferðast 14000km/h, sem er ca 30°
     # gerum ráð fyrir að merkið berist í gegnum jörðina til að byrja með
-    satkerfi_fjoldi10 = 4
+    satkerfi_fjoldi10 = 24
     new_random_sat_positions = np.array([nyttSatPos10(pol=1, halfur=2) for _ in range(satkerfi_fjoldi10)])
     counter  = 0
-    # for i in range(0, 91):
-    systems = []
-    for i in range(0, 10):
+    skekkja = 1e-8
+    for i in range(0, 91):
         okkar_location, okkar_polar_hnit = get_position_abc(i)
         print(okkar_location, okkar_polar_hnit)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)
-        if i == 0:
-            systems.append(new_sys)
-        else:
-            systems.append(new_sys)
 
         # trimma new_sys ef við sjáum ekki tunglin
         # theta er alltaf 0
@@ -426,7 +433,7 @@ def spurning10():
             elif np.cos(phi_sat) < 0:
                 exclude_sats.append(index)
 
-        print(exclude_sats)
+        print(len(exclude_sats))
         # if len(exclude_sats) > satkerfi_fjoldi10 - 4:
         #     counter += 1
         #     plot3d(new_sys)
@@ -436,9 +443,9 @@ def spurning10():
         n10 = Newton(new_sys)
         print(point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000)
         # todo: búa til 3d plot animation
-    print(counter)
-    print(systems)
-    plot3d(systems, halfur=1)
+    #print(counter)
+    #print(systems)
+    #plot3d(systems, halfur=1)
 
 
 
