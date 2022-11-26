@@ -33,14 +33,15 @@ sample_fjoldi = 100
 
 constaltitude = 26570
 earthaltitude = 6370
+
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 
-def gen(n):
-    theta = (n * 7) % math.pi * 2
-    phi = 0
-    while phi < 2*np.pi:
+def gen(n,phi=0,theta=0,hlutfall = 1):
+    phizero = 0
+    while phizero < 2*np.pi:
         yield np.array([np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)])
+        phizero += 2*np.pi/n
         phi += 2*np.pi/n
 
 def coords(phi, theta, altitude=constaltitude):
@@ -55,14 +56,29 @@ def coords(phi, theta, altitude=constaltitude):
         return [A, B, C, time, distance]
     else:
         return "incorrect values"
+
 def update(num, data, line):
     line.set_data(data[:2, :num])
     line.set_3d_properties(data[2, :num])
 
 N = 1000
-data = np.array(list(gen(N))).T
+data = np.array(list(gen(N,np.pi,np.pi/2,0.4))).T
 data = data * constaltitude
 line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
+
+data2 = np.array(list(gen(N,5,12,0.1))).T
+data2 = data2 * constaltitude
+line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+
+
+data3 = np.array(list(gen(N,3,9,2))).T
+data3 = data3 * constaltitude
+line3, = ax.plot(data3[0, 0:1], data3[1, 0:1], data3[2, 0:1])
+
+
+data4 = np.array(list(gen(N,20,1))).T
+data4 = data4 * constaltitude
+line4, = ax.plot(data4[0, 0:1], data4[1, 0:1], data4[2, 0:1])
 
 # Setting the axes properties
 
@@ -71,6 +87,10 @@ ax.set_ylabel('Y')
 ax.set_zlabel('Z')
 
 ani = animation.FuncAnimation(fig, update, N, fargs=(data, line), interval=10000/N, blit=False)
+ani2 = animation.FuncAnimation(fig, update, N, fargs=(data2, line2), interval=10000/N, blit=False)
+ani3 = animation.FuncAnimation(fig, update, N, fargs=(data3, line3), interval=10000/N, blit=False)
+ani4 = animation.FuncAnimation(fig, update, N, fargs=(data4, line4), interval=10000/N, blit=False)
+
 #ani.save('matplot003.gif', writer='imagemagick')
 
 xhnit = []
