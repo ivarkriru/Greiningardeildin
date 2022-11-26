@@ -81,7 +81,7 @@ def plot3d(sys,halfur=0):
     #        y.append(sys[i][0][1])
     #        z.append(sys[i][0][2])
 
-    ax.plot3D(x, y, z)
+    ax.plot3D(xhnit, yhnit, zhnit)
     ax.set_xlim(-constaltitude, constaltitude)
     ax.set_ylim(-constaltitude, constaltitude)
     ax.set_zlim(-constaltitude, constaltitude)
@@ -417,7 +417,7 @@ def spurning10():
     # plotta upp meðalskekkju á leiðinni, etv. plotta staðsetningu á hnetti með kúlum þar sem stærð kúlu sýnir mestu eða meðalskekkju
     # gerum ráð fyrir að við ferðumst 10000km á 90klst ~= 111km/h,  eitt hopp sé 1 klst
     # eitt tungl ferðast 14000km/h, sem er ca 30°
-    # gerum ráð fyrir að merkið berist í gegnum jörðina til að byrja með
+    # gerum ráð fyrir að merkið geti borist í gegnum jörðina til að byrja með
     satkerfi_fjoldi10 = 24
     new_random_sat_positions = np.array([nyttSatPos10(pol=1, halfur=2) for _ in range(satkerfi_fjoldi10)])
     counter  = 0
