@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import random
 from newton import Newton
 import time
-import animationtest
 
 from matplotlib import animation
 from scipy import stats as stats
@@ -282,6 +281,9 @@ def spurning6(plot=True, calculate_sats=4, skekkja=1e-8):
         new_sat_pos = random_sat_positions[oft][:calculate_sats]
 
         new_system = np.array([coords(*sat)[:-1] for sat in new_sat_pos])
+
+
+
         for i in range(16):
             new_system_with_error = np.empty((0,4))
             for index, sat in enumerate(new_sat_pos):
@@ -519,7 +521,10 @@ def spurning10():
     #print(data)
     data = np.array(data)
     #exit()
-    animationtest.create_animation(data)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    create_animation(data,ax,fig)
     #print(data)
     #print(counter)
     #print(systems)
@@ -537,6 +542,7 @@ def spurning10ingo(plot=True):
         data = turner(data, random.random() * 100, random.random() * 100, random.random() * 100)
         datasafn.append(data)
     # print(datasafn[0])
+
     create_animation(np.array(datasafn),ax,fig)
 
 if __name__ == '__main__':
@@ -551,5 +557,4 @@ if __name__ == '__main__':
     #spurning9()
     #spurning10()
     spurning10ingo()
-
     #plot3d(new_system)
