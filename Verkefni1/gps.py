@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import random
 from newton import Newton
 import time
+import os
 
 from matplotlib import animation
 from scipy import stats as stats
@@ -163,7 +164,7 @@ def create_animation(data,ax,fig):
     #ani_list[0].save('matplot004.gif', writer='imagemagick')
 
 
-    f = r"C:\bin\tol\Greiningardeildin\Verkefni1\animation.gif"
+    f = os.path.join(os.getcwd(), "animation.gif")
     writergif = animation.PillowWriter(fps=30)
     anim.save(f, writer=writergif)
     plt.show()
@@ -494,7 +495,7 @@ def spurning10():
         for j in range(3):
             data[i].append([])
     skekkjusafn = []
-    for i in np.linspace(0, 90, num=90*8):
+    for i in np.linspace(0, 90*8, num=90*8*8):
         okkar_location = np.array(x0)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)
 
@@ -525,10 +526,11 @@ def spurning10():
     for fjoldi_synilegra_sats, skekkja in skekkjusafn:
         skekkjucolumnsfyrirplot[fjoldi_synilegra_sats].append(skekkja)
 
-    #ax.boxplot(skekkjucolumnsfyrirplot)
-    #ax.set_xlabel("Fjöldi sýnilegra tungla")
-    #ax.set_ylabel("skekkja[m]")
-    #plt.show()
+    ax.boxplot(skekkjucolumnsfyrirplot)
+    ax.set_xlabel("Fjöldi sýnilegra tungla")
+    ax.set_ylabel("skekkja[m]")
+    plt.savefig(os.path.join(os.getcwd(), "boxplot_lidur_10.png"))
+    plt.show()
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
