@@ -30,7 +30,7 @@ sat_teljari = 0
 skekkja = 1e-8
 satkerfi_fjoldi = 9
 sample_fjoldi = 100
-
+N = 100
 constaltitude = 26570
 earthaltitude = 6370
 
@@ -69,61 +69,40 @@ def turner(data,alpha,beta,epsilon):
     data = np.transpose(data)
     return np.transpose(np.matmul(data,turnmatrix))
 
-N = 100
 
 
-data = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
-data = data * constaltitude
-data = turner(data,random.random()*100,random.random()*100,random.random()*100)
-line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
+if __name__ == '__main__':
+    animationsafn = []
+    for sat in range(satkerfi_fjoldi):
 
+        data = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
+        data = data * constaltitude
+        data = turner(data,random.random()*100,random.random()*100,random.random()*100)
+        line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
 
-data2 = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
-data2 = data2 * constaltitude
-data2 = turner(data2,random.random()*100,random.random()*100,random.random()*100)
-line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+        animationsafn.append(animation.FuncAnimation(fig, update, N, fargs=(data, line), interval=10000/N, blit=False))
 
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    #ani.save('matplot003.gif', writer='imagemagick')
 
-data3 = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
-data3 = data3 * constaltitude
-data3 = turner(data3,random.random()*100,random.random()*100,random.random()*100)
-line3, = ax.plot(data3[0, 0:1], data3[1, 0:1], data3[2, 0:1])
+    xhnit = []
+    yhnit = []
+    zhnit = []
 
+    takmark = 300
+    for x in range(0, takmark):
+        svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
+        xhnit.append(svar[0])
+        yhnit.append(svar[1])
+        zhnit.append(svar[2])
 
-data4 = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
-data4 = data4 * constaltitude
-data4 = turner(data4,random.random()*100,random.random()*100,random.random()*100)
-line4, = ax.plot(data4[0, 0:1], data4[1, 0:1], data4[2, 0:1])
+    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
 
-# Setting the axes properties
-
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-
-ani = animation.FuncAnimation(fig, update, N, fargs=(data, line), interval=10000/N, blit=False)
-ani2 = animation.FuncAnimation(fig, update, N, fargs=(data2, line2), interval=10000/N, blit=False)
-ani3 = animation.FuncAnimation(fig, update, N, fargs=(data3, line3), interval=10000/N, blit=False)
-ani4 = animation.FuncAnimation(fig, update, N, fargs=(data4, line4), interval=10000/N, blit=False)
-
-#ani.save('matplot003.gif', writer='imagemagick')
-
-xhnit = []
-yhnit = []
-zhnit = []
-
-takmark = 300
-for x in range(0, takmark):
-    svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
-    xhnit.append(svar[0])
-    yhnit.append(svar[1])
-    zhnit.append(svar[2])
-
-ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
-
-ax.set_xlim(-constaltitude, constaltitude)
-ax.set_ylim(-constaltitude, constaltitude)
-ax.set_zlim(-constaltitude, constaltitude)
-ax.set_proj_type('ortho')
-ax.set_box_aspect((1, 1, 1))
-plt.show()
+    ax.set_xlim(-constaltitude, constaltitude)
+    ax.set_ylim(-constaltitude, constaltitude)
+    ax.set_zlim(-constaltitude, constaltitude)
+    ax.set_proj_type('ortho')
+    ax.set_box_aspect((1, 1, 1))
+    plt.show()
