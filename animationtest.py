@@ -30,18 +30,18 @@ sat_teljari = 0
 skekkja = 1e-8
 satkerfi_fjoldi = 9
 sample_fjoldi = 100
-N = 100
+
 constaltitude = 26570
 earthaltitude = 6370
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
+N=1000
 
 def gen(n,phi=0,theta=0,hlutfall = 1):
     phizero = 0
     while phizero < 2*np.pi:
         yield np.array([np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)])
-
         phizero += 2*np.pi/n
         phi += 2*np.pi/n
 
@@ -69,22 +69,16 @@ def turner(data,alpha,beta,epsilon):
     data = np.transpose(data)
     return np.transpose(np.matmul(data,turnmatrix))
 
+    # Setting the axes properties
 
-
-if __name__ == '__main__':
-    animationsafn = []
-    for sat in range(satkerfi_fjoldi):
-
-        data = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
-        data = data * constaltitude
-        data = turner(data,random.random()*100,random.random()*100,random.random()*100)
-        line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
-
-        animationsafn.append(animation.FuncAnimation(fig, update, N, fargs=(data, line), interval=10000/N, blit=False))
-
+def create_animation(data):
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
+    #line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
+    #ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+
     #ani.save('matplot003.gif', writer='imagemagick')
 
     xhnit = []
@@ -106,3 +100,14 @@ if __name__ == '__main__':
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
+
+if __name__ == '__main__':
+    datasafn = []
+    for sat in range(satkerfi_fjoldi):
+
+        data = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
+        data = data * constaltitude
+        data = turner(data,random.random()*100,random.random()*100,random.random()*100)
+        datasafn.append(data)
+    print(datasafn[0])
+    create_animation(np.array(datasafn))
