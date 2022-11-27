@@ -435,7 +435,7 @@ def spurning10():
     #print(data)
     #exit()
 
-    for i in range(0, 91):
+    for i in np.linspace(0, 90, num=90*8):
         okkar_location, okkar_polar_hnit = get_position_abc(i)
         print(okkar_location, okkar_polar_hnit)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)

@@ -61,7 +61,7 @@ def coords(phi, theta, altitude=constaltitude):
 def update(num, data, line):
     line.set_data(data[:2, :num])
     line.set_3d_properties(data[2, :num])
-def create_animation(data: list):
+def create_animation(data):
 
     # Setting the axes properties
 
