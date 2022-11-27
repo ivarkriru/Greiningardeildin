@@ -1,5 +1,6 @@
 import statistics
 
+import matplotlib.animation as animation
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -29,8 +30,8 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 4
-sample_fjoldi = 10
+satkerfi_fjoldi = 8
+sample_fjoldi = 200
 N = 10
 
 
@@ -195,6 +196,8 @@ def spurning1(plot=True):
 def spurning2(plot=True):
     svar_coords = coords(0, 0)
     print("---- svar 2 ----- :")
+    print("Hnit A og B eru á norðurpólnum, hæð gervitunglsins frá miðpunkti jarðar er C")
+    print("d er munurinn á milli norðurpóls og gervihnattar og t tíminn sem ljós er að ferðast")
     print(
         f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
 
@@ -256,8 +259,6 @@ def spurning4(plot=True):
 
 
 def spurning5(plot=True):
-
-def spurning5(plot=True):
     print("---- svar 5 ----- :")
 
     sp5_initial_sat = np.array([[np.pi / 2, np.pi / 2],  # φ, θ, phi, theta
@@ -276,9 +277,9 @@ def spurning5(plot=True):
 
     '''
 
-    '''
+
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 1
-    sp5_initial_sat = np.array([[1.52934999, 1.77616402],
+    sp5_initial_sat1 = np.array([[1.52934999, 1.77616402],
                                 [1.64586837, 1.54972977],
                                 [1.23058977, 1.25151246],
                                 [1.76452598, 1.96492466], ])
@@ -286,6 +287,10 @@ def spurning5(plot=True):
 
     '''
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.1
+    sp5_initial_sat01 = np.array([ [1.55285912, 1.599031  ],
+                                 [1.53712495, 1.62040946],
+                                 [1.57151953, 1.61481681],
+                                 [1.56491249, 1.53779567],])
     sp5_initial_sat = np.array([[1.55285912, 1.599031],
                                 [1.53712495, 1.62040946],
                                 [1.57151953, 1.61481681],
@@ -293,30 +298,36 @@ def spurning5(plot=True):
     '''
 
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.01
-    sp5_initial_sat = np.array([ [1.57098865 ,1.57282701],
+    sp5_initial_sat001 = np.array([ [1.57098865 ,1.57282701],
                                  [1.57508225 ,1.57233899],
                                  [1.5707446  ,1.56733488],
                                  [1.56586073 ,1.56823521],])
-    '''
 
-    n5system = [coords(phi, theta)[:-1] for phi, theta in sp5_initial_sat]
-
-    for x in sp5_initial_sat:
-        x[0] = x[0] + random.randrange(-1, 2, 2) * skekkja
-
-    n5systemsat_med_skekkju = sp5_initial_sat
-
-    n5system_skekkju = [coords(phi, theta)[:-1] for phi, theta in n5systemsat_med_skekkju]
-
-    # set inn tímanna án skekkjunnar
-    for index, sat_pos in enumerate(n5system):
-        n5system_skekkju[index][-1] = sat_pos[-1]
-
-    n5 = Newton(n5system_skekkju)
-    if plot:
-        plot3d(n5.system)
-    print(n5.GaussNewton(x0, tolerance))
-    print(f"Skekkja: {point_diff(x0, n5.GaussNewton(x0, tolerance)):.7f}")
+    def Reiknadaemi5(sp5_initial_sat):
+        n5system = [coords(phi, theta)[:-1] for phi, theta in sp5_initial_sat]
+        for x in sp5_initial_sat:
+            x[0] = x[0] + random.randrange(-1,2,2)*skekkja
+        n5systemsat_med_skekkju = sp5_initial_sat
+        n5system_skekkju = [coords(phi, theta)[:-1] for phi, theta in n5systemsat_med_skekkju]
+        # set inn tímanna án skekkjunnar
+        for index, sat_pos in enumerate(n5system):
+            n5system_skekkju[index][-1] = sat_pos[-1]
+        n5 = Newton(n5system_skekkju)
+        if plot:
+            plot3d(n5.system)
+        hnitin = n5.GaussNewton(x0, tolerance)
+        print("Hnitin eru X: " + '%.6e' % hnitin[0] + " Y: " + '%.6e' % hnitin[1] + " Z: " + '%.6e' % hnitin[2] + " d: " + '%.6e' % hnitin[3])
+        print(f"Skekkja á jörð: {point_diff(x0, n5.GaussNewton(x0, tolerance)):.7f}")
+    print("Sami upphafspunkturinn")
+    print("hliðraður um 1: ")
+    Reiknadaemi5(sp5_initial_sat1)
+    print("")
+    print("hliðraður um 0.1: ")
+    Reiknadaemi5(sp5_initial_sat01)
+    print("")
+    print("hliðraður um 0.01: ")
+    Reiknadaemi5(sp5_initial_sat001)
+    print("")
 
 random_sat_positions = np.array([[nyttSatPos(1) for _ in range(satkerfi_fjoldi)] for _ in range(sample_fjoldi)])
 
@@ -367,31 +378,44 @@ def spurning6(plot=True, calculate_sats=satkerfi_fjoldi, skekkja=skekkja, kerfi=
             #plot3d(new_system_with_error)
             skekkjusafn.append(mismunur)
 
-    '''
-    print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
-    print("meðalskekkjan er " + str(statistics.mean(skekkjusafn)))
-    print("min er " + str(min(skekkjusafn)))
-    print("max er " + str(max(skekkjusafn)))
-    print("milligildi er " + str(statistics.median(skekkjusafn)))
-    print("staðalfrávik er " + str(statistics.stdev(skekkjusafn)))
-    '''
-
     if plot:
-        plt.hist(skekkjusafn, bins=20, edgecolor='black')
-        plt.show()
+        #print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+        print("Meðalskekkjan er " + str(statistics.mean(skekkjusafn)))
+        print("Lægsta gildi er " + str(min(skekkjusafn)))
+        print("Hæsta gildi er " + str(max(skekkjusafn)))
+        print("Miðgildi er " + str(statistics.median(skekkjusafn)))
+        print("Staðalfrávik er " + str(statistics.stdev(skekkjusafn)))
     return skekkjusafn
+'''
+    if plot:
+        #plt.hist(skekkjusafn, bins=20, edgecolor='black')
+        plt.hist(skekkjusafn, bins=20, edgecolor='black',range=(0,2), label='Tíðni fjölda á skekkjum búið að fjarlægja útlaga')
+        plt.xlabel('Skekkja í cm')
+        plt.ylabel('Tíðni')
+        plt.title('Tíðni fjölda á skekkjum búið að fjarlægja útlaga')
+        plt.show()
+        plt.hist(skekkjusafn, bins=20, edgecolor='black', label='Tíðni fjölda á skekkjum')
+        #plt.hist(skekkjusafn, bins=20, edgecolor='black',range=(0,2))
+        plt.xlabel('Skekkja í cm')
+        plt.ylabel('Tíðni')
+        plt.title('Tíðni fjölda á skekkjum')
+        plt.show()
+'''
+
 
 
 def spurning7(plot=True):
     print("---- svar 7 ----- :")
     def bisecfall(skekkja):
-        return np.max(spurning6(skekkja=skekkja)) - 0.1
+        return np.max(spurning6(plot=False, skekkja=skekkja)) - 0.1
     b = 1e-8
     a = 1e-12
     tol = 0.1  # [m]
-    ideal_skekkja = (bisection(bisecfall, a, b, 1e-12))
-    print(ideal_skekkja)
-    print(np.max(spurning6(skekkja=ideal_skekkja)))
+    ideal_skekkja = (bisection(bisecfall, a, b, 1e-15))#f'{num:.3}'
+    print("Hámarksskekkja gervihnatta má vera " + '%4g' % ideal_skekkja +" ef skekkja á jörðinni á að vera innan við 10 cm.")
+#    print(ideal_skekkja)
+#    print()
+    print("Með því að setja skekkjuna í spurningu sex má sjá að skekkja á jörðu verður " +'%4f' %np.max(spurning6(plot=False,skekkja=ideal_skekkja)))
     ii = []
     vals = []
     exit()
@@ -419,21 +443,164 @@ def spurning8(plot=True):
     ax.set_ylabel("skekkja[m]")
     plt.show()
 
+    print("Tölfræði fyrir fjóra gervihnetti: ")
+    #print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+    print("Meðalskekkjan er " + str(statistics.mean(skekkjusafn[0])))
+    print("Lægsta gildi er " + str(min(skekkjusafn[0])))
+    print("Hæsta gildi er " + str(max(skekkjusafn[0])))
+    print("Miðgildi er " + str(statistics.median(skekkjusafn[0])))
+    print("Staðalfrávik er " + str(statistics.stdev(skekkjusafn[0])))
+    print("\n")
+    print("Tölfræði fyrir fimm gervihnetti: ")
+    #print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+    print("Meðalskekkjan er " + str(statistics.mean(skekkjusafn[1])))
+    print("Lægsta gildi er " + str(min(skekkjusafn[1])))
+    print("Hæsta gildi er " + str(max(skekkjusafn[1])))
+    print("Miðgildi er " + str(statistics.median(skekkjusafn[1])))
+    print("Staðalfrávik er " + str(statistics.stdev(skekkjusafn[1])))
+
+    #plt.hist(skekkjusafn, bins=20, edgecolor='black')
+    plt.hist(skekkjusafn[0], bins=20, edgecolor='black',range=(0,2), label='Tíðni fjölda á skekkjum búið að fjarlægja útlaga')
+    plt.xlabel('Skekkja í cm')
+    plt.ylabel('Tíðni')
+    plt.title('Tíðni fjölda á skekkjum búið að fjarlægja útlaga')
+    plt.show()
+    plt.hist(skekkjusafn[1], bins=20, edgecolor='black', label='Tíðni fjölda á skekkjum')
+    #plt.hist(skekkjusafn, bins=20, edgecolor='black',range=(0,2))
+    plt.xlabel('Skekkja í cm')
+    plt.ylabel('Tíðni')
+    plt.title('Tíðni fjölda á skekkjum')
+    plt.show()
+
+    colors = ['green', 'blue']
+    litir = ['Grænt', 'Blátt']
+    plt.hist(skekkjusafn, bins=20, density=True, histtype='bar',range=(0,2), color=colors, label=litir)
+    plt.legend(prop={'size': 10})
+    plt.title('Skekkja borin saman eftir því hvort \nþað séu fjögur eða fimm gervihnettir',
+              fontweight="bold")
+    plt.show()
+
+    colors = ['green', 'blue']
+    litir = ['Grænt', 'Blátt']
+    plt.hist(skekkjusafn, bins=20, density=True, histtype='bar', color=colors, label=litir)
+    plt.legend(prop={'size': 10})
+    plt.title('Skekkja borin saman eftir því hvort /nþað séu fjögur eða fimm gervihnettir',
+              fontweight="bold")
+
+
 
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
-    start_tungl = 6
+    start_tungl = 4
     fig = plt.figure()
     ax = fig.add_subplot(111)
     skekkjusafn = []
     for i in range(start_tungl, satkerfi_fjoldi + 1, 1):
         skekkjusafn.append(spurning6(plot=False, calculate_sats=i))
-    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, satkerfi_fjoldi + 1)])
+    ax.boxplot(skekkjusafn[0:2], positions=[i for i in range(4, 6)])
     ax.set_xlabel("Fjöldi tungla")
     ax.set_ylabel("skekkja[m]")
+    plt.title('Dreifing skekkja í fjórum tunglum',
+              fontweight="bold")
     plt.show()
 
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.boxplot(skekkjusafn, positions=[i for i in range(start_tungl, satkerfi_fjoldi+1)])
+    ax.set_xlabel("Fjöldi tungla")
+    ax.set_ylabel("skekkja[m]")
+    plt.title('Dreifing skekkja í fjórum og fimm tunglum',
+              fontweight="bold")
+    plt.show()
+
+
+    print("Tölfræði fyrir fjóra gervihnetti: ")
+    #print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+    print("Meðalskekkjan er " + str(statistics.mean(skekkjusafn[0])))
+    print("Lægsta gildi er " + str(min(skekkjusafn[0])))
+    print("Hæsta gildi er " + str(max(skekkjusafn[0])))
+    print("Miðgildi er " + str(statistics.median(skekkjusafn[0])))
+    print("Staðalfrávik er " + str(statistics.stdev(skekkjusafn[0])))
+    print("\n")
+    print("Tölfræði fyrir fimm gervihnetti: ")
+    #print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+    print("Meðalskekkjan er " + str(statistics.mean(skekkjusafn[1])))
+    print("Lægsta gildi er " + str(min(skekkjusafn[1])))
+    print("Hæsta gildi er " + str(max(skekkjusafn[1])))
+    print("Miðgildi er " + str(statistics.median(skekkjusafn[1])))
+    print("Staðalfrávik er " + str(statistics.stdev(skekkjusafn[1])))
+
+    #plt.hist(skekkjusafn, bins=20, edgecolor='black')
+    plt.hist(skekkjusafn[0], bins=20, edgecolor='black',range=(0,2), label='Tíðni skekkjum, fjórir hnettir búið að fjarlægja útlaga')
+    plt.xlabel('Skekkja í cm')
+    plt.ylabel('Tíðni')
+    plt.title('Tíðni skekkjum, fjórir hnettir búið að fjarlægja útlaga',
+              fontweight="bold")
+    plt.show()
+
+    plt.hist(skekkjusafn[0], bins=20, edgecolor='black', label='Tíðni skekkjum, fjórir hnettir búið að fjarlægja útlaga')
+    plt.title('Tíðni skekkjum, fjórir hnettir',
+              fontweight="bold")
+    #plt.hist(skekkjusafn, bins=20, edgecolor='black',range=(0,2))
+    plt.xlabel('Skekkja í cm')
+    plt.ylabel('Tíðni')
+    plt.show()
+
+    colors = ['green', 'blue']
+    litir = ['Fjórir', 'Fimm']
+    plt.hist(skekkjusafn[0:2], bins=20, density=True, histtype='bar', color=colors, label=litir)
+    plt.legend(prop={'size': 10})
+    plt.title('Skekkja borin saman - fjórir og fimm gervihnettir',
+              fontweight="bold")
+    plt.show()
+
+    colors = ['green', 'blue']
+    litir = ['Fjórir', 'Fimm']
+    plt.hist(skekkjusafn[0:2], bins=20, density=True, histtype='bar',range=(0,2), color=colors, label=litir)
+    plt.legend(prop={'size': 10})
+    plt.title('Skekkja borin saman - fjórir og fimm gervihnettir án útlaga',
+              fontweight="bold")
+    plt.show()
+
+    colors = ['green', 'blue', 'red', 'yellow', 'magenta', 'cyan']
+    litir = ['Fjórir', 'Fimm','Sex', 'Sjö','Átta', 'Níu']
+    plt.hist(skekkjusafn, bins=20, density=True, histtype='bar', color=colors, label=litir)
+    plt.legend(prop={'size': 10})
+    plt.title('Skekkja borin saman 4-9 hnettir ',
+              fontweight="bold")
+    plt.show()
+
+    colors = ['green', 'blue', 'red', 'yellow', 'magenta', 'cyan']
+    litir = ['Fjórir', 'Fimm','Sex', 'Sjö','Átta', 'Níu']
+    plt.hist(skekkjusafn, bins=20, density=True, histtype='bar',range=(0,2), color=colors, label=litir)
+    plt.legend(prop={'size': 10})
+    plt.title('Skekkja borin saman 4-9 hnettir án útlaga',
+              fontweight="bold")
+    plt.show()
+    meanskekkja=[]
+    lowskekkja = []
+    highskekkja = []
+    midskekkja = []
+    stdskekkja = []
+    for i in range(6) :
+        meanskekkja.append(statistics.mean(skekkjusafn[i]))
+    for i in range(6) :
+        lowskekkja.append(min(skekkjusafn[i]))
+    for i in range(6) :
+        highskekkja.append(max(skekkjusafn[i]))
+    for i in range(6) :
+        midskekkja.append(statistics.median(skekkjusafn[i]))
+    for i in range(6) :
+        stdskekkja.append(statistics.stdev(skekkjusafn[i]))
+
+    print("Tölfræði fyrir alla gervihnetti: ")
+    #print("Gervihnettirnir eru " + str(satkerfi_fjoldi) + " talsins")
+    print("Meðalskekkjan er " + str(statistics.mean(meanskekkja)))
+    print("Lægsta gildi er " + str(min(lowskekkja)))
+    print("Hæsta gildi er " + str(max(highskekkja)))
+    #print("Miðgildi mismunandi fjöldi tungla er " + str(statistics.median(skekkjusafn)))
+    #print("Staðalfrávik er " + str(statistics.stdev(skekkjusafn)))
 
 def spurning10():
     def plot3d10(sys, halfur=0):
@@ -625,16 +792,19 @@ def spurning10ingo(plot=True):
 
 
 if __name__ == '__main__':
-    # spurning1()
-    # spurning2()
-    # spurning3()
-    # spurning4()
-    # spurning5()
-    # spurning6()
-    # spurning7()
-    # spurning8()
-    # spurning9()
+    #spurning1()
+    #spurning2()
+    #spurning3()
+    #spurning4()
+    #spurning5()
+    #spurning6()
+    #spurning7()
+    #spurning8()
+    spurning9()
     #spurning10()
     spurning10ingo()
-    # plot3d(new_system)
 
+    #plot3d(new_system)
+    #fig = plt.figure()
+    #anim = animation.FuncAnimation(fig, plot3d(system), interval=30)
+    #plt.show()
