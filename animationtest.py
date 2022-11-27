@@ -60,55 +60,52 @@ def coords(phi, theta, altitude=constaltitude):
 def update(num, data, line):
     line.set_data(data[:2, :num])
     line.set_3d_properties(data[2, :num])
+def create_animation(data: list):
 
-N = 1000
-data = np.array(list(gen(N,np.pi,np.pi/2,0.4))).T
-data = data * constaltitude
-line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
+    # Setting the axes properties
 
-data2 = np.array(list(gen(N,5,12,0.1))).T
-data2 = data2 * constaltitude
-line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    #line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(data_[0, 0:1], data_[1, 0:1], data_[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
+    #ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+
+    #ani.save('matplot003.gif', writer='imagemagick')
+
+    xhnit = []
+    yhnit = []
+    zhnit = []
+
+    takmark = 300
+    for x in range(0, takmark):
+        svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
+        xhnit.append(svar[0])
+        yhnit.append(svar[1])
+        zhnit.append(svar[2])
+
+    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
+
+    ax.set_xlim(-constaltitude, constaltitude)
+    ax.set_ylim(-constaltitude, constaltitude)
+    ax.set_zlim(-constaltitude, constaltitude)
+    ax.set_proj_type('ortho')
+    ax.set_box_aspect((1, 1, 1))
+    plt.show()
+
+if __name__ == '__main__':
+    N = 1000
+    data = np.array(list(gen(N,np.pi,np.pi/2,0.4))).T
+    data = data * constaltitude
+
+    data2 = np.array(list(gen(N,5,12,0.1))).T
+    data2 = data2 * constaltitude
 
 
-data3 = np.array(list(gen(N,3,9,2))).T
-data3 = data3 * constaltitude
-line3, = ax.plot(data3[0, 0:1], data3[1, 0:1], data3[2, 0:1])
+    data3 = np.array(list(gen(N,3,9,2))).T
+    data3 = data3 * constaltitude
 
 
-data4 = np.array(list(gen(N,20,1))).T
-data4 = data4 * constaltitude
-line4, = ax.plot(data4[0, 0:1], data4[1, 0:1], data4[2, 0:1])
-
-# Setting the axes properties
-
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-
-ani = animation.FuncAnimation(fig, update, N, fargs=(data, line), interval=10000/N, blit=False)
-ani2 = animation.FuncAnimation(fig, update, N, fargs=(data2, line2), interval=10000/N, blit=False)
-ani3 = animation.FuncAnimation(fig, update, N, fargs=(data3, line3), interval=10000/N, blit=False)
-ani4 = animation.FuncAnimation(fig, update, N, fargs=(data4, line4), interval=10000/N, blit=False)
-
-#ani.save('matplot003.gif', writer='imagemagick')
-
-xhnit = []
-yhnit = []
-zhnit = []
-
-takmark = 300
-for x in range(0, takmark):
-    svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
-    xhnit.append(svar[0])
-    yhnit.append(svar[1])
-    zhnit.append(svar[2])
-
-ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
-
-ax.set_xlim(-constaltitude, constaltitude)
-ax.set_ylim(-constaltitude, constaltitude)
-ax.set_zlim(-constaltitude, constaltitude)
-ax.set_proj_type('ortho')
-ax.set_box_aspect((1, 1, 1))
-plt.show()
+    data4 = np.array(list(gen(N,20,1))).T
+    data4 = data4 * constaltitude
+    create_animation([data, data2, data3, data4])
