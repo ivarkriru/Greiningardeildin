@@ -7,6 +7,8 @@ import random
 from newton import Newton
 import time
 import animationtest
+
+from matplotlib import animation
 from scipy import stats as stats
 
 system = np.array([[15600, 7540, 20140, 0.07074],
@@ -26,8 +28,20 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 9
+satkerfi_fjoldi = 24
 sample_fjoldi = 100
+N = 200
+
+def gen(n,phi=0,theta=0):
+    phizero = 0
+    while phizero < 2*np.pi:
+        yield np.array([np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)])
+        phizero += (2*np.pi)/n
+        phi += 2*np.pi/n
+
+def update(num, data, line):
+    line.set_data(data[:2, :num])
+    line.set_3d_properties(data[2, :num])
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
@@ -101,6 +115,43 @@ def nyttSatPos(pol=0,halfur=0):
     nytt_loc = coords(math.pi*halfur * random.random(), random.random() * 10000, constaltitude)
     print("Gervihnöttur númer " + str(sat_teljari) + " : " + str(nytt_loc))
     return nytt_loc
+
+def turner(data,alpha,beta,epsilon):
+    turnmatrix = np.array([[np.cos(alpha)*np.cos(beta),np.cos(alpha)*np.sin(beta)*np.sin(epsilon)-np.sin(alpha)*np.cos(epsilon),np.cos(alpha)*np.sin(beta)*np.cos(epsilon)+np.sin(alpha)*np.sin(epsilon)],
+                           [np.sin(alpha)*np.cos(beta),np.sin(alpha)*np.sin(beta)*np.sin(epsilon)+np.cos(alpha)*np.cos(epsilon),np.sin(alpha)*np.sin(beta)*np.cos(epsilon)-np.cos(alpha)*np.sin(epsilon)],
+                           [-np.sin(beta),np.cos(beta)*np.sin(epsilon),np.cos(beta)*np.cos(epsilon)]])
+    data = np.transpose(data)
+    return np.transpose(np.matmul(data,turnmatrix))
+
+def create_animation(data,ax,fig):
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
+    #line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
+    #ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+
+    #ani.save('matplot003.gif', writer='imagemagick')
+
+    xhnit = []
+    yhnit = []
+    zhnit = []
+
+    takmark = 300
+    for x in range(0, takmark):
+        svar = coords((x * 113) % (math.pi), (x * 7) % math.pi * 2, earthaltitude)
+        xhnit.append(svar[0])
+        yhnit.append(svar[1])
+        zhnit.append(svar[2])
+
+    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
+
+    ax.set_xlim(-constaltitude, constaltitude)
+    ax.set_ylim(-constaltitude, constaltitude)
+    ax.set_zlim(-constaltitude, constaltitude)
+    ax.set_proj_type('ortho')
+    ax.set_box_aspect((1, 1, 1))
+    plt.show()
 
 def spurning1(plot=True):
     n = Newton(system)
@@ -302,10 +353,6 @@ def spurning7(plot=True):
     plt.scatter(ii, vals)
     plt.show()
 
-
-
-
-
 def spurning8(plot=True):
     if plot:
         print("---- svar 8 ----- :")
@@ -319,6 +366,7 @@ def spurning8(plot=True):
     ax.set_xlabel("Fjöldi tungla")
     ax.set_ylabel("skekkja[m]")
     plt.show()
+
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
 
@@ -332,7 +380,6 @@ def spurning9(plot=True):
     ax.set_xlabel("Fjöldi tungla")
     ax.set_ylabel("skekkja[m]")
     plt.show()
-
 
 def spurning10():
     def plot3d10(sys,halfur=0):
@@ -478,8 +525,19 @@ def spurning10():
     #print(systems)
     #plot3d(systems, halfur=1)
 
+def spurning10ingo(plot=True):
+    datasafn = []
 
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
 
+    for sat in range(satkerfi_fjoldi):
+        data = np.array(list(gen(N, random.random() * 100, random.random() * 100))).T
+        data = data * constaltitude
+        data = turner(data, random.random() * 100, random.random() * 100, random.random() * 100)
+        datasafn.append(data)
+    # print(datasafn[0])
+    create_animation(np.array(datasafn),ax,fig)
 
 if __name__ == '__main__':
     #spurning1()
@@ -491,6 +549,7 @@ if __name__ == '__main__':
     #spurning7()
     #spurning8()
     #spurning9()
-    spurning10()
+    #spurning10()
+    spurning10ingo()
 
     #plot3d(new_system)
