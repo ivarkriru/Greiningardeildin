@@ -465,7 +465,6 @@ def spurning10():
         return new_system_with_error, new_sat_pos
         # tekur inn index og skilar nýrri staðsetningu á gervitunglum með fastri skekkju !!! kannski breytilegri skekkju síðar
 
-
     # þetta á að simulera ferðalag frá norðurpól á miðbaug
     # einhversstaðar á leiðinni á eitt tungl að bila, annaðhvort tíminn að byrja að drifta eða hoppa í tíma
     # eftir einhvern tíma þá á bilaða tunglið að verða tekið út og hætta að senda merki
@@ -483,57 +482,46 @@ def spurning10():
         data.append([])
         for j in range(3):
             data[i].append([])
-    #data[0][0].append(1)
-    #data[0][1].append(2)
-    #data[0][2].append(3)
-    #print(data)
-    #exit()
-
+    skekkjusafn = []
     for i in np.linspace(0, 90, num=90*8):
-        okkar_location, okkar_polar_hnit = get_position_abc(i)
-        print(okkar_location, okkar_polar_hnit)
+        okkar_location = np.array(x0)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)
 
-        for index, sat in enumerate(new_sys):
-            for xyz in range(3):
-                data[index][xyz].append(sat[xyz])
-        #print(data)
-        #exit()
-
-
         # trimma new_sys ef við sjáum ekki tunglin
-        # theta er alltaf 0
         exclude_sats = []
-        for index, sat in enumerate(sat_polar_hnit):
-
-            phi = okkar_polar_hnit[0]
-            phi_sat = np.arcsin(np.sin(sat[0])) - phi
-
-            if np.cos(sat[1]) < 0:  # ef kósínusinn á sat_theta er <0
+        for index, sat in enumerate(new_sys):
+            if sat[2] < 500:  # ef z er minna en 500km þá sjáum við það líklega ekki
                 exclude_sats.append(index)
-            elif np.cos(phi_sat) < 0:
-                exclude_sats.append(index)
+                for xyz in range(3):
+                    data[index][xyz].append(0)
+            else:
+                for xyz in range(3):
+                    data[index][xyz].append(new_sys[index][xyz])
 
-        print(len(exclude_sats))
-        # if len(exclude_sats) > satkerfi_fjoldi10 - 4:
-        #     counter += 1
-        #     plot3d(new_sys)
-        #     break
-        #     #plot3d(new_sys)
-
+        # henda út excluded sats:
+        for excluded_sat in exclude_sats[::-1]: #  í öfuga átt til að lenda ekki í því að slæsa útfyrir listann
+            new_sys = np.delete(new_sys, excluded_sat, 0)
         n10 = Newton(new_sys)
-        print(point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000)
-    #print(data)
+        try:
+            skekkjusafn.append([len(new_sys), point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000])
+        except np.linalg.LinAlgError:
+            print("lost signal")
     data = np.array(data)
-    #exit()
 
     fig = plt.figure()
-    ax = fig.add_subplot(projection='3d')
-    create_animation(data,ax,fig)
-    #print(data)
-    #print(counter)
-    #print(systems)
-    #plot3d(systems, halfur=1)
+    ax = fig.add_subplot(111)
+    skekkjucolumnsfyrirplot = [[] for _ in range(satkerfi_fjoldi10)]
+    for fjoldi_synilegra_sats, skekkja in skekkjusafn:
+        skekkjucolumnsfyrirplot[fjoldi_synilegra_sats].append(skekkja)
+
+    ax.boxplot(skekkjucolumnsfyrirplot)
+    ax.set_xlabel("Fjöldi tungla")
+    ax.set_ylabel("skekkja[m]")
+    plt.show()
+
+    #fig = plt.figure()
+    #ax = fig.add_subplot(projection='3d')
+    #create_animation(data, ax, fig)
 
 def spurning10ingo(plot=True):
     datasafn = []
