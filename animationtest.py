@@ -28,15 +28,14 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 9
+satkerfi_fjoldi = 24
 sample_fjoldi = 100
-
+N = 200
 constaltitude = 26570
 earthaltitude = 6370
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-N=1000
 
 def gen(n,phi=0,theta=0,hlutfall = 1):
     phizero = 0
@@ -100,6 +99,7 @@ def create_animation(data):
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
     plt.show()
+
 
 if __name__ == '__main__':
     datasafn = []
