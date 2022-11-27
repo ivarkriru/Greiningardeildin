@@ -36,6 +36,7 @@ earthaltitude = 6370
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
+N=1000
 
 def gen(n,phi=0,theta=0,hlutfall = 1):
     phizero = 0
@@ -68,7 +69,7 @@ def create_animation(data: list):
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
     #line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
-    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(data_[0, 0:1], data_[1, 0:1], data_[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
+    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
     #ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
 
     #ani.save('matplot003.gif', writer='imagemagick')
@@ -109,3 +110,4 @@ if __name__ == '__main__':
     data4 = np.array(list(gen(N,20,1))).T
     data4 = data4 * constaltitude
     create_animation([data, data2, data3, data4])
+    print([data, data2, data3])
