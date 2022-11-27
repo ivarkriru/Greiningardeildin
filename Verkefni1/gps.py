@@ -38,9 +38,6 @@ def gen(n,phi=0,theta=0,hlutfall=1):
         phizero += (2*np.pi)/n
         phi += 2*np.pi/(n*hlutfall)
 
-def update(num, data, line):
-    line.set_data(data[:2, :num])
-    line.set_3d_properties(data[2, :num])
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
@@ -127,15 +124,29 @@ def turner(data,alpha,beta,epsilon):
     data = np.transpose(data)
     return np.transpose(np.matmul(data,turnmatrix))
 
+def update(num, data, line):
+    line.set_data(data[:2, :num])
+    line.set_3d_properties(data[2, :num])
+def update_all(num, *args):
+    for i in range(len(args)):
+        update(num, args[i][0], args[i][1])
 def create_animation(data,ax,fig):
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
-    #line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
-    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
-    #ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+    # line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+    # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1], 'o', .5, alpha=0.5)[0]), interval=10/N, blit=False) for data_ in data]
+    # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+    N = 100
+    anim = animation.FuncAnimation(fig, update_all, N, fargs=([(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]) for data_ in data]), interval=10/N, blit=False)
 
-    #ani.save('matplot003.gif', writer='imagemagick')
+    #ani_list[0].save('matplot004.gif', writer='imagemagick')
+
+
+    f = r"C:\bin\tol\Greiningardeildin\Verkefni1\animation.gif"
+    writergif = animation.PillowWriter(fps=30)
+    anim.save(f, writer=writergif)
+
 
     xhnit = []
     yhnit = []
@@ -514,14 +525,14 @@ def spurning10():
     for fjoldi_synilegra_sats, skekkja in skekkjusafn:
         skekkjucolumnsfyrirplot[fjoldi_synilegra_sats].append(skekkja)
 
-    ax.boxplot(skekkjucolumnsfyrirplot)
-    ax.set_xlabel("Fjöldi tungla")
-    ax.set_ylabel("skekkja[m]")
-    plt.show()
+    #ax.boxplot(skekkjucolumnsfyrirplot)
+    #ax.set_xlabel("Fjöldi sýnilegra tungla")
+    #ax.set_ylabel("skekkja[m]")
+    #plt.show()
 
-    #fig = plt.figure()
-    #ax = fig.add_subplot(projection='3d')
-    #create_animation(data, ax, fig)
+    fig = plt.figure()
+    ax = fig.add_subplot(projection='3d')
+    create_animation(data, ax, fig)
 
 def spurning10ingo(plot=True):
     datasafn = []
