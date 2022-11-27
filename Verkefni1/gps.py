@@ -38,9 +38,6 @@ def gen(n,phi=0,theta=0,hlutfall=1):
         phizero += (2*np.pi)/n
         phi += 2*np.pi/(n*hlutfall)
 
-def update(num, data, line):
-    line.set_data(data[:2, :num])
-    line.set_3d_properties(data[2, :num])
 
 def point_diff(A,B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
@@ -125,15 +122,21 @@ def turner(data,alpha,beta,epsilon):
     data = np.transpose(data)
     return np.transpose(np.matmul(data,turnmatrix))
 
+def update(num, data, line):
+    line.set_data(data[:2, :num])
+    line.set_3d_properties(data[2, :num])
+def update_all(num, *args):
+    for i in range(len(args)):
+        update(num, args[i][0], args[i][1])
 def create_animation(data,ax,fig):
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
-    #line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
-    ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]), interval=10/N, blit=False) for data_ in data]
-    #ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+    # line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
+    # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1], 'o', .5, alpha=0.5)[0]), interval=10/N, blit=False) for data_ in data]
+    # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
+    N = 100
 
-    #ani.save('matplot003.gif', writer='imagemagick')
 
     xhnit = []
     yhnit = []
@@ -153,6 +156,14 @@ def create_animation(data,ax,fig):
     ax.set_zlim(-constaltitude, constaltitude)
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
+    anim = animation.FuncAnimation(fig, update_all, N, fargs=([(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]) for data_ in data]), interval=10/N, blit=False)
+
+    #ani_list[0].save('matplot004.gif', writer='imagemagick')
+
+
+    f = r"C:\bin\tol\Greiningardeildin\Verkefni1\animation.gif"
+    writergif = animation.PillowWriter(fps=30)
+    anim.save(f, writer=writergif)
     plt.show()
 
 def spurning1(plot=True):
@@ -480,7 +491,6 @@ def spurning10():
         return new_system_with_error, new_sat_pos
         # tekur inn index og skilar nýrri staðsetningu á gervitunglum með fastri skekkju !!! kannski breytilegri skekkju síðar
 
-
     # þetta á að simulera ferðalag frá norðurpól á miðbaug
     # einhversstaðar á leiðinni á eitt tungl að bila, annaðhvort tíminn að byrja að drifta eða hoppa í tíma
     # eftir einhvern tíma þá á bilaða tunglið að verða tekið út og hætta að senda merki
@@ -498,57 +508,46 @@ def spurning10():
         data.append([])
         for j in range(3):
             data[i].append([])
-    #data[0][0].append(1)
-    #data[0][1].append(2)
-    #data[0][2].append(3)
-    #print(data)
-    #exit()
-
+    skekkjusafn = []
     for i in np.linspace(0, 90, num=90*8):
-        okkar_location, okkar_polar_hnit = get_position_abc(i)
-        print(okkar_location, okkar_polar_hnit)
+        okkar_location = np.array(x0)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)
 
-        for index, sat in enumerate(new_sys):
-            for xyz in range(3):
-                data[index][xyz].append(sat[xyz])
-        #print(data)
-        #exit()
-
-
         # trimma new_sys ef við sjáum ekki tunglin
-        # theta er alltaf 0
         exclude_sats = []
-        for index, sat in enumerate(sat_polar_hnit):
-
-            phi = okkar_polar_hnit[0]
-            phi_sat = np.arcsin(np.sin(sat[0])) - phi
-
-            if np.cos(sat[1]) < 0:  # ef kósínusinn á sat_theta er <0
+        for index, sat in enumerate(new_sys):
+            if sat[2] < 500:  # ef z er minna en 500km þá sjáum við það líklega ekki
                 exclude_sats.append(index)
-            elif np.cos(phi_sat) < 0:
-                exclude_sats.append(index)
+                for xyz in range(3):
+                    data[index][xyz].append(0)
+            else:
+                for xyz in range(3):
+                    data[index][xyz].append(new_sys[index][xyz])
 
-        print(len(exclude_sats))
-        # if len(exclude_sats) > satkerfi_fjoldi10 - 4:
-        #     counter += 1
-        #     plot3d(new_sys)
-        #     break
-        #     #plot3d(new_sys)
-
+        # henda út excluded sats:
+        for excluded_sat in exclude_sats[::-1]: #  í öfuga átt til að lenda ekki í því að slæsa útfyrir listann
+            new_sys = np.delete(new_sys, excluded_sat, 0)
         n10 = Newton(new_sys)
-        print(point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000)
-    #print(data)
+        try:
+            skekkjusafn.append([len(new_sys), point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000])
+        except np.linalg.LinAlgError:
+            print("lost signal")
     data = np.array(data)
-    #exit()
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    skekkjucolumnsfyrirplot = [[] for _ in range(satkerfi_fjoldi10)]
+    for fjoldi_synilegra_sats, skekkja in skekkjusafn:
+        skekkjucolumnsfyrirplot[fjoldi_synilegra_sats].append(skekkja)
+
+    #ax.boxplot(skekkjucolumnsfyrirplot)
+    #ax.set_xlabel("Fjöldi sýnilegra tungla")
+    #ax.set_ylabel("skekkja[m]")
+    #plt.show()
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    create_animation(data,ax,fig)
-    #print(data)
-    #print(counter)
-    #print(systems)
-    #plot3d(systems, halfur=1)
+    create_animation(data, ax, fig)
 
 def spurning10ingo(plot=True):
     datasafn = []
