@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import random
 from newton import Newton
 import time
+import os
 
 from matplotlib import animation
 from scipy import stats as stats
@@ -151,6 +152,7 @@ def create_animation(data, ax, fig, make = False):
     # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
 
 
+
     xhnit = []
     yhnit = []
     zhnit = []
@@ -176,7 +178,7 @@ def create_animation(data, ax, fig, make = False):
     # ani_list[0].save('matplot004.gif', writer='imagemagick')
 
     if make:
-        f = r"C:\bin\tol\Greiningardeildin\Verkefni1\animation.gif"
+        f = os.path.join(os.getcwd(), "animation.gif")
         writergif = animation.PillowWriter(fps=30)
         anim.save(f, writer=writergif)
     plt.show()
@@ -239,8 +241,17 @@ def spurning4(plot=True):
 
         n4error = Newton(new_system_with_error)
         list_of_positions.append(n4error.GaussNewton(x0, tolerance))
-    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]):.7f}")
-    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]):.7f}")
+    values = [point_diff(x0, position) for position in list_of_positions]
+    max_val = max(values)
+    min_val = min(values)
+    max_index = filter(lambda x: values[x] == max_val, range(len(values)))
+    min_index = filter(lambda x: values[x] == min_val, range(len(values)))
+    max_index = list(max_index)[0]
+    min_index = list(min_index)[0]
+    print( f"max villa var {max_val} og var fundin þegar villan var lögð við svo: {['+' if max_index & (1<<i) else '-' for i in range(4)]}")
+    print( f"min villa var {min_val} og var fundin þegar villan var lögð við svo: {['+' if min_index & (1<<i) else '-' for i in range(4)]}")
+
+
 
 
 def spurning5(plot=True):
@@ -538,7 +549,7 @@ def spurning10():
         for j in range(3):
             data[i].append([])
     skekkjusafn = []
-    for i in np.linspace(0, 90, num=90 * 8):
+    for i in np.linspace(0, 90*8, num=90*8*8):
         okkar_location = np.array(x0)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja,
                                                           initial_sat_pos=new_random_sat_positions)
@@ -574,6 +585,11 @@ def spurning10():
     # ax.set_xlabel("Fjöldi sýnilegra tungla")
     # ax.set_ylabel("skekkja[m]")
     # plt.show()
+    ax.boxplot(skekkjucolumnsfyrirplot)
+    ax.set_xlabel("Fjöldi sýnilegra tungla")
+    ax.set_ylabel("skekkja[m]")
+    plt.savefig(os.path.join(os.getcwd(), "boxplot_lidur_10.png"))
+    plt.show()
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
@@ -612,7 +628,7 @@ def spurning10ingo(plot=True):
             kerfi.append([*sat[:, timaskref], d / c])
 
         kerfi = np.array(kerfi)
-        kerfi = system
+        #kerfi = system
         #def spurning6(plot=True, calculate_sats=satkerfi_fjoldi, skekkja=skekkja, kerfi=0, simi=x0, gefid=False):
         skekkjusafn.append(np.max(spurning6(plot=False, calculate_sats=satkerfi_fjoldi,skekkja=skekkja, kerfi=kerfi, simi=siminn, gefid=True)))
 
