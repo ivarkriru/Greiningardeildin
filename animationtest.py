@@ -41,6 +41,7 @@ def gen(n,phi=0,theta=0,hlutfall = 1):
     phizero = 0
     while phizero < 2*np.pi:
         yield np.array([np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)])
+
         phizero += 2*np.pi/n
         phi += 2*np.pi/n
 
@@ -61,23 +62,37 @@ def update(num, data, line):
     line.set_data(data[:2, :num])
     line.set_3d_properties(data[2, :num])
 
-N = 1000
-data = np.array(list(gen(N,np.pi,np.pi/2,0.4))).T
+def turner(data,alpha,beta,epsilon):
+    turnmatrix = np.array([[np.cos(alpha)*np.cos(beta),np.cos(alpha)*np.sin(beta)*np.sin(epsilon)-np.sin(alpha)*np.cos(epsilon),np.cos(alpha)*np.sin(beta)*np.cos(epsilon)+np.sin(alpha)*np.sin(epsilon)],
+                           [np.sin(alpha)*np.cos(beta),np.sin(alpha)*np.sin(beta)*np.sin(epsilon)+np.cos(alpha)*np.cos(epsilon),np.sin(alpha)*np.sin(beta)*np.cos(epsilon)-np.cos(alpha)*np.sin(epsilon)],
+                           [-np.sin(beta),np.cos(beta)*np.sin(epsilon),np.cos(beta)*np.cos(epsilon)]])
+    data = np.transpose(data)
+    return np.transpose(np.matmul(data,turnmatrix))
+
+N = 100
+
+
+data = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
 data = data * constaltitude
+data = turner(data,random.random()*100,random.random()*100,random.random()*100)
 line, = ax.plot(data[0, 0:1], data[1, 0:1], data[2, 0:1])
 
-data2 = np.array(list(gen(N,5,12,0.1))).T
+
+data2 = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
 data2 = data2 * constaltitude
+data2 = turner(data2,random.random()*100,random.random()*100,random.random()*100)
 line2, = ax.plot(data2[0, 0:1], data2[1, 0:1], data2[2, 0:1])
 
 
-data3 = np.array(list(gen(N,3,9,2))).T
+data3 = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
 data3 = data3 * constaltitude
+data3 = turner(data3,random.random()*100,random.random()*100,random.random()*100)
 line3, = ax.plot(data3[0, 0:1], data3[1, 0:1], data3[2, 0:1])
 
 
-data4 = np.array(list(gen(N,20,1))).T
+data4 = np.array(list(gen(N,random.random()*100,random.random()*100,random.random()*100))).T
 data4 = data4 * constaltitude
+data4 = turner(data4,random.random()*100,random.random()*100,random.random()*100)
 line4, = ax.plot(data4[0, 0:1], data4[1, 0:1], data4[2, 0:1])
 
 # Setting the axes properties
