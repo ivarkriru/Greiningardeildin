@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import random
 from newton import Newton
 import time
+import animationtest
 from scipy import stats as stats
 
 system = np.array([[15600, 7540, 20140, 0.07074],
@@ -422,10 +423,29 @@ def spurning10():
     new_random_sat_positions = np.array([nyttSatPos10(pol=1, halfur=2) for _ in range(satkerfi_fjoldi10)])
     counter  = 0
     skekkja = 1e-8
-    for i in range(0, 91):
+    data = []
+    # Create List of list
+    for i in range(satkerfi_fjoldi10):
+        data.append([])
+        for j in range(3):
+            data[i].append([])
+    #data[0][0].append(1)
+    #data[0][1].append(2)
+    #data[0][2].append(3)
+    #print(data)
+    #exit()
+
+    for i in np.linspace(0, 90, num=90*8):
         okkar_location, okkar_polar_hnit = get_position_abc(i)
         print(okkar_location, okkar_polar_hnit)
         new_sys, sat_polar_hnit = new_system_with_skekkja(i, okkar_location, skekkja_=skekkja, initial_sat_pos=new_random_sat_positions)
+
+        for index, sat in enumerate(new_sys):
+            for xyz in range(3):
+                data[index][xyz].append(sat[xyz])
+        #print(data)
+        #exit()
+
 
         # trimma new_sys ef við sjáum ekki tunglin
         # theta er alltaf 0
@@ -449,7 +469,11 @@ def spurning10():
 
         n10 = Newton(new_sys)
         print(point_diff(n10.GaussNewton(okkar_location, 0.1), okkar_location)*1000)
-        # todo: búa til 3d plot animation
+    #print(data)
+    data = np.array(data)
+    #exit()
+    animationtest.create_animation(data)
+    #print(data)
     #print(counter)
     #print(systems)
     #plot3d(systems, halfur=1)
