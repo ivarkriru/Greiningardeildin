@@ -28,9 +28,9 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 9
+satkerfi_fjoldi = 24
 sample_fjoldi = 100
-N = 100
+N = 200
 constaltitude = 26570
 earthaltitude = 6370
 
