@@ -218,8 +218,17 @@ def spurning4(plot=True):
 
         n4error = Newton(new_system_with_error)
         list_of_positions.append(n4error.GaussNewton(x0, tolerance))
-    print(f"max: {max([point_diff(x0, position) for position in list_of_positions]):.7f}")
-    print(f"min: {min([point_diff(x0, position) for position in list_of_positions]):.7f}")
+    values = [point_diff(x0, position) for position in list_of_positions]
+    max_val = max(values)
+    min_val = min(values)
+    max_index = filter(lambda x: values[x] == max_val, range(len(values)))
+    min_index = filter(lambda x: values[x] == min_val, range(len(values)))
+    max_index = list(max_index)[0]
+    min_index = list(min_index)[0]
+    print( f"max villa var {max_val} og var fundin þegar villan var lögð við svo: {['+' if max_index & (1<<i) else '-' for i in range(4)]}")
+    print( f"min villa var {min_val} og var fundin þegar villan var lögð við svo: {['+' if min_index & (1<<i) else '-' for i in range(4)]}")
+
+
 
 def spurning5(plot = True):
 
