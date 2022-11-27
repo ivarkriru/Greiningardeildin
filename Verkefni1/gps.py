@@ -31,12 +31,12 @@ satkerfi_fjoldi = 24
 sample_fjoldi = 100
 N = 200
 
-def gen(n,phi=0,theta=0):
+def gen(n,phi=0,theta=0,hlutfall=1):
     phizero = 0
     while phizero < 2*np.pi:
         yield np.array([np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)])
         phizero += (2*np.pi)/n
-        phi += 2*np.pi/n
+        phi += 2*np.pi/(n*hlutfall)
 
 def update(num, data, line):
     line.set_data(data[:2, :num])
@@ -57,6 +57,11 @@ def coords(phi, theta, altitude=constaltitude):
         return [A, B, C, time, distance]
     else:
         return "incorrect values"
+
+def polars(A,B,C,altitude = constaltitude):
+    phi = np.arccos(C/altitude)
+    theta = np.arcsin(B/(altitude*np.sin(phi)))
+    return [theta,phi]
 
 def plot3d(sys,halfur=0):
     if halfur != 1:
@@ -143,7 +148,7 @@ def create_animation(data,ax,fig):
         yhnit.append(svar[1])
         zhnit.append(svar[2])
 
-    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.3)
+    ax.scatter(xhnit, yhnit, zhnit, c='blue', alpha=0.1)
 
     ax.set_xlim(-constaltitude, constaltitude)
     ax.set_ylim(-constaltitude, constaltitude)
@@ -535,6 +540,7 @@ def spurning10ingo(plot=True):
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
+    satkerfi_fjoldi = 3
 
     for sat in range(satkerfi_fjoldi):
         data = np.array(list(gen(N, random.random() * 100, random.random() * 100))).T
@@ -542,6 +548,13 @@ def spurning10ingo(plot=True):
         data = turner(data, random.random() * 100, random.random() * 100, random.random() * 100)
         datasafn.append(data)
     # print(datasafn[0])
+    print(x0[:-1])
+    simi = polars(*x0[:-1])
+    print(simi)
+    simadata = np.array(list(gen(N, simi[0],simi[1],4))).T
+    simadata = simadata*earthaltitude
+
+    datasafn.append(simadata)
 
     create_animation(np.array(datasafn),ax,fig)
 
