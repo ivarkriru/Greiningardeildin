@@ -138,14 +138,6 @@ def create_animation(data,ax,fig):
     # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1], 'o', .5, alpha=0.5)[0]), interval=10/N, blit=False) for data_ in data]
     # ani_list = [animation.FuncAnimation(fig, update, N, fargs=(data_, line_), interval=10/N, blit=False) for data_, line_ in data]
     N = 100
-    anim = animation.FuncAnimation(fig, update_all, N, fargs=([(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]) for data_ in data]), interval=10/N, blit=False)
-
-    #ani_list[0].save('matplot004.gif', writer='imagemagick')
-
-
-    f = r"C:\bin\tol\Greiningardeildin\Verkefni1\animation.gif"
-    writergif = animation.PillowWriter(fps=30)
-    anim.save(f, writer=writergif)
 
 
     xhnit = []
@@ -166,6 +158,14 @@ def create_animation(data,ax,fig):
     ax.set_zlim(-constaltitude, constaltitude)
     ax.set_proj_type('ortho')
     ax.set_box_aspect((1, 1, 1))
+    anim = animation.FuncAnimation(fig, update_all, N, fargs=([(data_, ax.plot(np.array(data_)[0, 0:1], np.array(data_)[1, 0:1], np.array(data_)[2, 0:1])[0]) for data_ in data]), interval=10/N, blit=False)
+
+    #ani_list[0].save('matplot004.gif', writer='imagemagick')
+
+
+    f = r"C:\bin\tol\Greiningardeildin\Verkefni1\animation.gif"
+    writergif = animation.PillowWriter(fps=30)
+    anim.save(f, writer=writergif)
     plt.show()
 
 def spurning1(plot=True):
