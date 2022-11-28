@@ -4,12 +4,11 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import random
-from foll import adferdir
+from adferdir import foll
 import time
 import os
 from matplotlib import animation
 from scipy import stats as stats
-
 
 
 if __name__ == '__main__':
