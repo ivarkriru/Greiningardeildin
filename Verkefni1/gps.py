@@ -180,7 +180,7 @@ def create_animation(data, ax, fig, make = False):
     # ani_list[0].save('matplot004.gif', writer='imagemagick')
 
     if make:
-        f = os.path.join(os.getcwd(), "animation_lidur_10.gif")
+        f = os.path.join(os.getcwd(), "animation_tilraun2.gif")
         writergif = animation.PillowWriter(fps=40)
         anim.save(f, writer=writergif)
     plt.show()
@@ -801,8 +801,8 @@ if __name__ == '__main__':
     #spurning7()
     #spurning8()
     #spurning9()
-    spurning10()
-    #spurning10ingo()
+    #spurning10()
+    spurning10ingo()
 
     #plot3d(new_system)
     #fig = plt.figure()
