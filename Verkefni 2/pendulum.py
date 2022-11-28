@@ -15,4 +15,9 @@ if __name__ == '__main__':
     #spurning1()
     #spurning2()
     #spurning3()
-    print()
+    follin = foll()
+
+    y = follin.euler(0.1, 20, 3)
+    x = range(0,len(y))
+    plt.plot(x,y)
+    plt.show()
