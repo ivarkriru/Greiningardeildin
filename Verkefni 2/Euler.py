@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-f = lambda t, yinner: np.power(t, 2) +2
+f2 = lambda t, yinner: np.power(t, 2) +2
+f = lambda t, yinner: t * yinner - np.power(t, 3)
 
 def euler(y0,n,T):
     h = T/n
@@ -9,21 +10,18 @@ def euler(y0,n,T):
     yaxis = []
     xaxis.append(t)
     yaxis.append(y0)
-    y=y0
-    for i in range(1, n):
-        t = t + h
+    y = y0
+    for i in range(1, n+1):
+        t = t+h
         xaxis.append(t)
-        yaxis.append(yaxis[i-1] + f(t,yaxis[i-1]) + h)
+        yaxis.append(yaxis[i-1] + f(t, yaxis[i-1]) * h)
 
-    x = range(y0,T)
-    y=f(x,x)
-    plt.plot(x,y)
-    plt.plot(xaxis,yaxis)
-    np.linspace(0,5)
-    plt.show()
+    plt.plot(xaxis, yaxis)
+#    np.linspace(0,5)
 
 
-euler(0,5,3)
-
-euler(0,20,3)
-euler(0,200,3)
+euler(2,5,3)
+euler(2,20,3)
+euler(2,200,3)
+fall(2,200,3)
+plt.show()
