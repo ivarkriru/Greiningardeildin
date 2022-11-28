@@ -1,5 +1,4 @@
 import statistics
-
 import matplotlib.animation as animation
 import numpy as np
 import math
@@ -9,9 +8,9 @@ from newton import Newton
 from newton import bisection
 import time
 import os
-
 from matplotlib import animation
 from scipy import stats as stats
+
 
 system = np.array([[15600, 7540, 20140, 0.07074],
                    [18760, 2750, 18610, 0.07220],
@@ -285,17 +284,13 @@ def spurning5(plot=True):
                                 [1.76452598, 1.96492466], ])
     
 
-    '''
+
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.1
     sp5_initial_sat01 = np.array([ [1.55285912, 1.599031  ],
                                  [1.53712495, 1.62040946],
                                  [1.57151953, 1.61481681],
                                  [1.56491249, 1.53779567],])
-    sp5_initial_sat = np.array([[1.55285912, 1.599031],
-                                [1.53712495, 1.62040946],
-                                [1.57151953, 1.61481681],
-                                [1.56491249, 1.53779567], ])
-    '''
+
 
     # staðsetning frá akkúrat sama stað, hliðrað um skekkja5 = 0.01
     sp5_initial_sat001 = np.array([ [1.57098865 ,1.57282701],
@@ -323,7 +318,7 @@ def spurning5(plot=True):
     Reiknadaemi5(sp5_initial_sat1)
     print("")
     print("hliðraður um 0.1: ")
-    Reiknadaemi5(sp5_initial_sat1)
+    Reiknadaemi5(sp5_initial_sat01)
     print("")
     print("hliðraður um 0.01: ")
     Reiknadaemi5(sp5_initial_sat001)
