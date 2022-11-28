@@ -180,7 +180,7 @@ def create_animation(data, ax, fig, make = False):
     # ani_list[0].save('matplot004.gif', writer='imagemagick')
 
     if make:
-        f = os.path.join(os.getcwd(), "animation.gif")
+        f = os.path.join(os.getcwd(), "animation_lidur_10.gif")
         writergif = animation.PillowWriter(fps=40)
         anim.save(f, writer=writergif)
     plt.show()
@@ -323,7 +323,7 @@ def spurning5(plot=True):
     Reiknadaemi5(sp5_initial_sat1)
     print("")
     print("hliðraður um 0.1: ")
-    Reiknadaemi5(sp5_initial_sat01)
+    Reiknadaemi5(sp5_initial_sat1)
     print("")
     print("hliðraður um 0.01: ")
     Reiknadaemi5(sp5_initial_sat001)
@@ -746,7 +746,7 @@ def spurning10():
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    create_animation(data, ax, fig)
+    create_animation(data, ax, fig,True)
 
 
 def spurning10ingo(plot=True):
