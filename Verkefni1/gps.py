@@ -397,8 +397,6 @@ def spurning6(plot=True, calculate_sats=satkerfi_fjoldi, skekkja=skekkja, kerfi=
         plt.show()
 '''
 
-
-
 def spurning7(plot=True):
     print("---- svar 7 ----- :")
     def bisecfall(skekkja):
@@ -422,7 +420,6 @@ def spurning7(plot=True):
     print(vals)
     plt.scatter(ii, vals)
     plt.show()
-
 
 def spurning8(plot=True):
     if plot:
@@ -481,8 +478,6 @@ def spurning8(plot=True):
     plt.legend(prop={'size': 10})
     plt.title('Skekkja borin saman eftir því hvort /nþað séu fjögur eða fimm gervihnettir',
               fontweight="bold")
-
-
 
 def spurning9(plot=True):
     print("---- svar 9 ----- :")
@@ -742,7 +737,6 @@ def spurning10():
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
     create_animation(data, ax, fig,True)
-
 
 def spurning10ingo(plot=True):
     datasafn = []

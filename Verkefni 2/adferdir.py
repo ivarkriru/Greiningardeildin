@@ -10,6 +10,7 @@ import time
 import os
 from matplotlib import animation
 from scipy import stats as stats
+from matplotlib.animation import FuncAnimation
 
 #f = lambda t, yinner: np.power(t, 2) +2
 #f2 = lambda t, yinner: np.power(t, 2) +2
@@ -40,3 +41,31 @@ class foll:
             hornhradiaxis.append(hornhradiaxis[i] + skreflengd*(np.sin(hornaxis[i]))*fasti - dempari)
 
         return hornaxis
+
+    def hornTohnit(self,th):
+        return self.L * np.sin(th),-self.L*np.cos(th)
+
+
+    def create_animation2d(self,data):
+
+        # initializing a figure in
+        # which the graph will be plotted
+        # marking the x-axis and y-axis
+
+        plt.axis('equal')
+
+
+        for index in range(data.shape[0]):
+            plt.clf()
+            plt.axes(xlim=(-self.L*1.5, self.L*1.5),ylim=(-self.L*1.5, self.L*1.5))
+            x = data[index, 0]
+            y = data[index, 1]
+            plt.scatter(x,y,lw=20,c="orange")
+            plt.plot([0,x],[0,y],lw=5,c="blue")
+            plt.plot([-10,10],[0,0],lw=1,c="black")
+
+            plt.pause(0.001)
+        plt.show()
+
+
+
