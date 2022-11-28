@@ -30,9 +30,9 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 8
+satkerfi_fjoldi = 24
 sample_fjoldi = 200
-N = 10
+N = 100
 
 
 def gen(n, phi=0, theta=0, hlutfall=1):
@@ -181,7 +181,7 @@ def create_animation(data, ax, fig, make = False):
 
     if make:
         f = os.path.join(os.getcwd(), "animation.gif")
-        writergif = animation.PillowWriter(fps=30)
+        writergif = animation.PillowWriter(fps=40)
         anim.save(f, writer=writergif)
     plt.show()
 
@@ -783,12 +783,12 @@ def spurning10ingo(plot=True):
         kerfi = np.array(kerfi)
         #kerfi = system
         #def spurning6(plot=True, calculate_sats=satkerfi_fjoldi, skekkja=skekkja, kerfi=0, simi=x0, gefid=False):
-        skekkjusafn.append(np.max(spurning6(plot=False, calculate_sats=satkerfi_fjoldi,skekkja=skekkja, kerfi=kerfi, simi=siminn, gefid=True)))
+        #skekkjusafn.append(np.max(spurning6(plot=False, calculate_sats=satkerfi_fjoldi,skekkja=skekkja, kerfi=kerfi, simi=siminn, gefid=True)))
 
-        print(timaskref)
+        #print(timaskref)
     print(skekkjusafn)
 
-    create_animation(np.array(datasafn), ax, fig)
+    create_animation(np.array(datasafn), ax, fig,True)
 
 
 if __name__ == '__main__':
@@ -800,9 +800,9 @@ if __name__ == '__main__':
     #spurning6()
     #spurning7()
     #spurning8()
-    spurning9()
-    #spurning10()
-    spurning10ingo()
+    #spurning9()
+    spurning10()
+    #spurning10ingo()
 
     #plot3d(new_system)
     #fig = plt.figure()
