@@ -22,7 +22,7 @@ def spurning2():
     '''
 
     euler fallið í adferd python skjalinu
-    :return:
+
     '''
     pass
 
