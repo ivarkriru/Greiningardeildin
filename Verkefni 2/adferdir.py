@@ -16,7 +16,7 @@ from matplotlib.animation import FuncAnimation
 #f2 = lambda t, yinner: np.power(t, 2) +2
 #f = lambda t, yinner: t * yinner - np.power(t, 3)
 
-class foll:
+class Foll:
     def __init__(self):
         self.c = 299792.458
         self.g = 9.81
@@ -39,6 +39,29 @@ class foll:
             skref = skref + skreflengd
             hornaxis.append(hornaxis[i] + skreflengd*hornhradiaxis[i])
             hornhradiaxis.append(hornhradiaxis[i] + skreflengd*(np.sin(hornaxis[i]))*fasti - dempari)
+
+        return hornaxis
+    def pendulum(self, theta):
+        fasti = -1*self.g/(self.L)
+        return np.sin(theta) * fasti
+    def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd):
+        skreflengd = lengd / fjoldiskrefa  # h = skreflengd
+        skref = 0  # skref = t
+        hornaxis = []
+        hornhradiaxis = []
+
+        dempari = 0
+        hornaxis.append(horn)
+        hornhradiaxis.append(hornhradi)
+
+        for i in range(0, fjoldiskrefa):
+            skref = skref + skreflengd
+            s1 = f(hornaxis[i])
+            s2 = f(hornaxis[i] + skreflengd/2*s1)
+            s3 = f(hornaxis[i] + skreflengd/2*s2)
+            s4 = f(hornaxis[i] + skreflengd* s3)
+            hornaxis.append(hornaxis[i] + skreflengd*(s1/6+s2/3+s3/3+s4/6))
+            hornhradiaxis.append(f(hornaxis[i]))
 
         return hornaxis
 

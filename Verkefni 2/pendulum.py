@@ -4,7 +4,7 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import random
-from adferdir import foll
+from adferdir import Foll
 import time
 import os
 from matplotlib import animation
@@ -27,7 +27,7 @@ def spurning2():
     pass
 
 def spurning3():
-    follin = foll()
+    follin = Foll()
 
     y = follin.euler(horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
 
@@ -39,7 +39,7 @@ def spurning3():
     follin.create_animation2d(hnit)
 
 def spurning4():
-    follin = foll()
+    follin = Foll()
 
     y = follin.euler(horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
 
@@ -51,7 +51,11 @@ def spurning4():
     follin.create_animation2d(hnit)
 
 def spurning5():
-    pass
+    follin = Foll()
+    y = follin.RKmethod(follin.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    print(y)
+    plt.plot(y)
+    plt.show()
 
 def spurning6():
     pass
@@ -81,5 +85,6 @@ if __name__ == '__main__':
     #spurning1()
     #spurning2()
     #spurning3()
-    spurning4()
+    # spurning4()
+    spurning5()
 
