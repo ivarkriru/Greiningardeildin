@@ -81,18 +81,18 @@ class Foll:
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
-            s1 = skreflengd * f1(horn1axis[i], horn2axis[i], hornhradi1[i], hornhradi2[i])
-            s2 = skreflengd * f1(horn1axis[i] + skreflengd*(s1/2))
-            s3 = skreflengd * f1(horn1axis[i] + skreflengd*(s2/2))
-            s4 = skreflengd * f1(horn1axis[i] + skreflengd * s3)
+            s1 = skreflengd * f1(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
+            s2 = skreflengd * f1(horn1axis[i] + skreflengd*(s1/2), horn2axis[i] + skreflengd*(s1/2), horn1hradiaxis[i], horn2hradiaxis[i])
+            s3 = skreflengd * f1(horn1axis[i] + skreflengd*(s2/2), horn2axis[i] + skreflengd*(s2/2), horn1hradiaxis[i], horn2hradiaxis[i])
+            s4 = skreflengd * f1(horn1axis[i] + skreflengd*s3, horn2axis[i] + skreflengd*s3, horn1hradiaxis[i], horn2hradiaxis[i])
             w = horn1hradiaxis[i] + (s1+s2*2+s3*2+s4)/6
             horn1hradiaxis.append(w)
             horn1axis.append(horn1axis[i] + skreflengd*w)
 
-            s1 = skreflengd * f1(horn2axis[i])
-            s2 = skreflengd * f1(horn2axis[i] + skreflengd*(s1/2))
-            s3 = skreflengd * f1(horn2axis[i] + skreflengd*(s2/2))
-            s4 = skreflengd * f1(horn2axis[i] + skreflengd * s3)
+            s1 = skreflengd * f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
+            s2 = skreflengd * f2(horn1axis[i] + skreflengd*(s1/2), horn2axis[i] + skreflengd*(s1/2), horn1hradiaxis[i], horn2hradiaxis[i])
+            s3 = skreflengd * f2(horn1axis[i] + skreflengd*(s2/2), horn2axis[i] + skreflengd*(s2/2), horn1hradiaxis[i], horn2hradiaxis[i])
+            s4 = skreflengd * f2(horn1axis[i] + skreflengd*s3, horn2axis[i] + skreflengd*s3, horn1hradiaxis[i], horn2hradiaxis[i])
             w = horn2hradiaxis[i] + (s1+s2*2+s3*2+s4)/6
             horn2hradiaxis.append(w)
             horn2axis.append(horn2axis[i] + skreflengd*w)
@@ -152,8 +152,8 @@ class Pendulum:
         return np.sin(theta) * fasti
 
     def double_pendulum1(self, theta1, theta2, omega1, omega2):
-        l1 = self.l_1
-        l2 = self.l_2
+        l1 = self.L_1
+        l2 = self.L_2
         m1 = self.m_1
         m2 = self.m_1
         g = self.g
@@ -164,8 +164,8 @@ class Pendulum:
         return theta1_2prime
 
     def double_pendulum2(self, theta1, theta2, omega1, omega2):
-        l1 = self.l_1
-        l2 = self.l_2
+        l1 = self.L_1
+        l2 = self.L_2
         m1 = self.m_1
         m2 = self.m_1
         g = self.g
