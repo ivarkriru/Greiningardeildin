@@ -11,6 +11,7 @@ import os
 from matplotlib import animation
 from scipy import stats as stats
 from matplotlib.animation import FuncAnimation
+from numpy import sin, cos
 
 #f = lambda t, yinner: np.power(t, 2) +2
 #f2 = lambda t, yinner: np.power(t, 2) +2
@@ -22,7 +23,7 @@ class Foll:
         self.g = 9.81
         self.L = 2
 
-    def euler(self, horn, hornhradi, fjoldiskrefa, lengd):
+    def euler(self,  f, horn, hornhradi, fjoldiskrefa, lengd):
         skreflengd = lengd / fjoldiskrefa
         skref = 0
         hornaxis = []
@@ -30,7 +31,6 @@ class Foll:
 
         demparastuðull = 0.00
 
-        fasti = -1*self.g/(self.L)
 
         hornaxis.append(horn)
         hornhradiaxis.append(hornhradi+0.0000000001)
@@ -39,12 +39,9 @@ class Foll:
             skref = skref + skreflengd
             hornaxis.append(hornaxis[i] + skreflengd*hornhradiaxis[i])
             dempun = -1*demparastuðull*(hornhradiaxis[i]/(abs(hornhradiaxis[i])))
-            hornhradiaxis.append(hornhradiaxis[i] + skreflengd*(np.sin(hornaxis[i]))*fasti + dempun)
+            hornhradiaxis.append(hornhradiaxis[i] + skreflengd*f(hornaxis[i]) + dempun)
 
         return hornaxis
-    def pendulum(self, theta):
-        fasti = -1*self.g/(self.L)
-        return np.sin(theta) * fasti
 
     def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
@@ -106,5 +103,33 @@ class Foll:
 
         plt.show()
 
+class Pendulum:
+    def __init__(self):
+        self.L_1 = 1
+        self.m_1 = 1
+        self.L_2 = 1
+        self.m_2 = 1
+
+        self.g = 9.81
+
+        self.L = 2
+    def pendulum(self, theta):
+        fasti = -1*self.g/(self.L)
+        return np.sin(theta) * fasti
+
+    def double_pendulum(self, theta1, theta2, omega1, omega2):
+        L1 = self.L_1
+        L2 = self.L_2
+        m1 = self.m_1
+        m2 = self.m_1
+        g = self.g
+        d = theta2 - theta1
+        theta1_2prime = m2 * L1 * omega1**2 * sin(d) * cos(d) + m2 * g * sin(theta2)*cos(d) + m2 * L2 * omega2**2 * sin(d) - (m1 + m2)*g*sin(theta1
+                            ) / (m1 + m2) * L1 - m2 * L1 * cos(d)**2
+
+        theta2_2prime = -m2 * L1 * omega2**2 * sin(d) * cos(d) + (m1 + m2) * (g * sin(theta1)*cos(d)) + L1 * omega1**2 * sin(d) - g*sin(theta2
+                            ) / (m1 + m2) * L2 - m2 * L2 * cos(d)**2
+
+        return theta1_2prime, theta2_2prime
 
 
