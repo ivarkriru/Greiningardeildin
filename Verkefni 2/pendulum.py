@@ -52,17 +52,17 @@ def spurning4():
 
 def spurning5():
     follin = Foll()
-    y = follin.RKmethod(f=follin.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=1000, lengd=10)
+    y = follin.RKmethod(f=follin.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=10)
     hnit = []
     for theta in y:
         hnit.append(follin.hornTohnit(theta))
     hnit = np.array(hnit)
 
     #print(y)
-    plt.plot(y)
-    plt.show()
+    #plt.plot(y)
+    #plt.show()
 
-    #follin.create_animation2d(hnit)
+    follin.create_animation2d(hnit)
 
 def spurning6():
     pass

@@ -58,11 +58,11 @@ class Foll:
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
-            s1 = skreflengd* hornhradiaxis[i]
-            s2 = skreflengd* f(hornaxis[i] + skreflengd*(s1/2))
+            s1 = skreflengd * f(hornaxis[i])
+            s2 = skreflengd * f(hornaxis[i] + skreflengd*(s1/2))
             s3 = skreflengd * f(hornaxis[i] + skreflengd*(s2/2))
             s4 = skreflengd * f(hornaxis[i] + skreflengd * s3)
-            w = hornhradiaxis[i] + (s1/6+s2/3+s3/3+s4/6)
+            w = hornhradiaxis[i] + (s1+s2*2+s3*2+s4)/6
             hornhradiaxis.append(w)
             hornaxis.append(hornaxis[i] + skreflengd*w)
 
