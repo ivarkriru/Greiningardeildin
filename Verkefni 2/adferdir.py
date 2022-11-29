@@ -65,6 +65,40 @@ class Foll:
 
         return hornaxis
 
+    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd):
+        skreflengd = lengd / fjoldiskrefa  # h = skreflengd
+        skref = 0  # skref = t
+        horn1axis = []
+        horn1hradiaxis = []
+        horn2axis = []
+        horn2hradiaxis = []
+
+        dempari = 0
+        horn1axis.append(horn1)
+        horn1hradiaxis.append(hornhradi1)
+        horn2axis.append(horn2)
+        horn2hradiaxis.append(hornhradi2)
+
+        for i in range(0, fjoldiskrefa):
+            skref = skref + skreflengd
+            s1 = skreflengd * f1(horn1axis[i], horn2axis[i], hornhradi1[i], hornhradi2[i])
+            s2 = skreflengd * f1(horn1axis[i] + skreflengd*(s1/2))
+            s3 = skreflengd * f1(horn1axis[i] + skreflengd*(s2/2))
+            s4 = skreflengd * f1(horn1axis[i] + skreflengd * s3)
+            w = horn1hradiaxis[i] + (s1+s2*2+s3*2+s4)/6
+            horn1hradiaxis.append(w)
+            horn1axis.append(horn1axis[i] + skreflengd*w)
+
+            s1 = skreflengd * f1(horn2axis[i])
+            s2 = skreflengd * f1(horn2axis[i] + skreflengd*(s1/2))
+            s3 = skreflengd * f1(horn2axis[i] + skreflengd*(s2/2))
+            s4 = skreflengd * f1(horn2axis[i] + skreflengd * s3)
+            w = horn2hradiaxis[i] + (s1+s2*2+s3*2+s4)/6
+            horn2hradiaxis.append(w)
+            horn2axis.append(horn2axis[i] + skreflengd*w)
+
+        return horn1axis, horn2axis
+
     def hornTohnit(self,th,th2=0):
         return self.L * np.sin(th),-self.L*np.cos(th)
 
@@ -117,19 +151,28 @@ class Pendulum:
         fasti = -1*self.g/(self.L)
         return np.sin(theta) * fasti
 
-    def double_pendulum(self, theta1, theta2, omega1, omega2):
-        L1 = self.L_1
-        L2 = self.L_2
+    def double_pendulum1(self, theta1, theta2, omega1, omega2):
+        l1 = self.l_1
+        l2 = self.l_2
         m1 = self.m_1
         m2 = self.m_1
         g = self.g
         d = theta2 - theta1
-        theta1_2prime = m2 * L1 * omega1**2 * sin(d) * cos(d) + m2 * g * sin(theta2)*cos(d) + m2 * L2 * omega2**2 * sin(d) - (m1 + m2)*g*sin(theta1
-                            ) / (m1 + m2) * L1 - m2 * L1 * cos(d)**2
+        theta1_2prime = m2 * l1 * omega1**2 * sin(d) * cos(d) + m2 * g * sin(theta2)*cos(d) + m2 * l2 * omega2**2 * sin(d) - (m1 + m2)*g*sin(theta1
+                            ) / (m1 + m2) * l1 - m2 * l1 * cos(d)**2
 
-        theta2_2prime = -m2 * L1 * omega2**2 * sin(d) * cos(d) + (m1 + m2) * (g * sin(theta1)*cos(d)) + L1 * omega1**2 * sin(d) - g*sin(theta2
-                            ) / (m1 + m2) * L2 - m2 * L2 * cos(d)**2
+        return theta1_2prime
 
-        return theta1_2prime, theta2_2prime
+    def double_pendulum2(self, theta1, theta2, omega1, omega2):
+        l1 = self.l_1
+        l2 = self.l_2
+        m1 = self.m_1
+        m2 = self.m_1
+        g = self.g
+        d = theta2 - theta1
 
+        theta2_2prime = -m2 * l1 * omega2**2 * sin(d) * cos(d) + (m1 + m2) * (g * sin(theta1)*cos(d)) + l1 * omega1**2 * sin(d) - g*sin(theta2
+                        ) / (m1 + m2) * l2 - m2 * l2 * cos(d)**2
+
+        return theta2_2prime
 

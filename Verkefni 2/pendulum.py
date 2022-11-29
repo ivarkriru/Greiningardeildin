@@ -62,8 +62,17 @@ def spurning5(plot=False):
     if plot:
         follin.create_animation2d(hnit)
 
-def spurning6():
-    pass
+def spurning6(plot=False):
+    follin = Foll()
+    p = Pendulum()
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=10)
+    hnit = []
+    for theta in y:
+        hnit.append(follin.hornTohnit(theta))
+    hnit = np.array(hnit)
+
+    if plot:
+        follin.create_animation2d(hnit, fjoldipendula=2)
 
 def spurning7():
     pass
@@ -92,4 +101,5 @@ if __name__ == '__main__':
     spurning3()
     spurning4()
     spurning5(plot=True)
+    spurning6()
 
