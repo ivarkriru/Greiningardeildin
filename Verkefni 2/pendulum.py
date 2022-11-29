@@ -74,19 +74,24 @@ def spurning7(plot=False):
 
 
     follin = Foll()
-    p = Pendulum()
-    p.double_pendulum1(1,2,3,4)
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/3, horn2=np.pi/6, hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20)
-    hnit = []
+    p = Pendulum(L_1=2,m_1=1,L_2=5,m_2=10)
+    lengdin=10
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/3, horn2=np.pi*1.5, hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin*20, lengd=lengdin)
+    hnitsenior = []
+    hnitjunior = []
     for theta in y1:
-        hnit.append(follin.hornTohnit(theta))
-    hnit = np.array(hnit)
+        hnitsenior.append(p.hornTohnit(theta))
+    for index,theta in enumerate(y2):
+        hnitjunior.append(p.hornTohnitjunior(y1[index],theta))
+
+    hnitsenior = np.array(hnitsenior)
+    hnitjunior = np.array(hnitjunior)
 
     if plot:
         plt.plot(y1)
         plt.plot(y2)
         plt.show()
-        #follin.create_animation2d(hnit)
+        p.create_animation2d(hnitsenior,hnitjunior,2)
 
 
 def spurning8():
@@ -108,10 +113,10 @@ def frjals():
     pass
 
 if __name__ == '__main__':
-    spurning1()
-    spurning2()
-    spurning3()
-    spurning4()
-    spurning5(plot=False)
+    #spurning1()
+    #spurning2()
+    #spurning3()
+    #spurning4()
+    #spurning5(plot=False)
     spurning7(plot=True)
 
