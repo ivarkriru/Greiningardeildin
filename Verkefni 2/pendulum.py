@@ -63,6 +63,11 @@ def spurning5(plot=False):
         follin.create_animation2d(hnit)
 
 def spurning6():
+    '''
+
+    er á ipad pdf skjalinu hér á git.
+
+    '''
     pass
 
 def spurning7(plot=False):

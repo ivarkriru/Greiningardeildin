@@ -18,7 +18,7 @@ from numpy import sin, cos
 #f = lambda t, yinner: t * yinner - np.power(t, 3)
 
 class Foll:
-    def __init__(self):
+    def __init__(self,):
         self.c = 299792.458
         self.g = 9.81
         self.L = 2
@@ -138,17 +138,15 @@ class Foll:
         plt.show()
 
 class Pendulum:
-    def __init__(self):
-        self.L_1 = 1
-        self.m_1 = 1
-        self.L_2 = 1
-        self.m_2 = 1
-
+    def __init__(self,L_1=2,m_1=1,L_2=2,m_2=1):
+        self.L_1 = L_1
+        self.m_1 = m_1
+        self.L_2 = L_2
+        self.m_2 = m_2
         self.g = 9.81
 
-        self.L = 2
     def pendulum(self, theta):
-        fasti = -1*self.g/(self.L)
+        fasti = -1*self.g/(self.L_1)
         return np.sin(theta) * fasti
 
     def double_pendulum1(self, theta1, theta2, omega1, omega2):
@@ -170,6 +168,8 @@ class Pendulum:
         m2 = self.m_1
         g = self.g
         d = theta2 - theta1
+
+
 
         theta2_2prime = -m2 * l1 * omega2**2 * sin(d) * cos(d) + (m1 + m2) * (g * sin(theta1)*cos(d)) + l1 * omega1**2 * sin(d) - g*sin(theta2
                         ) / (m1 + m2) * l2 - m2 * l2 * cos(d)**2
