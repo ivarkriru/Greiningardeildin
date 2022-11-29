@@ -28,17 +28,18 @@ class foll:
         hornaxis = []
         hornhradiaxis = []
 
-        dempari = 0
+        demparastuðull = 0.00
 
         fasti = -1*self.g/(self.L)
 
         hornaxis.append(horn)
-        hornhradiaxis.append(hornhradi)
+        hornhradiaxis.append(hornhradi+0.0000000001)
 
         for i in range(0,fjoldiskrefa):
             skref = skref + skreflengd
             hornaxis.append(hornaxis[i] + skreflengd*hornhradiaxis[i])
-            hornhradiaxis.append(hornhradiaxis[i] + skreflengd*(np.sin(hornaxis[i]))*fasti - dempari)
+            dempun = -1*demparastuðull*(hornhradiaxis[i]/(abs(hornhradiaxis[i])))
+            hornhradiaxis.append(hornhradiaxis[i] + skreflengd*(np.sin(hornaxis[i]))*fasti + dempun)
 
         return hornaxis
 
@@ -46,25 +47,38 @@ class foll:
         return self.L * np.sin(th),-self.L*np.cos(th)
 
 
-    def create_animation2d(self,data):
+    def create_animation2d(self,data1,data2=None,fjoldipendula=1):
 
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
-
         plt.axis('equal')
+        plt.axes(xlim=(-self.L * 1.5, self.L * 1.5), ylim=(-self.L * 1.5, self.L * 1.5))
 
+        if fjoldipendula == 1:
+            for index in range(data1.shape[0]):
+                plt.clf()
+                plt.axes(xlim=(-self.L*1.5, self.L*1.5),ylim=(-self.L*1.5, self.L*1.5))
+                x = data1[index, 0]
+                y = data1[index, 1]
+                plt.scatter(x,y,lw=20,c="orange")
+                plt.plot([0,x],[0,y],lw=5,c="blue")
+                plt.plot([-10,10],[0,0],lw=1,c="black")
 
-        for index in range(data.shape[0]):
-            plt.clf()
-            plt.axes(xlim=(-self.L*1.5, self.L*1.5),ylim=(-self.L*1.5, self.L*1.5))
-            x = data[index, 0]
-            y = data[index, 1]
-            plt.scatter(x,y,lw=20,c="orange")
-            plt.plot([0,x],[0,y],lw=5,c="blue")
-            plt.plot([-10,10],[0,0],lw=1,c="black")
+                plt.pause(0.001)
 
-            plt.pause(0.001)
+        elif fjoldipendula == 2:
+            for index in range(data1.shape[0]):
+                plt.clf()
+                plt.axes(xlim=(-self.L * 1.5, self.L * 1.5), ylim=(-self.L * 1.5, self.L * 1.5))
+                x = data1[index, 0]
+                y = data1[index, 1]
+                plt.scatter(x, y, lw=20, c="orange")
+                plt.plot([0, x], [0, y], lw=5, c="blue")
+                plt.plot([-10, 10], [0, 0], lw=1, c="black")
+
+                plt.pause(0.001)
+
         plt.show()
 
 
