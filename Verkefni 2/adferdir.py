@@ -156,8 +156,9 @@ class Pendulum:
         m2 = self.m_1
         g = self.g
         d = theta2 - theta1
-        theta1_2prime = m2 * l1 * omega1**2 * sin(d) * cos(d) + m2 * g * sin(theta2)*cos(d) + m2 * l2 * omega2**2 * sin(d) - (m1 + m2)*g*sin(theta1
-                            ) / (m1 + m2) * l1 - m2 * l1 * cos(d)**2
+
+        theta1_2prime = (m2 * l1 * omega1**2 * sin(d) * cos(d) + m2 * g * sin(theta2)*cos(d) + m2 * l2 * omega2**2 * sin(d) - (m1 + m2)*g*sin(theta1
+                            )) / ((m1 + m2) * l1 - m2 * l1 * cos(d)**2)
 
         return theta1_2prime
 
@@ -169,10 +170,8 @@ class Pendulum:
         g = self.g
         d = theta2 - theta1
 
-
-
-        theta2_2prime = -m2 * l1 * omega2**2 * sin(d) * cos(d) + (m1 + m2) * (g * sin(theta1)*cos(d)) + l1 * omega1**2 * sin(d) - g*sin(theta2
-                        ) / (m1 + m2) * l2 - m2 * l2 * cos(d)**2
+        theta2_2prime = (-m2 * l2 * omega2**2 * sin(d) * cos(d) + (m1 + m2) * (g * sin(theta1)*cos(d)) - l1 * omega1**2 * sin(d) - g*sin(theta2
+                        )) / ((m1 + m2) * l2 - m2 * l2 * cos(d)**2)
 
         return theta2_2prime
 
