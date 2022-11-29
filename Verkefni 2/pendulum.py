@@ -100,8 +100,14 @@ def spurning8():
 def spurning9():
     pass
 
-def spurning10():
-    pass
+def spurning10(plot = True):
+    follin = Foll()
+    p = Pendulum(L_1=2,m_1=1,L_2=5,m_2=10)
+    lengdin=10
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/3, horn2=np.pi*1.5, hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin*20, lengd=lengdin)
+    if plot:
+        plt.plot(y1,y2)
+        plt.show()
 
 def spurning11():
     pass
