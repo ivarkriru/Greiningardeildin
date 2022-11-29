@@ -65,6 +65,11 @@ def spurning5():
     follin.create_animation2d(hnit)
 
 def spurning6():
+    '''
+
+        er á ipad pdf skjalinu hér á git.
+
+    '''
     pass
 
 def spurning7():
@@ -92,6 +97,8 @@ if __name__ == '__main__':
     #spurning1()
     #spurning2()
     #spurning3()
-    # spurning4()
-    spurning5()
+    #spurning4()
+    #spurning5()
+    #spurning6()
+    spurning7()
 
