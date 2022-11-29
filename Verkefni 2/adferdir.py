@@ -45,6 +45,7 @@ class Foll:
     def pendulum(self, theta):
         fasti = -1*self.g/(self.L)
         return np.sin(theta) * fasti
+
     def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
@@ -57,16 +58,17 @@ class Foll:
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
+
             s1 = f(hornaxis[i])
-            s2 = f(hornaxis[i] + skreflengd/2*s1)
-            s3 = f(hornaxis[i] + skreflengd/2*s2)
-            s4 = f(hornaxis[i] + skreflengd* s3)
+            s2 = f(hornaxis[i] + skreflengd*s1/2)
+            s3 = f(hornaxis[i] + skreflengd*s2/2)
+            s4 = f(hornaxis[i] + skreflengd * s3)
+
             hornaxis.append(hornaxis[i] + skreflengd*(s1/6+s2/3+s3/3+s4/6))
             hornhradiaxis.append(f(hornaxis[i]))
-
         return hornaxis
 
-    def hornTohnit(self,th):
+    def hornTohnit(self,th,th2=0):
         return self.L * np.sin(th),-self.L*np.cos(th)
 
 
