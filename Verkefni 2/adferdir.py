@@ -188,7 +188,7 @@ class Pendulum:
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
-        return hnit
+        return hnit, y
 
     def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
         y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
@@ -197,7 +197,7 @@ class Pendulum:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
 
-        return hnit
+        return hnit,y
 
     def hornTohnit(self, th):
         return self.L_1 * np.sin(th), -self.L_1 * np.cos(th)
