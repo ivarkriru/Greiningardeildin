@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from adferdir import Foll, Pendulum
 
+def point_diff(A, B):
+    return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
 
 def spurning1(plot=False):
     '''
@@ -131,22 +133,35 @@ def spurning9(plot=False):
                 n = 100*2**i
                 y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
                                       hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=20)
-                result_intermed.append([n, y1[-1], y2[-1], pendular, upphafsstada])
+                hnit1 = p.hornTohnit(y1[-1])
+                hnit2 = p.hornTohnitjunior(y1[-1], y2[-1])
+                # result_intermed.append([n, y1[-1], y2[-1], pendular, upphafsstada])
+                result_intermed.append([n, hnit1, hnit2, pendular, upphafsstada])
             results.append(result_intermed)
     for result in results:
         print(result)
 
     # todo: plotta feril á pendulum með mismunandi n
     if plot:
+
+
         fig, ax = plt.subplots(len(pendulalist)*len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
         for index, result in enumerate(results):
-            x = [result_[0] for result_ in result]
-            theta1 = [result_[1] for result_ in result]
-            theta2 = [result_[2] for result_ in result]
+            # x = [result_[0] for result_ in result]
+            x1 = [result_[2][0] for result_ in result]
+            y1 = [result_[2][1] for result_ in result]
+            # theta2 = [result_[2] for result_ in result]
+            # hnit1 = [p.hornTohnit(result_[1], L_1=result_[3][0]) for result_ in result]
+            # hnit2 = [p.hornTohnitjunior(result_[1], result[2], L_1=result[3][0], L_2=result_[3][2]) for result_ in result]
 
-            ax[index].bar(x, theta1, 100)
-            x = [result_[0]+50 for result_ in result] # til að bars séu ekki ofan í hvorum öðrum
-            ax[index].bar(x, theta2, 100, color='red')
+            plt.figure()
+            plt.plot(x1,y1)
+            plt.show()
+
+            ax[index].scatter(x1, y1, 100)
+
+            # x = [result_[0]+50 for result_ in result] # til að bars séu ekki ofan í hvorum öðrum
+            # ax[index].bar(x, theta2, 100, color='red')
             ax[index].set_title(f"{result[0][4]}, L1: {result[0][3]}")
             #ax.bar(x, theta2)
         plt.show()
@@ -181,12 +196,13 @@ def frjals(plot=False):
 
 
 if __name__ == '__main__':
-    spurning1(True)
-    spurning2(True)
-    spurning3(True)
+    #spurning1(True)
+    #spurning2(True)
+    #spurning3(True)
     #spurning4(True)
     #spurning5(True)
     #spurning6(True)
     #spurning7(True)
     #spurning8(plot=True)
+    spurning9(plot=True)
     # spurning10()
