@@ -1,8 +1,11 @@
+import random
+
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 import io
+import os
 
 
 g = 9.81
@@ -78,7 +81,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             horn1hradiaxis.append(w)
-            horn1axis.append((horn1axis[i] + skreflengd * w)%(np.pi*2))
+            horn1axis.append(horn1axis[i] + skreflengd * w)
 
             s1 = skreflengd * f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
             s2 = skreflengd * f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
@@ -89,7 +92,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             horn2hradiaxis.append(w)
-            horn2axis.append((horn2axis[i] + skreflengd * w)%(np.pi*2))
+            horn2axis.append(horn2axis[i] + skreflengd * w)
 
         return horn1axis, horn2axis
 
@@ -124,14 +127,19 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        k1 = m2 * l1 * math.pow(omega1, 2) * np.sin(d) * np.cos(d)
-        k2 = m2 * g * np.sin(theta2) * np.cos(d)
-        k3 = m2 * l2 * math.pow(omega2, 2) * np.sin(d)
-        k4 = (m1 + m2) * g * np.sin(theta1)
-        k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
+        #k1 = m2 * l1 * math.pow(omega1, 2) * np.sin(d) * np.cos(d)
+        #k2 = m2 * g * np.sin(theta2) * np.cos(d)
+        #k3 = m2 * l2 * math.pow(omega2, 2) * np.sin(d)
+        #k4 = (m1 + m2) * g * np.sin(theta1)
+        #k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
 
+        k1 = m2*l2*math.pow(omega2,2)*np.sin(d)
+        k2 =-((m1+m2)*g*np.sin(theta1))
+        k3 = m2*l1*math.pow(omega1,2)*np.sin(d)*np.cos(d)
+        k4 = -m2*g*np.sin(theta2)*np.cos(d)
+        k5 = ((m1+m2)*l1 - m2*l1*np.cos(d)*np.cos(d))
 
-        if l1 == 0 or k5 == 0:
+        if l1 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
             return 0
 
         theta1_2prime = (k1 + k2 + k3 - k4) / k5
@@ -155,13 +163,19 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        k1 = m2 * l2 * math.pow(omega2, 2) * np.sin(d) * np.cos(d)
-        k2 = (m1 + m2) * ( g * np.sin(theta1) * np.cos(d))
-        k3 = l1 * math.pow(omega1, 2) * np.sin(d)
-        k4 = g * np.sin(theta2)
-        k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(np.cos(d), 2)
+        #k1 = m2 * l2 * math.pow(omega2, 2) * np.sin(d) * np.cos(d)
+        #k2 = (m1 + m2) * ( g * np.sin(theta1) * np.cos(d))
+        #k3 = l1 * math.pow(omega1, 2) * np.sin(d)
+        #k4 = g * np.sin(theta2)
+        #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(np.cos(d), 2)
 
-        if l2 == 0 or k5 == 0:
+        k1 = -m2*l2*math.pow(omega2,2)*np.sin(d)*np.cos(d)
+        k2 = -((m1+m2)*g*np.sin(theta1))*np.cos(d)
+        k3 = -(m1+m2)*l1*math.pow(omega1,2)*np.sin(d)
+        k4 = -(m1+m2)*g*np.sin(theta2)
+        k5 = (m2*l2*np.cos(d)*np.cos(d) - (m1+m2)*l2)
+
+        if l2 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
             return 0
 
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
@@ -256,11 +270,16 @@ class Pendulum:
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
 
+
+                x1plot = data1[0:index, 0]
+                y1plot = data1[0:index, 1]
+
                 x2plot = data2[0:index, 0]
                 y2plot = data2[0:index, 1]
 
                 plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
 
+                plt.plot(x1plot, y1plot, c="red")
                 plt.plot(x2plot, y2plot, c="red")
 
                 plt.plot([0, x1], [0, y1], lw=5, c="blue")
@@ -276,5 +295,7 @@ class Pendulum:
                 plt.pause(0.001)
         print("here")
         if savegif:
-            bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
+            filename = "animation_" + str(random.randint(0,10000)) + "_gif.gif"
+            f = os.path.join(os.getcwd(), filename)
+            bufs[0].save(f, save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
         plt.show()
