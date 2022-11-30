@@ -74,11 +74,12 @@ def spurning7(plot=False):
 
 
     follin = Foll()
-    p = Pendulum(L_1=2,m_1=1,L_2=5,m_2=10)
-    lengdin=10
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/3, horn2=np.pi*1.5, hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin*20, lengd=lengdin)
+    p = Pendulum(L_1=4,m_1=1,L_2=1,m_2=1)
+    lengdin=100
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/2, horn2=0, hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin*30, lengd=lengdin)
     hnitsenior = []
     hnitjunior = []
+
     for theta in y1:
         hnitsenior.append(p.hornTohnit(theta))
     for index,theta in enumerate(y2):
@@ -150,6 +151,6 @@ if __name__ == '__main__':
     spurning4()
     spurning5()
     spurning6()
-    spurning7()
-    spurning8(plot=True)
-    spurning10()
+    spurning7(plot=True)
+    #spurning8(plot=True)
+    #spurning10()
