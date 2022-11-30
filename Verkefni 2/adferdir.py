@@ -1,6 +1,9 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw
+import io
+
 
 class Foll:
     def __init__(self, ):
@@ -149,6 +152,8 @@ class Pendulum:
         # which the graph will be plotted
         # marking the x-axis and y-axis
         staerdramma = self.L_2 + self.L_1 + 3
+        fig = plt.figure()
+        bufs = []
         plt.axis('equal')
         plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
@@ -165,7 +170,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(data1.shape[0]):
+            for index in range(0, data1.shape[0], 10):
                 plt.clf()
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
@@ -187,6 +192,12 @@ class Pendulum:
 
                 plt.scatter(x1, y1, lw=self.m_1 * 5, c="orange")
                 plt.scatter(x2, y2, lw=self.m_2 * 5, c="orange")
+                buf = io.BytesIO()
+                plt.savefig(buf, format="png")
+                bufs.append(Image.open(buf))
+                print(f"{index / data1.shape[0]* 100:.00f}%", end="\n", flush=True)
 
-                plt.pause(0.001)
-        plt.show()
+                #plt.pause(0.001)
+        print("here")
+        bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
+        #plt.show()
