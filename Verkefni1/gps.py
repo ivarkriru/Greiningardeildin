@@ -200,7 +200,7 @@ def spurning2(plot=True):
     print(
         f"A: {svar_coords[0]:.02f}, B: {svar_coords[1]:.02f}, C: {svar_coords[2]:.02f}, t: {svar_coords[3]:.02f}, d: {svar_coords[4]:.02f}")
 
-
+satkerfi_fjoldi = 100
 def spurning3(plot=True):
     print("---- svar 3 ----- :")
 
