@@ -73,7 +73,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             horn1hradiaxis.append(w)
-            horn1axis.append(horn1axis[i] + skreflengd * w)
+            horn1axis.append((horn1axis[i] + skreflengd * w)%(np.pi*2))
 
             s1 = skreflengd * f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
             s2 = skreflengd * f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
@@ -84,7 +84,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             horn2hradiaxis.append(w)
-            horn2axis.append(horn2axis[i] + skreflengd * w)
+            horn2axis.append((horn2axis[i] + skreflengd * w)%(np.pi*2))
 
         return horn1axis, horn2axis
 
@@ -109,14 +109,23 @@ class Pendulum:
         g = self.g
         d = theta2 - theta1
 
+        if omega1 > 2e+50:
+            omega1 = 2e+50
+        if omega2 > 2e+50:
+            omega2 = 2e+50
+
+        if omega1 < -2e+50:
+            omega1 = -2e+50
+        if omega2 < -2e+50:
+            omega2 = -2e+50
+
+        print(omega1)
         k1 = m2 * l1 * math.pow(omega1, 2) * np.sin(d) * np.cos(d)
         k2 = m2 * g * np.sin(theta2) * np.cos(d)
         k3 = m2 * l2 * math.pow(omega2, 2) * np.sin(d)
         k4 = (m1 + m2) * g * np.sin(theta1)
         k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
         theta1_2prime = (k1 + k2 + k3 - k4) / k5
-
-
         return theta1_2prime
 
     def double_pendulum2(self, theta1, theta2, omega1, omega2):
@@ -127,6 +136,16 @@ class Pendulum:
         g = self.g
         d = theta2 - theta1
 
+        if omega1 > 2e+50:
+            omega1 = 2e+50
+        if omega2 > 2e+50:
+            omega2 = 2e+50
+
+        if omega1 < -2e+50:
+            omega1 = -2e+50
+        if omega2 < -2e+50:
+            omega2 = -2e+50
+
         k1 = m2 * l2 * math.pow(omega2, 2) * np.sin(d) * np.cos(d)
         k2 = (m1 + m2) * ( g * np.sin(theta1) * np.cos(d))
         k3 = l1 * math.pow(omega1, 2) * np.sin(d)
@@ -134,7 +153,6 @@ class Pendulum:
         k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(np.cos(d), 2)
 
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
-
         return theta2_2prime
 
     def hornTohnit(self, th):
