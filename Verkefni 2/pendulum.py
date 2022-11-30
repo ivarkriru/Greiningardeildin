@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from adferdir import Foll, Pendulum
+import math
 
 
 def spurning1(plot=False):
@@ -133,8 +134,9 @@ def spurning9(plot=False):
                                       hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=20)
                 result_intermed.append([n, y1[-1], y2[-1], pendular, upphafsstada])
             results.append(result_intermed)
-    for result in results:
-        print(result)
+    if plot:
+        for result in results:
+            print(result)
 
     # todo: plotta feril á pendulum með mismunandi n
     if plot:
@@ -153,7 +155,7 @@ def spurning9(plot=False):
 
 def spurning10(plot=False):
     follin = Foll()
-    p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
+    p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=2)
     lengdin = 1000
     y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 7, horn2=np.pi * 1.5,
                               hornhradi1=-6, hornhradi2=10, fjoldiskrefa=lengdin * 20, lengd=lengdin)
@@ -167,26 +169,63 @@ def spurning10(plot=False):
         plt.plot(y1, y2)
         plt.show()
 
-
 def spurning11(plot=False):
-    pass
+    follin = Foll()
+    p = Pendulum()
+    lengdin = 40
+    for x in [1,2,3,4,5]:
+        epsilon = math.pow(10,-1*x)
+        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
 
+        y3, y4 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3+epsilon, horn2=np.pi / 6+ epsilon,
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
+        hnit1 = []
+        hnit2 = []
+        hnit3 = []
+        hnit4 = []
+
+        for theta in y1:
+            hnit1.append(p.hornTohnit(theta))
+        for index, theta in enumerate(y2):
+            hnit2.append(p.hornTohnitjunior(y1[index], theta))
+
+        for theta in y3:
+            hnit3.append(p.hornTohnit(theta))
+        for index, theta in enumerate(y4):
+            hnit4.append(p.hornTohnitjunior(y3[index], theta))
+
+        hnit1 = np.array(hnit1)
+        hnit2 = np.array(hnit2)
+        hnit3 = np.array(hnit3)
+        hnit4 = np.array(hnit4)
+
+        if plot:
+            plt.plot(y1)
+            plt.plot(y2)
+
+            plt.plot(y3)
+            plt.plot(y4)
+            plt.show()
+            p.create_animation2ex2(hnit1, hnit2,hnit3,hnit4)
 
 def spurning12(plot=False):
     pass
 
-
 def frjals(plot=False):
     pass
 
-
 if __name__ == '__main__':
-    spurning1(True)
-    spurning2(True)
-    spurning3(False)
-    spurning4(False)
-    spurning5(True)
-    #spurning6(True)
-    #spurning7(True)
-    #spurning8(plot=True)
-    # spurning10()
+    spurning1(plot=False)
+    spurning2(plot=False)
+    spurning3(plot=False)
+    spurning4(plot=False)
+    spurning5(plot=False)
+    spurning6(plot=False)
+    spurning7(plot=False)
+    spurning8(plot=False)
+    spurning9(plot=False)
+    spurning10(plot=False)
+    spurning11(plot=True)
+    spurning12(plot=False)
+    frjals(plot=False)
