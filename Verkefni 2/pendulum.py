@@ -233,11 +233,12 @@ def frjals(plot=False):
 if __name__ == '__main__':
     spurning1(plot=False)
     spurning2(plot=False)
+
     spurning3(plot=False)
     spurning4(plot=False)
     spurning5(plot=False)
     spurning6(plot=False)
-    spurning7(plot=False)
+    spurning7(plot=True)
     spurning8(plot=False)
     spurning9(plot=False)
     spurning10(plot=False)
