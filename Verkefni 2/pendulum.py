@@ -45,8 +45,8 @@ def spurning5(plot=False):
         hnit.append(p.hornTohnit(theta))
     hnit = np.array(hnit)
 
-    if plot:
-        p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = "Pendulums, for green theta is pi/2 and for blue theta is p/12")
+    #if plot:
+    #    p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = "Pendulums, for green theta is pi/2 and for blue theta is p/12")
 
 
 
@@ -61,9 +61,9 @@ def spurning6(plot=False):
 
 def spurning7(plot=False):
     follin = Foll()
-    p = Pendulum(L_1=1, m_1=1, L_2=0.5, m_2=1)
+    p = Pendulum(L_1=4, m_1=1, L_2=4, m_2=5)
     lengdin = 100
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 2, horn2=np.pi / 2,
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi*3/ 2, horn2=np.pi*5/2,
                               hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
     hnitsenior = []
     hnitjunior = []
@@ -140,12 +140,12 @@ def frjals(plot=False):
 
 
 if __name__ == '__main__':
-    spurning1()
-    spurning2()
-    spurning3(True)
-    spurning4(True)
-    spurning5()
-    spurning6()
-    spurning7()
+    #spurning1()
+    #spurning2()
+    #spurning3(True)
+    #spurning4(True)
+    #spurning5()
+    #spurning6()
+    spurning7(plot=True)
     # spurning8(plot=True)
     # spurning10()
