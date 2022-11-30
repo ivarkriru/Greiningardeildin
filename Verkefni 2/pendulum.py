@@ -114,25 +114,46 @@ def spurning8(plot=False):
         p.create_animation2d(hnitsenior, hnitjunior, 2)
 
 
+
+
 def spurning9(plot=False):
-    pass
-
-
-def spurning10(plot=False):
     follin = Foll()
     p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
-    lengdin = 1000
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 7, horn2=np.pi * 1.5,
-                              hornhradi1=-6, hornhradi2=10, fjoldiskrefa=lengdin * 20, lengd=lengdin)
-    '''
-    for i,x in enumerate(y1):
-        y1[i] = x%np.pi
-    for i,x in enumerate(y2):
-        y2[i] = x%np.pi
-    '''
+    T = 20
+    pendulalist = [[1,1,1,1], [2,1,2,1], [2,2,1,1]]
+    upphafsstodur = [[np.pi/3, 0, np.pi/6, 0], [np.pi/2, 0, np.pi, 0]]
+    results = []
+    for pendular in pendulalist:
+        for upphafsstada in upphafsstodur:
+            result_intermed = []
+            for i in range(6+1):
+                p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
+                n = 100*2**i
+                y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=upphafsstada[0], horn2=upphafsstada[2],
+                                      hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=20)
+                result_intermed.append([n, y1[-1], y2[-1], pendular, upphafsstada])
+            results.append(result_intermed)
+    for result in results:
+        print(result)
+
+    # todo: plotta feril á pendulum með mismunandi n
     if plot:
-        plt.plot(y1, y2)
+        fig, ax = plt.subplots(len(pendulalist)*len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
+        for index, result in enumerate(results):
+            x = [result_[0] for result_ in result]
+            theta1 = [result_[1] for result_ in result]
+            theta2 = [result_[2] for result_ in result]
+
+            #plt.show()
+            print(x)
+            print(theta1)
+            ax[index].bar(x, theta1, 500)
+            ax[index].bar(x, theta2, 500, color='red')
+            #ax.bar(x, theta2)
         plt.show()
+
+def spurning10(plot=False):
+    pass
 
 
 def spurning11(plot=False):
@@ -156,4 +177,4 @@ if __name__ == '__main__':
     spurning6()
     spurning7()
     #spurning8(plot=True)
-    # spurning10()
+    spurning9(plot=True)
