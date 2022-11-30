@@ -214,12 +214,13 @@ class Pendulum:
         return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
 
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
-
+        print("here")
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
         staerdramma = self.L_2 + self.L_1 + 3
         plt.axis('equal')
+
         plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
         if fjoldipendula == 1:
             for index in range(data1.shape[0]):
@@ -228,20 +229,17 @@ class Pendulum:
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
                 x = data1[index, 0]
                 y = data1[index, 1]
+                plt.xticks([])
+                plt.yticks([])
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
 
-
                 plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
-
                 plt.scatter(x, y, lw=20, c="orange")
                 plt.plot([0, x], [0, y], lw=5, c="blue",alpha=1)
-
                 plt.scatter(x2, y2, lw=20, c="red")
                 plt.plot([0, x2], [0, y2], lw=5, c="green")
-
                 plt.pause(0.001)
-
         plt.show()
 
     def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False):
@@ -288,14 +286,14 @@ class Pendulum:
 
                 plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
 
-                plt.plot(x1plot, y1plot, c="red")
-                plt.plot(x2plot, y2plot, c="red")
+                plt.plot(x1plot, y1plot, c="yellow")
+                plt.plot(x2plot, y2plot, c="cyan")
 
                 plt.plot([0, x1], [0, y1], lw=5, c="blue")
-                plt.plot([x1, x2], [y1, y2], lw=5, c="blue")
+                plt.plot([x1, x2], [y1, y2], lw=5, c="green")
 
                 plt.scatter(x1, y1, lw=self.m_1 * 5, c="orange")
-                plt.scatter(x2, y2, lw=self.m_2 * 5, c="orange")
+                plt.scatter(x2, y2, lw=self.m_2 * 5, c="red")
                 if savegif:
                     buf = io.BytesIO()
                     plt.savefig(buf, format="png")
@@ -307,4 +305,66 @@ class Pendulum:
             filename = "animation_" + str(random.randint(0,10000)) + "_gif.gif"
             f = os.path.join(os.getcwd(), filename)
             bufs[0].save(f, save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
+        plt.show()
+    def create_animation2ex2(self, data1, data2, data3, data4, fjoldipendula=1, title=None, savegif=False,offset = 5):
+
+        # initializing a figure in
+        # which the graph will be plotted
+        # marking the x-axis and y-axis
+        staerdramma = self.L_2*2 + self.L_1*2 + 3
+
+        for index in range(0, data1.shape[0], 2):
+            plt.clf()
+            plt.title(label=title)
+            plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
+            x1 = data1[index, 0] + offset
+            y1 = data1[index, 1]
+
+            x2 = data2[index, 0] + offset
+            y2 = data2[index, 1]
+
+            x3 = data3[index, 0] - offset
+            y3 = data3[index, 1]
+
+            x4 = data4[index, 0] - offset
+            y4 = data4[index, 1]
+
+
+            x1plot = data1[0:index, 0]
+            x1plot = x1plot + offset
+            y1plot = data1[0:index, 1]
+
+            x2plot = data2[0:index, 0]
+            x2plot = x2plot + offset
+            y2plot = data2[0:index, 1]
+
+            x3plot = data3[0:index, 0]
+            x3plot = x3plot - offset
+            y3plot = data3[0:index, 1]
+
+            x4plot = data4[0:index, 0]
+            x4plot = x4plot - offset
+            y4plot = data4[0:index, 1]
+
+            plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
+
+            plt.plot(x1plot, y1plot)
+            plt.plot(x2plot, y2plot)
+            plt.plot(x3plot, y3plot)
+            plt.plot(x4plot, y4plot)
+
+            plt.plot([offset, x1], [0, y1], lw=5, c="blue")
+            plt.plot([x1, x2], [y1, y2], lw=5, c="blue")
+            plt.plot([-offset,x3], [0, y3], lw=5, c="blue")
+            plt.plot([x3, x4], [y3, y4], lw=5, c="blue")
+
+            plt.scatter(x1, y1, lw=self.m_1 * 5*2, c="orange")
+            plt.scatter(x2, y2, lw=self.m_2 * 5*2, c="orange")
+            plt.scatter(x3, y3, lw=self.m_1 * 5*2, c="orange")
+            plt.scatter(x4, y4, lw=self.m_2 * 5*2, c="orange")
+
+            plt.pause(0.001)
+
+            print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
         plt.show()
