@@ -186,18 +186,18 @@ class Pendulum:
         y = Foll().euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
         hnit = []
         for theta in y:
-            hnit.append(Pendulum().hornTohnit(theta))
+            hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
-        return hnit, y
+        return hnit
 
     def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
         y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
         hnit = []
         for theta in y:
-            hnit.append(Pendulum().hornTohnit(theta))
+            hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
 
-        return hnit,y
+        return hnit
 
     def hornTohnit(self, th):
         return self.L_1 * np.sin(th), -self.L_1 * np.cos(th)

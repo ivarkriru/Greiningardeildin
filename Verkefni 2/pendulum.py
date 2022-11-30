@@ -23,15 +23,14 @@ def spurning2(plot=False):
 
 def spurning3(plot=False):
     p = Pendulum()
-    hnit = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
         p.create_animation2d(hnit)
 
 
 def spurning4(plot=False):
     p = Pendulum()
-    hnit = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
-    hnit2 = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
         p.create_animation2d(data1 = hnit, title = "Pendulums, theta(0) is p/12, theta'(0) is p/12")
 
@@ -146,6 +145,6 @@ if __name__ == '__main__':
     #spurning4(True)
     #spurning5()
     #spurning6()
-    spurning7(plot=True)
-    # spurning8(plot=True)
-    # spurning10()
+    #spurning7(plot=True)
+    #spurning8(plot=True)
+    #spurning10(plot=True)
