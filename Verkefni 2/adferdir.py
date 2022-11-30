@@ -1,8 +1,11 @@
+import random
+
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 import io
+import os
 
 
 g = 9.81
@@ -292,5 +295,7 @@ class Pendulum:
                 plt.pause(0.001)
         print("here")
         if savegif:
-            bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
+            filename = "animation_" + str(random.randint(0,10000)) + "_gif.gif"
+            f = os.path.join(os.getcwd(), filename)
+            bufs[0].save(f, save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
         plt.show()
