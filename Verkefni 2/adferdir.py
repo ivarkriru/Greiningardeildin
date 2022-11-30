@@ -1,6 +1,9 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from PIL import Image, ImageDraw
+import io
+
 
 g = 9.81
 
@@ -175,14 +178,23 @@ class Pendulum:
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
         return theta2_2prime
 
-    def hnitforanimation(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
         follin = Foll()
-        y = follin.euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
+        y = Foll().euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
         hnit = []
         for theta in y:
             hnit.append(Pendulum().hornTohnit(theta))
         hnit = np.array(hnit)
-        return hnit
+        return hnit, y
+
+    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+        y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+        hnit = []
+        for theta in y:
+            hnit.append(Pendulum().hornTohnit(theta))
+        hnit = np.array(hnit)
+
+        return hnit,y
 
     def hornTohnit(self, th):
         return self.L_1 * np.sin(th), -self.L_1 * np.cos(th)
@@ -220,12 +232,13 @@ class Pendulum:
 
         plt.show()
 
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None):
+    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False):
 
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
         staerdramma = self.L_2 + self.L_1 + 3
+        bufs = []
         plt.axis('equal')
         plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
@@ -243,7 +256,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(data1.shape[0]):
+            for index in range(0, data1.shape[0], 2):
                 plt.clf()
                 plt.title(label=title)
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
@@ -271,6 +284,13 @@ class Pendulum:
 
                 plt.scatter(x1, y1, lw=self.m_1 * 5, c="orange")
                 plt.scatter(x2, y2, lw=self.m_2 * 5, c="orange")
-
+                if savegif:
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format="png")
+                    bufs.append(Image.open(buf))
+                print(f"{index / data1.shape[0]* 100:.00f}%", end="\n", flush=True)
                 plt.pause(0.001)
+        print("here")
+        if savegif:
+            bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
         plt.show()
