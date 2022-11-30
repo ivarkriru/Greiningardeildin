@@ -199,11 +199,18 @@ class Pendulum:
 
         return hnit,y
 
-    def hornTohnit(self, th):
-        return self.L_1 * np.sin(th), -self.L_1 * np.cos(th)
+    def hornTohnit(self, th, L_1=None):
+        if L_1 is None:
+            L_1 = self.L_1
+        return L_1 * np.sin(th), -L_1 * np.cos(th)
 
-    def hornTohnitjunior(self, th, th2):
-        return self.L_1 * np.sin(th) + self.L_2 * np.sin(th2), -self.L_1 * np.cos(th) - self.L_2 * np.cos(th2)
+    def hornTohnitjunior(self, th, th2, L_1=None, L_2=None):
+        if L_1 is None:
+            L_1=self.L_1
+        if L_2 is None:
+            L_2=self.L_2
+        return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
+
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
 
         # initializing a figure in
