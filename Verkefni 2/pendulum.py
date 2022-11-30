@@ -26,8 +26,8 @@ def spurning3(plot=False):
     hnit,y = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
         plt.plot(y)
-        plt.show()
         plt.pause(2)
+        plt.clf()
         p.create_animation2d(hnit, title = "Pendulum, theta(0) is p/12, theta'(0) is 0 with Euler")
 
 
@@ -181,12 +181,12 @@ def frjals(plot=False):
 
 
 if __name__ == '__main__':
-    spurning1()
-    spurning2()
-    spurning3()
-    spurning4()
-    spurning5()
-    spurning6()
-    spurning7()
+    spurning1(True)
+    spurning2(True)
+    spurning3(True)
+    #spurning4(True)
+    #spurning5(True)
+    #spurning6(True)
+    #spurning7(True)
     #spurning8(plot=True)
     # spurning10()

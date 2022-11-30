@@ -222,6 +222,9 @@ class Pendulum:
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
 
+
+                plt.plot([-staerdramma * 2, -staerdramma * 2], [0, 0], lw=1, c="black")
+
                 plt.scatter(x, y, lw=20, c="orange")
                 plt.plot([0, x], [0, y], lw=5, c="blue")
                 plt.scatter(x2, y2, lw=20, c="red")
@@ -230,7 +233,6 @@ class Pendulum:
                 plt.yticks([])
 
 
-                plt.plot([-staerdramma * 2, -staerdramma * 2], [0, 0], lw=1, c="black")
                 plt.pause(0.001)
 
         plt.show()
@@ -242,22 +244,22 @@ class Pendulum:
         # marking the x-axis and y-axis
         staerdramma = self.L_2 + self.L_1 + 3
         bufs = []
-        plt.axis('equal')
-        plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
         if fjoldipendula == 1:
             for index in range(data1.shape[0]):
+
                 plt.clf()
-                plt.title(label=title)
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+                plt.title(label=title)
                 x = data1[index, 0]
                 y = data1[index, 1]
+
+                plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
+
                 plt.scatter(x, y, lw=20, c="orange")
                 plt.plot([0, x], [0, y], lw=5, c="blue")
-                plt.plot([-staerdramma * 2, -staerdramma * 2], [0, 0], lw=1, c="black")
 
                 plt.pause(0.001)
-
         elif fjoldipendula == 2:
             for index in range(0, data1.shape[0], 2):
                 plt.clf()
