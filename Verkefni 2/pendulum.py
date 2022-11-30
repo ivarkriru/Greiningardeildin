@@ -23,30 +23,38 @@ def spurning2(plot=False):
 
 def spurning3(plot=False):
     p = Pendulum()
-    hnit = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit,y = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
-        p.create_animation2d(hnit)
+        plt.plot(y)
+        plt.show()
+        plt.pause(2)
+        p.create_animation2d(hnit, title = "Pendulum, theta(0) is p/12, theta'(0) is 0 with Euler")
+
 
 
 def spurning4(plot=False):
     p = Pendulum()
-    hnit = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
-    hnit2 = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit,y = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit2,y2 = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
-        p.create_animation2d(data1 = hnit, title = "Pendulums, theta(0) is p/12, theta'(0) is p/12")
+        plt.plot(y)
+        plt.plot(y2)
+        plt.show()
+        plt.pause(4)
+        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = "Pendulums, blue theta(0): p/12, green theta(0): p/2, theta'(0): 0 with Euler")
 
 
 def spurning5(plot=False):
-    follin = Foll()
     p = Pendulum()
-    y = follin.RKmethod(f=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=10)
-    hnit = []
-    for theta in y:
-        hnit.append(p.hornTohnit(theta))
-    hnit = np.array(hnit)
+    hnit,y = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit2,y2 = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
 
     if plot:
-        p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = "Pendulums, for green theta is pi/2 and for blue theta is p/12")
+        plt.plot(y)
+        plt.plot(y2)
+        plt.show()
+        plt.pause(4)
+        p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = "Pendulums, blue theta(0): p/12, green theta(0): p/2, theta'(0): 0 with RK")
 
 
 
@@ -142,10 +150,10 @@ def frjals(plot=False):
 if __name__ == '__main__':
     spurning1()
     spurning2()
-    spurning3(True)
-    spurning4(True)
+    spurning3()
+    spurning4()
     spurning5()
     spurning6()
     spurning7()
-    # spurning8(plot=True)
+    #spurning8(plot=True)
     # spurning10()

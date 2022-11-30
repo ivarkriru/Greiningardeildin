@@ -167,14 +167,23 @@ class Pendulum:
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
         return theta2_2prime
 
-    def hnitforanimation(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
         follin = Foll()
-        y = follin.euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
+        y = Foll().euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
         hnit = []
         for theta in y:
             hnit.append(Pendulum().hornTohnit(theta))
         hnit = np.array(hnit)
-        return hnit
+        return hnit, y
+
+    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+        y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+        hnit = []
+        for theta in y:
+            hnit.append(Pendulum().hornTohnit(theta))
+        hnit = np.array(hnit)
+
+        return hnit,y
 
     def hornTohnit(self, th):
         return self.L_1 * np.sin(th), -self.L_1 * np.cos(th)
