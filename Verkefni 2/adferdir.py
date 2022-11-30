@@ -5,9 +5,11 @@ from PIL import Image, ImageDraw
 import io
 
 
+g = 9.81
+
 class Foll:
     def __init__(self, ):
-        self.g = 9.81
+        self.g = g
         self.L = 2
 
     def euler(self, f, horn, hornhradi, fjoldiskrefa, lengd):
@@ -98,7 +100,7 @@ class Pendulum:
         self.m_1 = m_1
         self.L_2 = L_2
         self.m_2 = m_2
-        self.g = 9.81
+        self.g = g
 
     def pendulum(self, theta):
         fasti = -1 * self.g / (self.L_1)
@@ -122,12 +124,16 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        print(omega1)
         k1 = m2 * l1 * math.pow(omega1, 2) * np.sin(d) * np.cos(d)
         k2 = m2 * g * np.sin(theta2) * np.cos(d)
         k3 = m2 * l2 * math.pow(omega2, 2) * np.sin(d)
         k4 = (m1 + m2) * g * np.sin(theta1)
         k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
+
+
+        if l1 == 0 or k5 == 0:
+            return 0
+
         theta1_2prime = (k1 + k2 + k3 - k4) / k5
         return theta1_2prime
 
@@ -154,6 +160,9 @@ class Pendulum:
         k3 = l1 * math.pow(omega1, 2) * np.sin(d)
         k4 = g * np.sin(theta2)
         k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(np.cos(d), 2)
+
+        if l2 == 0 or k5 == 0:
+            return 0
 
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
         return theta2_2prime

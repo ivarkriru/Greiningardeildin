@@ -61,7 +61,7 @@ def spurning6(plot=False):
 
 def spurning7(plot=False):
     follin = Foll()
-    p = Pendulum(L_1=1, m_1=1, L_2=2, m_2=10)
+    p = Pendulum(L_1=1, m_1=1, L_2=0.5, m_2=1)
     lengdin = 100
     y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 2, horn2=np.pi / 2,
                               hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
