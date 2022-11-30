@@ -22,29 +22,18 @@ def spurning2(plot=False):
 
 
 def spurning3(plot=False):
-    follin = Foll()
     p = Pendulum()
-    y = follin.euler(p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
-
-    hnit = []
-    for theta in y:
-        hnit.append(p.hornTohnit(theta))
-    hnit = np.array(hnit)
+    hnit = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
         p.create_animation2d(hnit)
 
 
 def spurning4(plot=False):
-    follin = Foll()
     p = Pendulum()
-    y = follin.euler(p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
-
-    hnit = []
-    for theta in y:
-        hnit.append(p.hornTohnit(theta))
-    hnit = np.array(hnit)
+    hnit = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit2 = p.hnitforanimation(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
-        p.create_animation2d(hnit)
+        p.create_animation2d(data1 = hnit, title = "Pendulums, theta(0) is p/12, theta'(0) is p/12")
 
 
 def spurning5(plot=False):
@@ -57,7 +46,8 @@ def spurning5(plot=False):
     hnit = np.array(hnit)
 
     if plot:
-        p.create_animation2d(hnit)
+        p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = "Pendulums, for green theta is pi/2 and for blue theta is p/12")
+
 
 
 def spurning6(plot=False):
@@ -152,10 +142,10 @@ def frjals(plot=False):
 if __name__ == '__main__':
     spurning1()
     spurning2()
-    spurning3()
-    spurning4()
+    spurning3(True)
+    spurning4(True)
     spurning5()
     spurning6()
-    spurning7(plot=True)
+    spurning7()
     # spurning8(plot=True)
     # spurning10()

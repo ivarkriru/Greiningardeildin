@@ -164,13 +164,52 @@ class Pendulum:
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
         return theta2_2prime
 
+    def hnitforanimation(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+        follin = Foll()
+        y = follin.euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
+        hnit = []
+        for theta in y:
+            hnit.append(Pendulum().hornTohnit(theta))
+        hnit = np.array(hnit)
+        return hnit
+
     def hornTohnit(self, th):
         return self.L_1 * np.sin(th), -self.L_1 * np.cos(th)
 
     def hornTohnitjunior(self, th, th2):
         return self.L_1 * np.sin(th) + self.L_2 * np.sin(th2), -self.L_1 * np.cos(th) - self.L_2 * np.cos(th2)
+    def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
 
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1):
+        # initializing a figure in
+        # which the graph will be plotted
+        # marking the x-axis and y-axis
+        staerdramma = self.L_2 + self.L_1 + 3
+        plt.axis('equal')
+        plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+        if fjoldipendula == 1:
+            for index in range(data1.shape[0]):
+                plt.clf()
+                plt.title(label=title)
+                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+                x = data1[index, 0]
+                y = data1[index, 1]
+                x2 = data2[index, 0]
+                y2 = data2[index, 1]
+
+                plt.scatter(x, y, lw=20, c="orange")
+                plt.plot([0, x], [0, y], lw=5, c="blue")
+                plt.scatter(x2, y2, lw=20, c="red")
+                plt.plot([0, x2], [0, y2], lw=5, c="green")
+                plt.xticks([])
+                plt.yticks([])
+
+
+                plt.plot([-staerdramma * 2, -staerdramma * 2], [0, 0], lw=1, c="black")
+                plt.pause(0.001)
+
+        plt.show()
+
+    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None):
 
         # initializing a figure in
         # which the graph will be plotted
@@ -182,6 +221,7 @@ class Pendulum:
         if fjoldipendula == 1:
             for index in range(data1.shape[0]):
                 plt.clf()
+                plt.title(label=title)
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
                 x = data1[index, 0]
                 y = data1[index, 1]
@@ -194,6 +234,7 @@ class Pendulum:
         elif fjoldipendula == 2:
             for index in range(data1.shape[0]):
                 plt.clf()
+                plt.title(label=title)
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
                 x1 = data1[index, 0]
