@@ -236,7 +236,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 10):
+            for index in range(0, data1.shape[0], 2):
                 plt.clf()
                 plt.title(label=title)
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
@@ -264,8 +264,7 @@ class Pendulum:
                     plt.savefig(buf, format="png")
                     bufs.append(Image.open(buf))
                 print(f"{index / data1.shape[0]* 100:.00f}%", end="\n", flush=True)
-
-                #plt.pause(0.001)
+                plt.pause(0.001)
         print("here")
         if savegif:
             bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
