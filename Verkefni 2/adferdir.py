@@ -56,7 +56,7 @@ class Foll:
 
         return hornaxis
 
-    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd):
+    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd, sp9=False):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
         horn1axis = []
@@ -81,7 +81,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             horn1hradiaxis.append(w)
-            horn1axis.append(horn1axis[i] + skreflengd * w)
+            horn1axis.append(np.mod(horn1axis[i] + skreflengd * w, np.pi*2))
 
             s1 = skreflengd * f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
             s2 = skreflengd * f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
@@ -92,9 +92,11 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             horn2hradiaxis.append(w)
-            horn2axis.append(horn2axis[i] + skreflengd * w)
-
-        return horn1axis, horn2axis
+            horn2axis.append(np.mod(horn2axis[i] + skreflengd * w, np.pi*2))
+        if sp9:
+            return horn1axis, horn2axis, horn1hradiaxis, horn2hradiaxis
+        else:
+            return horn1axis, horn2axis
 
 
 class Pendulum:
@@ -266,7 +268,7 @@ class Pendulum:
 
                 plt.pause(0.001)
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 2):
+            for index in range(0, data1.shape[0], 10):
                 plt.clf()
                 plt.title(label=title)
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
