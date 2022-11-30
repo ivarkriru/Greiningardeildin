@@ -223,15 +223,13 @@ class Pendulum:
                 y2 = data2[index, 1]
 
 
-                plt.plot([-staerdramma * 2, -staerdramma * 2], [0, 0], lw=1, c="black")
+                plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
 
                 plt.scatter(x, y, lw=20, c="orange")
-                plt.plot([0, x], [0, y], lw=5, c="blue")
+                plt.plot([0, x], [0, y], lw=5, c="blue",alpha=1)
+
                 plt.scatter(x2, y2, lw=20, c="red")
                 plt.plot([0, x2], [0, y2], lw=5, c="green")
-                plt.xticks([])
-                plt.yticks([])
-
 
                 plt.pause(0.001)
 

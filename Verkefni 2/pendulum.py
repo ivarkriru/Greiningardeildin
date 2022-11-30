@@ -28,7 +28,7 @@ def spurning3(plot=False):
         plt.plot(y)
         plt.pause(2)
         plt.clf()
-        p.create_animation2d(hnit, title = "Pendulum, theta(0) is p/12, theta'(0) is 0 with Euler")
+        p.create_animation2d(hnit, title = "Pendulum, theta(0) is pi/12, theta'(0) is 0 with Euler")
 
 
 
@@ -39,9 +39,9 @@ def spurning4(plot=False):
     if plot:
         plt.plot(y)
         plt.plot(y2)
-        plt.show()
-        plt.pause(4)
-        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = "Pendulums, blue theta(0): p/12, green theta(0): p/2, theta'(0): 0 with Euler")
+        plt.pause(2)
+        plt.clf()
+        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = "Pendulums, blue theta(0): pi/12, green theta(0): pi/2, theta'(0): 0 with Euler")
 
 
 def spurning5(plot=False):
@@ -52,8 +52,8 @@ def spurning5(plot=False):
     if plot:
         plt.plot(y)
         plt.plot(y2)
-        plt.show()
-        plt.pause(4)
+        plt.pause(2)
+        plt.clf()
         p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = "Pendulums, blue theta(0): p/12, green theta(0): p/2, theta'(0): 0 with RK")
 
 
@@ -183,9 +183,9 @@ def frjals(plot=False):
 if __name__ == '__main__':
     spurning1(True)
     spurning2(True)
-    spurning3(True)
-    #spurning4(True)
-    #spurning5(True)
+    spurning3(False)
+    spurning4(False)
+    spurning5(True)
     #spurning6(True)
     #spurning7(True)
     #spurning8(plot=True)
