@@ -212,13 +212,12 @@ class Pendulum:
 
         plt.show()
 
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None):
+    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False):
 
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
         staerdramma = self.L_2 + self.L_1 + 3
-        fig = plt.figure()
         bufs = []
         plt.axis('equal')
         plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
@@ -260,13 +259,14 @@ class Pendulum:
 
                 plt.scatter(x1, y1, lw=self.m_1 * 5, c="orange")
                 plt.scatter(x2, y2, lw=self.m_2 * 5, c="orange")
-                buf = io.BytesIO()
-                plt.savefig(buf, format="png")
-                bufs.append(Image.open(buf))
+                if savegif:
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format="png")
+                    bufs.append(Image.open(buf))
                 print(f"{index / data1.shape[0]* 100:.00f}%", end="\n", flush=True)
 
                 #plt.pause(0.001)
         print("here")
-        bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
-        #plt.show()
+        if savegif:
+            bufs[0].save('pillow_imagedraw.gif', save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
         plt.show()
