@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw
 import io
 import os
 
+from matplotlib import animation
 
 g = 9.81
 
@@ -201,6 +202,26 @@ class Pendulum:
 
         return hnit,y
 
+    def hnitforanimationusingRK2(self, L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
+                                  horn2=np.pi * 6 / 4,
+                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=100, lengd=100):
+        follin = Foll()
+        p = Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2)
+        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1= horn1,
+                                  horn2= horn2,
+                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa * 30, lengd=lengd)
+        hnitsenior = []
+        hnitjunior = []
+
+        for theta in y1:
+            hnitsenior.append(p.hornTohnit(theta))
+        for index, theta in enumerate(y2):
+            hnitjunior.append(p.hornTohnitjunior(y1[index], theta))
+
+        hnitsenior = np.array(hnitsenior)
+        hnitjunior = np.array(hnitjunior)
+        return hnitsenior,hnitjunior,y1,y2
+
     def hornTohnit(self, th, L_1=None):
         if L_1 is None:
             L_1 = self.L_1
@@ -242,34 +263,35 @@ class Pendulum:
                 plt.pause(0.001)
         plt.show()
 
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False):
+    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False,trace=True):
 
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
         staerdramma = self.L_2 + self.L_1 + 3
+
         bufs = []
 
         if fjoldipendula == 1:
             for index in range(data1.shape[0]):
-
                 plt.clf()
+
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
                 plt.title(label=title)
                 x = data1[index, 0]
                 y = data1[index, 1]
-
                 plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
 
-                plt.scatter(x, y, lw=20, c="orange")
-                plt.plot([0, x], [0, y], lw=5, c="blue")
+                if trace:
+                    plt.scatter(x, y, lw=20, c="orange")
+                    plt.plot([0, x], [0, y], lw=5, c="blue")
 
                 plt.pause(0.001)
+
         elif fjoldipendula == 2:
             for index in range(0, data1.shape[0], 10):
                 plt.clf()
                 plt.title(label=title)
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
                 x1 = data1[index, 0]
                 y1 = data1[index, 1]
@@ -277,7 +299,9 @@ class Pendulum:
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
 
-
+                plt.xticks([])
+                plt.yticks([])
+                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
                 x1plot = data1[0:index, 0]
                 y1plot = data1[0:index, 1]
 
@@ -285,9 +309,9 @@ class Pendulum:
                 y2plot = data2[0:index, 1]
 
                 plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
-
-                plt.plot(x1plot, y1plot, c="yellow")
-                plt.plot(x2plot, y2plot, c="cyan")
+                if trace:
+                    plt.plot(x1plot, y1plot, c="yellow")
+                    plt.plot(x2plot, y2plot, c="cyan")
 
                 plt.plot([0, x1], [0, y1], lw=5, c="blue")
                 plt.plot([x1, x2], [y1, y2], lw=5, c="green")
@@ -368,3 +392,29 @@ class Pendulum:
 
             print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
         plt.show()
+'''
+    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False,trace=True):
+
+        L = 2
+        fig = plt.figure()
+        ax = fig.add_subplot(aspect='equal')
+        ax.set_xlim(-L * 1.5, L * 1.5)
+        ax.set_ylim(-L * 1.5, L * 1.5)
+        line, = ax.plot([0, data1[0][0]], [0, data1[1][0]], zorder=0, lw=5, c='b')
+        kulustaerd = 0.04
+        circle = ax.add_patch(plt.Circle(data1[0]*data1[1], kulustaerd,
+                                         fc='y', zorder=1))
+        def animate(i):
+            """Update the animation at frame i."""
+
+            line.set_data([0, data1[0][0]], [0, data1[1][0]])
+            circle.set_center((data1[0][i], data1[1][i]))
+        nsteps=100
+        dt=1
+
+        nframes = nsteps
+        interval = dt * 100
+        ani = animation.FuncAnimation(fig, animate, frames=nframes, repeat=True,
+                                      interval=interval)
+        plt.show()
+'''

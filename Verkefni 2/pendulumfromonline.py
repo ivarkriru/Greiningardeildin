@@ -50,7 +50,7 @@ k = np.sin(theta0/2)
 print('SciPy calculated period, T = {} s'
                 .format(2 * Tharm / np.pi * ellipk(k**2)))
 
-def get_coords(th):
+def get_coords(th):#horntohnit
     """Return the (x, y) coordinates of the bob at angle th."""
     return L * np.sin(th), -L * np.cos(th)
 
