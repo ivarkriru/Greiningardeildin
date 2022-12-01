@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import matplotlib.pyplot as plt
 from adferdir import Foll, Pendulum
@@ -5,7 +7,7 @@ import math
 
 
 def point_diff(A, B):
-    return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2 + (A[2] - B[2]) ** 2)
+    return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2)
 
 
 def spurning1(plot=False):
@@ -125,7 +127,7 @@ def spurning9(plot=False):
     follin = Foll()
     p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
     T = 20
-    pendulalist = [[1,1,1,1], [2,1,2,1], [2,2,1,1]]
+    pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
     upphafsstodur = [["π/3", 0, "π/6", 0], ["π", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     results = []
     for pendular in pendulalist:
@@ -137,9 +139,9 @@ def spurning9(plot=False):
                     n = 20000
                 else:
                     n = 100*2**i
-
+                t1 = time.time()
                 th1, th2, thp1, thp2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
-                                      hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=20, sp9=True)
+                                      hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=T, sp9=True)
 
 
                 hnit1 = p.hornTohnit(th1[-1])
@@ -154,21 +156,23 @@ def spurning9(plot=False):
     # todo: plotta feril á pendulum með mismunandi n
     if plot:
 
-
+        difffig, diffax = plt.subplots(1)
         fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
         ax = np.asarray(ax).ravel()
+        n_list = [result['n'] for result in results[0]]
         for index, result in enumerate(results):
-            correct_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
+            reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
             x1 = [result_['th1'] for result_ in result[:-1]]
             y1 = [result_['th2'] for result_ in result[:-1]]
             # theta2 = [result_[2] for result_ in result]
             # hnit1 = [p.hornTohnit(result_[1], L_1=result_[3][0]) for result_ in result]
-            hnit2 = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
+            hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
 
-
-            ax[index].plot([xy[0] for xy in hnit2], [xy[1] for xy in hnit2])
-            for i in range(len(hnit2)):
-                ax[index].text(hnit2[i][0]+0.01, hnit2[i][1]+0.01, i)
+            diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
+            diffax.plot(n_list[:-1], diff)
+            ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
+            for i in range(len(hnit2_list)):
+                ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
             ax[index].set_xlim([-2.1, 2.1])
             ax[index].set_ylim([-2.1, 2.1])
 
