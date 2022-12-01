@@ -67,9 +67,9 @@ def spurning6(plot=False):
 
 def spurning7(plot=False):
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
-    hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
-                                  horn2=np.pi * 6 / 4,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=100, lengd=20)
+    hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi ,
+                                  horn2=np.pi/2,
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20)
     if plot:
         plt.plot(y1)
         plt.plot(y2)
@@ -106,11 +106,11 @@ def spurning8(plot=False):
     runspurning8(horn2=np.pi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     #Áhrif breytinga á l1
-    runspurning8(l_1 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(l_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_1= 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     #Áhrif breytinga á l2
-    runspurning8(l_2 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(l_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_2 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     #Áhrif breytinga á m1
     runspurning8(m_1 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(m_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
@@ -127,9 +127,9 @@ def spurning9(plot=False):
     p = Pendulum()
     T = 20
     n_to_power_2 = 8  # 0-7
-    #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
-    pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(6)]
-    upphafsstodur = [["π/3", 0, "π/6", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
+    pendulalist = [[1,1,1,1], [2,1,2,1], [2,2,1,1]]
+    #pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(6)]
+    upphafsstodur = [["π/12", 0, "π/12", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
     results = []
@@ -142,7 +142,7 @@ def spurning9(plot=False):
             for i in range(n_to_power_2):
                 p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
                 if i > 6:
-                    n = 100*2**i
+                    n = 2*100*2**i
                 else:
                     n = 100*2**i
                 array = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
@@ -175,18 +175,24 @@ def spurning9(plot=False):
             reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], )
             x1 = [result_['th1'] for result_ in result[:-1]]
             y1 = [result_['th2'] for result_ in result[:-1]]
-            # theta2 = [result_[2] for result_ in result]
-            # hnit1 = [p.hornTohnit(result_[1], L_1=result_[3][0]) for result_ in result]
             hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2']) for result_ in result[:-1]]
+            theta1_best = result[-1]['th1']
+            theta2_best = result[-1]['th2']
+            thp1_best = result[-1]['thp1']
+            thp2_best = result[-1]['thp2']
+            # diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
+            # (theta2-theta1)(thetaprime2 - thetaprime1)(thetabest1-thetabest2)
 
-            diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
+            diff = [((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])** 2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2)/result_['n'] for result_ in result[:-1]]
+
+
             print(n_list)
             print(diff)
             diffax.plot(np.log(n_list[:-1]), np.log(diff))
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
-            #ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
-            #for i in range(len(hnit2_list)):
-            #    ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
+            ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
+            for i in range(len(hnit2_list)):
+                ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
             #ax[index].set_xlim([-10.1, 10.1])
             #ax[index].set_ylim([-10.1, 10.1])
 
@@ -316,11 +322,11 @@ if __name__ == '__main__':
     #spurning2(plot=True)
     #spurning3(plot=True)
     #spurning4(plot=True)
-    spurning5(plot=True)
+    # spurning5(plot=True)
     #spurning6(plot=True)
-    #spurning7(plot=True)
+    # spurning7(plot=True)
     # spurning8(plot=False)
-    #spurning9(plot=True)
+    spurning9(plot=True)
     # spurning10(plot=False)
     # spurning11(plot=False)
     # spurning12(plot=False)
