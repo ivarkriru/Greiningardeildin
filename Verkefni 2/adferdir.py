@@ -46,10 +46,11 @@ class Foll:
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
-            s1 = skreflengd * f(hornaxis[i])
-            s2 = skreflengd * f(hornaxis[i] + skreflengd * (s1 / 2))
-            s3 = skreflengd * f(hornaxis[i] + skreflengd * (s2 / 2))
-            s4 = skreflengd * f(hornaxis[i] + skreflengd * s3)
+            s1 =  f(hornaxis[i])
+            s2 =  f(hornaxis[i] + skreflengd * (s1 / 2))
+            s3 =  f(hornaxis[i] + skreflengd * (s2 / 2))
+            s4 =  f(hornaxis[i] + skreflengd * s3)
+
             w = hornhradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
             hornhradiaxis.append(w)
             hornaxis.append(hornaxis[i] + skreflengd * w)
@@ -62,9 +63,10 @@ class Foll:
 
         axis = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
-
         for i in range(0, fjoldiskrefa):
+
             skref = skref + skreflengd
+
             s1 = f1(*axis[i])
             s2 = f1(*(axis[i] + skreflengd*s1/2))
             s3 = f1(*(axis[i] + skreflengd*s2/2))
