@@ -124,10 +124,10 @@ def spurning9(plot=False):
     follin = Foll()
     T = 20
     n_to_power_2 = 8  # 0-7
-    fjoldi_uppsetninga = 50
+    fjoldi_uppsetninga = 5
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
     pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(fjoldi_uppsetninga)]
-    upphafsstodur = [["π/3", 0, "π/6", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
+    upphafsstodur = [["π/3", 0, "π/6", 0], ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
     results = []
@@ -180,8 +180,8 @@ def spurning9(plot=False):
             thp2_best = result[-1]['thp2']
             # diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
             # (theta2-theta1)(thetaprime2 - thetaprime1)(thetabest1-thetabest2)
-
-            diff = [((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])** 2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2)/result_['n'] for result_ in result[:-1]]
+            pi2 = np.pi*2
+            diff = [((theta1_best%pi2-result_['th1']%pi2) * (theta2_best%pi2-result_['th2']%pi2) * (thp1_best%pi2-result_['thp1']%pi2) * (thp2_best%pi2-result_['thp2']%pi2))**2 for result_ in result[:-1]]
 
 
             print(n_list)
@@ -320,7 +320,7 @@ if __name__ == '__main__':
     #spurning2(plot=True)
     #spurning3(plot=True)
     #spurning4(plot=True)
-    spurning5(plot=True)
+    # spurning5(plot=True)
     #spurning6(plot=True)
     # spurning7(plot=True)
     # spurning8(plot=False)
