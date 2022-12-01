@@ -60,8 +60,8 @@ class Foll:
     def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
-
-        axis = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
+        axis = np.zeros((fjoldiskrefa+1, 4))
+        axis[0] = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
         for i in range(0, fjoldiskrefa):
 
@@ -83,7 +83,7 @@ class Foll:
             nyr_hornhradi2 = axis[i][3] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             nytt_horn2 = axis[i][1] + skreflengd * nyr_hornhradi2
 
-            axis = np.append(axis, np.array([[nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2]]), axis=0)
+            axis[i+1] = np.array([nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2])
         return axis
 
 
