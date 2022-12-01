@@ -137,6 +137,7 @@ def spurning9(plot=False):
     results = []
     print(f"starting with {iterations=}")
     t1 = time.time()
+    """
     for pendular in pendulalist:
         for upphafsstada in upphafsstodur:
             result_intermed = []
@@ -162,13 +163,18 @@ def spurning9(plot=False):
     for result in results:
         print(result)
     np.savez("results_from_sp9.npz", results=results)
-
+    """
+    import json
+    file = open('results2.json', 'r')
+    results = json.load(file)
+    for result in results:
+        print(result)
     # todo: plotta feril á pendulum með mismunandi n
     if plot:
-
+        list_of_hallatales = []
         difffig, diffax = plt.subplots(1)
-        fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
-        ax = np.asarray(ax).ravel()
+        # fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
+        # ax = np.asarray(ax).ravel()
         n_list = [result['n'] for result in results[0]]
         for index, result in enumerate(results):
             reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
@@ -179,17 +185,21 @@ def spurning9(plot=False):
             hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
 
             diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
-            diffax.loglog(n_list[:-1], diff)
-            ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
-            for i in range(len(hnit2_list)):
-                ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
-            ax[index].set_xlim([-10.1, 10.1])
-            ax[index].set_ylim([-10.1, 10.1])
+            diffax.plot(np.log(n_list[:-1]), np.log(diff))
+            list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
+            #ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
+            #for i in range(len(hnit2_list)):
+            #    ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
+            #ax[index].set_xlim([-10.1, 10.1])
+            #ax[index].set_ylim([-10.1, 10.1])
 
             # x = [result_[0]+50 for result_ in result] # til að bars séu ekki ofan í hvorum öðrum
             # ax[index].bar(x, theta2, 100, color='red')
-            ax[index].set_title(f"{result[0]['upphafsstada']}, L1: {result[0]['pendular']}")
+            #ax[index].set_title(f"{result[0]['upphafsstada']}, L1: {result[0]['pendular']}")
             # ax.bar(x, theta2)
+        plt.figure()
+        plt.hist(list_of_hallatales)
+        print(f"Average of hallatales: {np.average(list_of_hallatales)}, mean: {np.mean(list_of_hallatales)}")
         plt.show()
 
 
