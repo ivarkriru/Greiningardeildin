@@ -73,31 +73,30 @@ def spurning7(plot=False):
     if plot:
         plt.plot(y1)
         plt.plot(y2)
-        plt.show()
+        plt.pause(2)
+        plt.clf()
         p.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title="Sp7: Tvöfaldur pendúll,theta1 = pi/3, theta2 = pi/6, theta' = 0")
 
+pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning8(plot=False):
-    pi_ = {"π/3": np.pi / 3, "π/6": np.pi / 6, "π/2": np.pi / 2, "π": np.pi, "π/4": np.pi / 4,"3*π/4": np.pi* 3/ 4, "6*π/4": np.pi* 6 / 4, 0: 0}
     def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=100, lengd=100):
-        p= Pendulum()
-        hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2, horn1= horn1,
-                                      horn2= horn2, hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa= fjoldiskrefa, lengd= lengd)
+        p= Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2)
+        hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(horn1= horn1, horn2= horn2, hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa= fjoldiskrefa, lengd= lengd)
         if plot:
-            #print("here")
-            #plt.plot(y1)
-            #plt.plot(y2)
-            #plt.title("")
-            #plt.show()
+            horn1 = str(list(pi_.keys())[list(pi_.values()).index(horn1)])
+            horn2 = str(list(pi_.keys())[list(pi_.values()).index(horn2)])
+            plt.plot(y1)
+            plt.plot(y2)
+            plt.pause(2)
+            plt.clf()
             p.create_animation2d(hnitsenior, hnitjunior, 2,
-                                 "Sp8: Tvöfaldur pendúll, theta1= "+
-                                 str(list(pi_.keys())[list(pi_.values()).index(horn1)]) +
-                                 ", theta2= "+ str(list(pi_.keys())[list(pi_.values()).index(horn2)])  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
+                                 "Sp8: Tvöfaldur pendúll, theta1= " + horn1 + ", theta2= "+ horn2 +
+                                 ",theta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) +
+                                 ",\n lengd 1 = " + str(L_1)+ ", lengd 2= "+ str(L_2) +
+                                 ", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
 
-    fjoldiskrefa = 50
-    lengd = 50
-    #Gefin gildi:
-    #L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0
-    #Áhrif breytinga á theta1
+    fjoldiskrefa = 100
+    lengd = 20
     runspurning8(horn1=np.pi,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(horn1=np.pi/2,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
@@ -106,7 +105,7 @@ def spurning8(plot=False):
     runspurning8(horn2=np.pi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     #Áhrif breytinga á l1
-    runspurning8(L_1= 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_1 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(L_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     #Áhrif breytinga á l2
     runspurning8(L_2 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
@@ -121,15 +120,14 @@ def spurning8(plot=False):
     runspurning8(horn1 = np.pi, m_1=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(horn1 = np.pi, m_2=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
 
-pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning9(plot=False):
     follin = Foll()
-    p = Pendulum()
     T = 20
     n_to_power_2 = 8  # 0-7
-    pendulalist = [[1,1,1,1], [2,1,2,1], [2,2,1,1]]
-    #pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(6)]
-    upphafsstodur = [["π/12", 0, "π/12", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
+    fjoldi_uppsetninga = 50
+    #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
+    pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(fjoldi_uppsetninga)]
+    upphafsstodur = [["π/3", 0, "π/6", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
     results = []
@@ -142,7 +140,7 @@ def spurning9(plot=False):
             for i in range(n_to_power_2):
                 p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
                 if i > 6:
-                    n = 2*100*2**i
+                    n = 30000
                 else:
                     n = 100*2**i
                 array = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
@@ -322,7 +320,7 @@ if __name__ == '__main__':
     #spurning2(plot=True)
     #spurning3(plot=True)
     #spurning4(plot=True)
-    # spurning5(plot=True)
+    spurning5(plot=True)
     #spurning6(plot=True)
     # spurning7(plot=True)
     # spurning8(plot=False)
