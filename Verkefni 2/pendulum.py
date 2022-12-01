@@ -206,9 +206,12 @@ def spurning9(plot=False):
 def spurning10(plot=False):
     follin = Foll()
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=2)
-    lengdin = 1000
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 7, horn2=np.pi * 1.5,
-                              hornhradi1=-6, hornhradi2=10, fjoldiskrefa=lengdin * 20, lengd=lengdin)
+    lengdin = 20
+    arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/2 , horn2=np.pi/8,
+                              hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+
+    y1 = arr[:,0]
+    y2 = arr[:,1]
     '''
     for i,x in enumerate(y1):
         y1[i] = x%np.pi
@@ -324,8 +327,8 @@ if __name__ == '__main__':
     #spurning6(plot=True)
     # spurning7(plot=True)
     # spurning8(plot=False)
-    spurning9(plot=True)
-    # spurning10(plot=False)
+    #spurning9(plot=True)
+    spurning10(plot=True)
     # spurning11(plot=False)
     # spurning12(plot=False)
     # frjals(plot=False)
