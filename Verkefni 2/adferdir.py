@@ -1,9 +1,9 @@
 import random
 
-import numpy as np
+# import numpy as np
 import math
-import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw
+#import matplotlib.pyplot as plt
+# from PIL import Image, ImageDraw
 import io
 import os
 
@@ -81,7 +81,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             horn1hradiaxis.append(w)
-            horn1axis.append(np.mod(horn1axis[i] + skreflengd * w, np.pi*2))
+            horn1axis.append((horn1axis[i] + skreflengd * w) % (math.pi*2))
 
             s1 = f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
             s2 = f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
@@ -92,7 +92,7 @@ class Foll:
                                  horn2hradiaxis[i])
             w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             horn2hradiaxis.append(w)
-            horn2axis.append(np.mod(horn2axis[i] + skreflengd * w, np.pi*2))
+            horn2axis.append((horn2axis[i] + skreflengd * w) % (math.pi*2))
         if sp9:
             return horn1axis, horn2axis, horn1hradiaxis, horn2hradiaxis
         else:
@@ -109,7 +109,7 @@ class Pendulum:
 
     def pendulum(self, theta):
         fasti = -1 * self.g / (self.L_1)
-        return np.sin(theta) * fasti
+        return math.sin(theta) * fasti
 
     def double_pendulum1(self, theta1, theta2, omega1, omega2):
         l1 = self.L_1
@@ -129,17 +129,17 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        #k1 = m2 * l1 * math.pow(omega1, 2) * np.sin(d) * np.cos(d)
-        #k2 = m2 * g * np.sin(theta2) * np.cos(d)
-        #k3 = m2 * l2 * math.pow(omega2, 2) * np.sin(d)
-        #k4 = (m1 + m2) * g * np.sin(theta1)
-        #k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
+        #k1 = m2 * l1 * math.pow(omega1, 2) * math.sin(d) * math.cos(d)
+        #k2 = m2 * g * math.sin(theta2) * math.cos(d)
+        #k3 = m2 * l2 * math.pow(omega2, 2) * math.sin(d)
+        #k4 = (m1 + m2) * g * math.sin(theta1)
+        #k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(math.cos(d), 2)
 
-        k1 = m2*l2*math.pow(omega2,2)*np.sin(d)
-        k2 =-((m1+m2)*g*np.sin(theta1))
-        k3 = m2*l1*math.pow(omega1,2)*np.sin(d)*np.cos(d)
-        k4 = -m2*g*np.sin(theta2)*np.cos(d)
-        k5 = ((m1+m2)*l1 - m2*l1*np.cos(d)*np.cos(d))
+        k1 = m2*l2*math.pow(omega2,2)*math.sin(d)
+        k2 =-((m1+m2)*g*math.sin(theta1))
+        k3 = m2*l1*math.pow(omega1,2)*math.sin(d)*math.cos(d)
+        k4 = -m2*g*math.sin(theta2)*math.cos(d)
+        k5 = ((m1+m2)*l1 - m2*l1*math.cos(d)*math.cos(d))
 
         if l1 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
             return 0
@@ -165,206 +165,33 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        #k1 = m2 * l2 * math.pow(omega2, 2) * np.sin(d) * np.cos(d)
-        #k2 = (m1 + m2) * ( g * np.sin(theta1) * np.cos(d))
-        #k3 = l1 * math.pow(omega1, 2) * np.sin(d)
-        #k4 = g * np.sin(theta2)
-        #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(np.cos(d), 2)
+        #k1 = m2 * l2 * math.pow(omega2, 2) * math.sin(d) * math.cos(d)
+        #k2 = (m1 + m2) * ( g * math.sin(theta1) * math.cos(d))
+        #k3 = l1 * math.pow(omega1, 2) * math.sin(d)
+        #k4 = g * math.sin(theta2)
+        #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(math.cos(d), 2)
 
-        k1 = -m2*l2*math.pow(omega2,2)*np.sin(d)*np.cos(d)
-        k2 = -((m1+m2)*g*np.sin(theta1))*np.cos(d)
-        k3 = -(m1+m2)*l1*math.pow(omega1,2)*np.sin(d)
-        k4 = -(m1+m2)*g*np.sin(theta2)
-        k5 = (m2*l2*np.cos(d)*np.cos(d) - (m1+m2)*l2)
+        k1 = -m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
+        k2 = -((m1+m2)*g*math.sin(theta1))*math.cos(d)
+        k3 = -(m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
+        k4 = -(m1+m2)*g*math.sin(theta2)
+        k5 = (m2*l2*math.cos(d)*math.cos(d) - (m1+m2)*l2)
 
         if l2 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
             return 0
 
         theta2_2prime = (-k1 + k2 - k3 - k4) / k5
         return theta2_2prime
-
-    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
-        follin = Foll()
-        y = Foll().euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
-        hnit = []
-        for theta in y:
-            hnit.append(self.hornTohnit(theta))
-        hnit = np.array(hnit)
-        return hnit, y
-
-    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
-        y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-        hnit = []
-        for theta in y:
-            hnit.append(self.hornTohnit(theta))
-        hnit = np.array(hnit)
-
-        return hnit,y
-
     def hornTohnit(self, th, L_1=None):
         if L_1 is None:
             L_1 = self.L_1
-        return L_1 * np.sin(th), -L_1 * np.cos(th)
+        return L_1 * math.sin(th), -L_1 * math.cos(th)
 
     def hornTohnitjunior(self, th, th2, L_1=None, L_2=None):
         if L_1 is None:
             L_1=self.L_1
         if L_2 is None:
             L_2=self.L_2
-        return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
-
-    def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
-        print("here")
-        # initializing a figure in
-        # which the graph will be plotted
-        # marking the x-axis and y-axis
-        staerdramma = self.L_2 + self.L_1 + 3
-        plt.axis('equal')
-
-        plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
-        if fjoldipendula == 1:
-            for index in range(data1.shape[0]):
-                plt.clf()
-                plt.title(label=title)
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
-                x = data1[index, 0]
-                y = data1[index, 1]
-                plt.xticks([])
-                plt.yticks([])
-                x2 = data2[index, 0]
-                y2 = data2[index, 1]
-
-                plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
-                plt.scatter(x, y, lw=20, c="orange")
-                plt.plot([0, x], [0, y], lw=5, c="blue",alpha=1)
-                plt.scatter(x2, y2, lw=20, c="red")
-                plt.plot([0, x2], [0, y2], lw=5, c="green")
-                plt.pause(0.001)
-        plt.show()
-
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False):
-
-        # initializing a figure in
-        # which the graph will be plotted
-        # marking the x-axis and y-axis
-        staerdramma = self.L_2 + self.L_1 + 3
-        bufs = []
-
-        if fjoldipendula == 1:
-            for index in range(data1.shape[0]):
-
-                plt.clf()
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
-                plt.title(label=title)
-                x = data1[index, 0]
-                y = data1[index, 1]
-
-                plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
-
-                plt.scatter(x, y, lw=20, c="orange")
-                plt.plot([0, x], [0, y], lw=5, c="blue")
-
-                plt.pause(0.001)
-        elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 10):
-                plt.clf()
-                plt.title(label=title)
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
-
-                x1 = data1[index, 0]
-                y1 = data1[index, 1]
-
-                x2 = data2[index, 0]
-                y2 = data2[index, 1]
+        return L_1 * math.sin(th) + L_2 * math.sin(th2), -L_1 * math.cos(th) - L_2 * math.cos(th2)
 
 
-                x1plot = data1[0:index, 0]
-                y1plot = data1[0:index, 1]
-
-                x2plot = data2[0:index, 0]
-                y2plot = data2[0:index, 1]
-
-                plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
-
-                plt.plot(x1plot, y1plot, c="yellow")
-                plt.plot(x2plot, y2plot, c="cyan")
-
-                plt.plot([0, x1], [0, y1], lw=5, c="blue")
-                plt.plot([x1, x2], [y1, y2], lw=5, c="green")
-
-                plt.scatter(x1, y1, lw=self.m_1 * 5, c="orange")
-                plt.scatter(x2, y2, lw=self.m_2 * 5, c="red")
-                if savegif:
-                    buf = io.BytesIO()
-                    plt.savefig(buf, format="png")
-                    bufs.append(Image.open(buf))
-                print(f"{index / data1.shape[0]* 100:.00f}%", end="\n", flush=True)
-                plt.pause(0.001)
-        print("here")
-        if savegif:
-            filename = "animation_" + str(random.randint(0,10000)) + "_gif.gif"
-            f = os.path.join(os.getcwd(), filename)
-            bufs[0].save(f, save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
-        plt.show()
-    def create_animation2ex2(self, data1, data2, data3, data4, fjoldipendula=1, title=None, savegif=False,offset = 5):
-
-        # initializing a figure in
-        # which the graph will be plotted
-        # marking the x-axis and y-axis
-        staerdramma = self.L_2*2 + self.L_1*2 + 3
-
-        for index in range(0, data1.shape[0], 2):
-            plt.clf()
-            plt.title(label=title)
-            plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
-
-            x1 = data1[index, 0] + offset
-            y1 = data1[index, 1]
-
-            x2 = data2[index, 0] + offset
-            y2 = data2[index, 1]
-
-            x3 = data3[index, 0] - offset
-            y3 = data3[index, 1]
-
-            x4 = data4[index, 0] - offset
-            y4 = data4[index, 1]
-
-
-            x1plot = data1[0:index, 0]
-            x1plot = x1plot + offset
-            y1plot = data1[0:index, 1]
-
-            x2plot = data2[0:index, 0]
-            x2plot = x2plot + offset
-            y2plot = data2[0:index, 1]
-
-            x3plot = data3[0:index, 0]
-            x3plot = x3plot - offset
-            y3plot = data3[0:index, 1]
-
-            x4plot = data4[0:index, 0]
-            x4plot = x4plot - offset
-            y4plot = data4[0:index, 1]
-
-            plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
-
-            plt.plot(x1plot, y1plot)
-            plt.plot(x2plot, y2plot)
-            plt.plot(x3plot, y3plot)
-            plt.plot(x4plot, y4plot)
-
-            plt.plot([offset, x1], [0, y1], lw=5, c="blue")
-            plt.plot([x1, x2], [y1, y2], lw=5, c="blue")
-            plt.plot([-offset,x3], [0, y3], lw=5, c="blue")
-            plt.plot([x3, x4], [y3, y4], lw=5, c="blue")
-
-            plt.scatter(x1, y1, lw=self.m_1 * 5*2, c="orange")
-            plt.scatter(x2, y2, lw=self.m_2 * 5*2, c="orange")
-            plt.scatter(x3, y3, lw=self.m_1 * 5*2, c="orange")
-            plt.scatter(x4, y4, lw=self.m_2 * 5*2, c="orange")
-
-            plt.pause(0.001)
-
-            print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
-        plt.show()

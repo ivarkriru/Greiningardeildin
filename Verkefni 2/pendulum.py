@@ -1,14 +1,14 @@
 import random
 import time
 
-import numpy as np
-import matplotlib.pyplot as plt
+# import numpy as np
+# import matplotlib.pyplot as plt
 from adferdir import Foll, Pendulum
 import math
 
 
 def point_diff(A, B):
-    return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2)
+    return math.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2)
 
 
 def spurning1(plot=False):
@@ -29,108 +29,17 @@ def spurning2(plot=False):
     pass
 
 
-def spurning3(plot=False):
-    p = Pendulum()
-    hnit, y = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
-    if plot:
-        plt.plot(y)
-        plt.pause(2)
-        plt.clf()
-        p.create_animation2d(hnit, title="Pendulum, theta(0) is pi/12, theta'(0) is 0 with Euler")
-
-
-def spurning4(plot=False):
-    p = Pendulum()
-    hnit, y = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
-    hnit2, y2 = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
-    if plot:
-        plt.plot(y)
-        plt.plot(y2)
-        plt.pause(2)
-        plt.clf()
-        p.create_animation2dfyrir4(data1=hnit, data2=hnit2,
-                                   title="Pendulums, blue theta(0): pi/12, green theta(0): pi/2, theta'(0): 0 with Euler")
-
-
-def spurning5(plot=False):
-    p = Pendulum()
-    hnit, y = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
-    hnit2, y2 = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
-
-    if plot:
-        plt.plot(y)
-        plt.plot(y2)
-        plt.pause(2)
-        plt.clf()
-        p.create_animation2dfyrir4(data1=hnit, data2=hnit2,
-                                   title="Pendulums, blue theta(0): p/12, green theta(0): p/2, theta'(0): 0 with RK")
-
-
-def spurning6(plot=False):
-    '''
-
-    er á ipad pdf skjalinu hér á git.
-
-    '''
-    pass
-
-
-def spurning7(plot=False):
-    follin = Foll()
-    p = Pendulum(L_1=1, m_1=1, L_2=1, m_2=1)
-    lengdin = 20
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi, horn2=np.pi,
-                              hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 50, lengd=lengdin)
-    hnitsenior = []
-    hnitjunior = []
-
-    for theta in y1:
-        hnitsenior.append(p.hornTohnit(theta))
-    for index, theta in enumerate(y2):
-        hnitjunior.append(p.hornTohnitjunior(y1[index], theta))
-
-    hnitsenior = np.array(hnitsenior)
-    hnitjunior = np.array(hnitjunior)
-
-    if plot:
-        plt.plot(y1)
-        plt.plot(y2)
-        plt.show()
-        p.create_animation2d(hnitsenior, hnitjunior, 2)
-
-
-def spurning8(plot=False):
-    follin = Foll()
-    p = Pendulum(L_1=4, m_1=4, L_2=4, m_2=4)
-    lengdin = 100
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 2, horn2=np.pi / 2,
-                              hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
-    hnitsenior = []
-    hnitjunior = []
-    for theta in y1:
-        hnitsenior.append(p.hornTohnit(theta))
-    for index, theta in enumerate(y2):
-        hnitjunior.append(p.hornTohnitjunior(y1[index], theta))
-
-    hnitsenior = np.array(hnitsenior)
-    hnitjunior = np.array(hnitjunior)
-
-    if plot:
-        plt.plot(y1)
-        plt.plot(y2)
-        plt.show()
-        p.create_animation2d(hnitsenior, hnitjunior, 2)
 
 
 
-pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
+pi_= {"π/3":math.pi/3, "π/6":math.pi/6, "π/2":math.pi/2, "π":math.pi, "π/4":math.pi/4, 0:0, "π/12":math.pi/12, "-π/12": -math.pi/12}
 def spurning9(plot=False):
     follin = Foll()
     p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
     T = 20
     n_to_power_2 = 8  # 0-7
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
-    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(2)]
+    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(16)]
     upphafsstodur = [["π/3", 0, "π/6", 0], ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
@@ -161,148 +70,10 @@ def spurning9(plot=False):
     print(f"total time: {time.time() - t1:.02f}")
     for result in results:
         print(result)
-    np.savez("results_from_sp9.npz", results=results)
+    #np.savez("results_from_sp9.npz", results=results)
 
     # todo: plotta feril á pendulum með mismunandi n
-    if plot:
 
-        difffig, diffax = plt.subplots(1)
-        fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
-        ax = np.asarray(ax).ravel()
-        n_list = [result['n'] for result in results[0]]
-        for index, result in enumerate(results):
-            reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
-            x1 = [result_['th1'] for result_ in result[:-1]]
-            y1 = [result_['th2'] for result_ in result[:-1]]
-            # theta2 = [result_[2] for result_ in result]
-            # hnit1 = [p.hornTohnit(result_[1], L_1=result_[3][0]) for result_ in result]
-            hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
-
-            diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
-            diffax.loglog(n_list[:-1], diff)
-            ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
-            for i in range(len(hnit2_list)):
-                ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
-            ax[index].set_xlim([-10.1, 10.1])
-            ax[index].set_ylim([-10.1, 10.1])
-
-            # x = [result_[0]+50 for result_ in result] # til að bars séu ekki ofan í hvorum öðrum
-            # ax[index].bar(x, theta2, 100, color='red')
-            ax[index].set_title(f"{result[0]['upphafsstada']}, L1: {result[0]['pendular']}")
-            # ax.bar(x, theta2)
-        plt.show()
-
-
-def spurning10(plot=False):
-    follin = Foll()
-    p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=2)
-    lengdin = 1000
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi / 7, horn2=np.pi * 1.5,
-                              hornhradi1=-6, hornhradi2=10, fjoldiskrefa=lengdin * 20, lengd=lengdin)
-    '''
-    for i,x in enumerate(y1):
-        y1[i] = x%np.pi
-    for i,x in enumerate(y2):
-        y2[i] = x%np.pi
-    '''
-    if plot:
-        plt.plot(y1, y2)
-        plt.show()
-
-
-def spurning11(plot=False):
-    follin = Foll()
-    p = Pendulum()
-    lengdin = 40
-    for x in [1, 2, 3, 4, 5]:
-        epsilon = math.pow(10, -1 * x)
-        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
-
-        y3, y4 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
-                                  horn2=np.pi / 6 + epsilon,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
-        hnit1 = []
-        hnit2 = []
-        hnit3 = []
-        hnit4 = []
-
-        for theta in y1:
-            hnit1.append(p.hornTohnit(theta))
-        for index, theta in enumerate(y2):
-            hnit2.append(p.hornTohnitjunior(y1[index], theta))
-
-        for theta in y3:
-            hnit3.append(p.hornTohnit(theta))
-        for index, theta in enumerate(y4):
-            hnit4.append(p.hornTohnitjunior(y3[index], theta))
-
-        hnit1 = np.array(hnit1)
-        hnit2 = np.array(hnit2)
-        hnit3 = np.array(hnit3)
-        hnit4 = np.array(hnit4)
-
-        if plot:
-            plt.plot(y1)
-            plt.plot(y2)
-
-            plt.plot(y3)
-            plt.plot(y4)
-            plt.show()
-            p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
-
-
-def spurning12(plot=False):
-    follin = Foll()
-    p = Pendulum()
-
-    # breyta eftirfarandi og skoða áhrifin
-
-    # skoða breytingu á lengd tímabila
-    lengdin = 40
-    # nákvæmni gildanna
-    n = 30
-    nakvaemni = lengdin * n
-    # upphafsgildi theta 1 og theta 2
-    theta1 = np.pi * 2 / 3
-    theta2 = np.pi / 6
-
-    for x in [*range(1, 13)]:
-        epsilon = math.pow(10, -1 * x)
-        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=theta1, horn2=theta2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
-
-        y3, y4 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
-                                  horn2=np.pi / 6 + epsilon,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=nakvaemni, lengd=lengdin)
-        hnit1 = []
-        hnit2 = []
-        hnit3 = []
-        hnit4 = []
-
-        for theta in y1:
-            hnit1.append(p.hornTohnit(theta))
-        for index, theta in enumerate(y2):
-            hnit2.append(p.hornTohnitjunior(y1[index], theta))
-
-        for theta in y3:
-            hnit3.append(p.hornTohnit(theta))
-        for index, theta in enumerate(y4):
-            hnit4.append(p.hornTohnitjunior(y3[index], theta))
-
-        hnit1 = np.array(hnit1)
-        hnit2 = np.array(hnit2)
-        hnit3 = np.array(hnit3)
-        hnit4 = np.array(hnit4)
-
-        if plot:
-            plt.plot(y1)
-            plt.plot(y2)
-
-            plt.plot(y3)
-            plt.plot(y4)
-            plt.show()
-            p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
 
 
 def frjals(plot=False):
@@ -320,7 +91,5 @@ if __name__ == '__main__':
     # exit()
     # spurning8(plot=False)
     spurning9(plot=True)
-    spurning10(plot=False)
-    spurning11(plot=False)
     # spurning12(plot=False)
     # frjals(plot=False)
