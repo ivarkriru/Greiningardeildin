@@ -60,38 +60,33 @@ class Foll:
     def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd, sp9=False):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
-        horn1axis = []
-        horn1hradiaxis = []
-        horn2axis = []
-        horn2hradiaxis = []
 
-        dempari = 0
-        horn1axis.append(horn1)
-        horn1hradiaxis.append(hornhradi1)
-        horn2axis.append(horn2)
-        horn2hradiaxis.append(hornhradi2)
+        axis = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
+
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
-            s1 = f1(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
-            s2 = f1(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2), horn1hradiaxis[i] + skreflengd * (s1 / 2), horn2hradiaxis[i] + skreflengd * (s1 / 2))
-            s3 = f1(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2), horn1hradiaxis[i] + skreflengd * (s2 / 2), horn2hradiaxis[i] + skreflengd * (s2 / 2))
-            s4 = f1(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i] + skreflengd * s3, horn2hradiaxis[i] + skreflengd * s3)
-            w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            horn1hradiaxis.append(w)
-            horn1axis.append((horn1axis[i] + skreflengd * w) % (math.pi*2))
+            s1 = f1(*axis[i])
+            s2 = f1(*(axis[i] + skreflengd*s1/2))
+            s3 = f1(*(axis[i] + skreflengd*s2/2))
+            s4 = f1(*(axis[i]*s3))
+            nyr_hornhradi1 = axis[i][2] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
+            # horn1hradiaxis.append(w)
+            nytt_horn1 = axis[i][0] + skreflengd * nyr_hornhradi1
+                # horn1axis.append((horn1axis[i] + skreflengd * w) % (math.pi*2))
 
-            s1 = f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
-            s2 = f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2), horn1hradiaxis[i]+ skreflengd * (s1 / 2), horn2hradiaxis[i]+ skreflengd * (s1 / 2))
-            s3 = f2(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2), horn1hradiaxis[i]+ skreflengd * (s2 / 2), horn2hradiaxis[i]+ skreflengd * (s2 / 2))
-            s4 = f2(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i]+ skreflengd * s3, horn2hradiaxis[i]+ skreflengd * s3)
-            w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            horn2hradiaxis.append(w)
-            horn2axis.append((horn2axis[i] + skreflengd * w) % (math.pi*2))
+            s1 = f2(*axis[i])
+            s2 = f2(*(axis[i] + skreflengd*s1/2))
+            s3 = f2(*(axis[i] + skreflengd*s2/2))
+            s4 = f2(*(axis[i] * s3))
+            nyr_hornhradi2 = axis[i][3] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
+            nytt_horn2 = axis[i][0] + skreflengd * nyr_hornhradi2
+            axis = np.append(axis, np.array([[nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2]]), axis=0)
+
         if sp9:
-            return horn1axis, horn2axis, horn1hradiaxis, horn2hradiaxis
-        else:
-            return horn1axis, horn2axis
+            return axis
+        #else:
+            #return horn1axis, horn2axis
 
 
 class Pendulum:

@@ -156,14 +156,16 @@ def spurning9(plot=False):
                     n = 20000
                 else:
                     n = 100*2**i
-                th1, th2, thp1, thp2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
+                array = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
                                       hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=T, sp9=True)
 
 
-                hnit1 = p.hornTohnit(th1[-1])
-                hnit2 = p.hornTohnitjunior(th1[-1], th2[-1])
+
+                # hnit1 = p.hornTohnit(th1[-1])
+                # hnit2 = p.hornTohnitjunior(th1[-1], th2[-1])
                 # result_intermed.append([n, y1[-1], y2[-1], pendular, upphafsstada])
-                result_dict = {"n": n, "th1": th1[-1], "th2": th2[-1], "thp1": thp1[-1], "thp2": thp2[-1], "pendular":pendular, "upphafsstada": upphafsstada}
+
+                result_dict = {"n": n, "th1": array[-1][0], "th2": array[-1][1], "thp1": array[-1][2], "thp2": array[-1][3], "pendular":pendular, "upphafsstada": upphafsstada}
                 result_intermed.append(result_dict)
             results.append(result_intermed)
             counter+=1
