@@ -72,25 +72,25 @@ class Foll:
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
-            s1 = skreflengd * f1(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
-            s2 = skreflengd * f1(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
-                                 horn1hradiaxis[i], horn2hradiaxis[i])
-            s3 = skreflengd * f1(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2),
-                                 horn1hradiaxis[i], horn2hradiaxis[i])
-            s4 = skreflengd * f1(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i],
+            s1 = f1(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
+            s2 = f1(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
+                    horn1hradiaxis[i], horn2hradiaxis[i])
+            s3 = f1(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2),
+                    horn1hradiaxis[i], horn2hradiaxis[i])
+            s4 = f1(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i],
                                  horn2hradiaxis[i])
-            w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
+            w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             horn1hradiaxis.append(w)
             horn1axis.append(np.mod(horn1axis[i] + skreflengd * w, np.pi*2))
 
-            s1 = skreflengd * f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
-            s2 = skreflengd * f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
-                                 horn1hradiaxis[i], horn2hradiaxis[i])
-            s3 = skreflengd * f2(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2),
-                                 horn1hradiaxis[i], horn2hradiaxis[i])
-            s4 = skreflengd * f2(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i],
+            s1 = f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
+            s2 = f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
+                    horn1hradiaxis[i], horn2hradiaxis[i])
+            s3 = f2(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2),
+                    horn1hradiaxis[i], horn2hradiaxis[i])
+            s4 = f2(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i],
                                  horn2hradiaxis[i])
-            w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
+            w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             horn2hradiaxis.append(w)
             horn2axis.append(np.mod(horn2axis[i] + skreflengd * w, np.pi*2))
         if sp9:

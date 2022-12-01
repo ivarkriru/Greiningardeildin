@@ -158,7 +158,7 @@ def spurning9(plot=False):
             results.append(result_intermed)
             counter+=1
             print(f"{counter/ iterations* 100:.00f}%", end="\n", flush=True)
-    print(f"total time: {time.time() - t1:.00f}")
+    print(f"total time: {time.time() - t1:.02f}")
     for result in results:
         print(result)
     np.savez("results_from_sp9.npz", results=results)
@@ -183,8 +183,8 @@ def spurning9(plot=False):
             ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
             for i in range(len(hnit2_list)):
                 ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
-            ax[index].set_xlim([-2.1, 2.1])
-            ax[index].set_ylim([-2.1, 2.1])
+            ax[index].set_xlim([-10.1, 10.1])
+            ax[index].set_ylim([-10.1, 10.1])
 
             # x = [result_[0]+50 for result_ in result] # til að bars séu ekki ofan í hvorum öðrum
             # ax[index].bar(x, theta2, 100, color='red')
