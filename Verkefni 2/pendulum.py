@@ -225,15 +225,19 @@ def spurning10(plot=False):
 def spurning11(plot=False):
     follin = Foll()
     p = Pendulum()
-    lengdin = 40
+    lengdin = 20
     for x in [1, 2, 3, 4, 5]:
         epsilon = math.pow(10, -1 * x)
-        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
+        arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
 
-        y3, y4 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
+        arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
                                   horn2=np.pi / 6 + epsilon,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+        y1 = arr1[:,0]
+        y2 = arr1[:,1]
+        y3 = arr2[:,0]
+        y4 = arr2[:,1]
         hnit1 = []
         hnit2 = []
         hnit3 = []
@@ -280,12 +284,16 @@ def spurning12(plot=False):
 
     for x in [*range(1, 13)]:
         epsilon = math.pow(10, -1 * x)
-        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=theta1, horn2=theta2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
+        arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=theta1, horn2=theta2,
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
 
-        y3, y4 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
+        arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
                                   horn2=np.pi / 6 + epsilon,
                                   hornhradi1=0, hornhradi2=0, fjoldiskrefa=nakvaemni, lengd=lengdin)
+        y1 = arr1[:,0]
+        y2 = arr1[:,1]
+        y3 = arr2[:,0]
+        y4 = arr2[:,1]
         hnit1 = []
         hnit2 = []
         hnit3 = []
@@ -328,7 +336,7 @@ if __name__ == '__main__':
     # spurning7(plot=True)
     # spurning8(plot=False)
     #spurning9(plot=True)
-    spurning10(plot=True)
-    # spurning11(plot=False)
-    # spurning12(plot=False)
+    # spurning10(plot=True)
+    #spurning11(plot=True)
+    spurning12(plot=True)
     # frjals(plot=False)

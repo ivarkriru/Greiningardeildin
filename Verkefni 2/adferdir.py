@@ -313,7 +313,7 @@ class Pendulum:
         # marking the x-axis and y-axis
         staerdramma = self.L_2*2 + self.L_1*2 + 3
 
-        for index in range(0, data1.shape[0], 2):
+        for index in range(0, data1.shape[0], 100):
             plt.clf()
             plt.title(label=title)
             plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
