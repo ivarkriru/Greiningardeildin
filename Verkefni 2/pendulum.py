@@ -1,6 +1,6 @@
 import random
 import time
-
+import json
 # import numpy as np
 # import matplotlib.pyplot as plt
 from adferdir import Foll, Pendulum
@@ -39,7 +39,7 @@ def spurning9(plot=False):
     T = 20
     n_to_power_2 = 8  # 0-7
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
-    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(16)]
+    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(256)]
     upphafsstodur = [["π/3", 0, "π/6", 0], ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
@@ -68,10 +68,13 @@ def spurning9(plot=False):
             counter+=1
             print(f"{counter/ iterations* 100:.00f}%", end="\n", flush=True)
     print(f"total time: {time.time() - t1:.02f}")
-    for result in results:
-        print(result)
+    #for result in results:
+    #    print(result)
     #np.savez("results_from_sp9.npz", results=results)
+    file = open(f'results{time.time():.00f}.json', 'w+')
+    data = results
 
+    json.dump(data, file)
     # todo: plotta feril á pendulum með mismunandi n
 
 
