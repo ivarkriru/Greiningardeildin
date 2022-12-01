@@ -74,10 +74,10 @@ def spurning6(plot=False):
 
 def spurning7(plot=False):
     follin = Foll()
-    p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
-    lengdin = 100
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 3 / 4, horn2=np.pi * 6 / 4,
-                              hornhradi1=1, hornhradi2=0, fjoldiskrefa=lengdin * 30, lengd=lengdin)
+    p = Pendulum(L_1=1, m_1=1, L_2=1, m_2=1)
+    lengdin = 20
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi, horn2=np.pi,
+                              hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 50, lengd=lengdin)
     hnitsenior = []
     hnitjunior = []
 
@@ -120,18 +120,18 @@ def spurning8(plot=False):
 
 
 
-pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0}
+pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning9(plot=False):
     follin = Foll()
     p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
     T = 20
-    pendulalist = [[1,1,1,1]]# , [2,1,2,1], [2,2,1,1]]
-    upphafsstodur = [["π/3", 0, "π/6", 0], ["π/2", 0, "π", 0], ["π/2", 0, 0, 0]]
+    pendulalist = [[1,1,1,1], [2,1,2,1], [2,2,1,1]]
+    upphafsstodur = [["π/3", 0, "π/6", 0], ["π", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     results = []
     for pendular in pendulalist:
         for upphafsstada in upphafsstodur:
             result_intermed = []
-            for i in range(6+2):
+            for i in range(8):
                 p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
                 if i > 6:
                     n = 20000
@@ -158,22 +158,23 @@ def spurning9(plot=False):
         fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
         ax = np.asarray(ax).ravel()
         for index, result in enumerate(results):
-            # x = [result_[0] for result_ in result]
-            x1 = [result_[2][0] for result_ in result]
-            y1 = [result_[2][1] for result_ in result]
+            correct_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
+            x1 = [result_['th1'] for result_ in result[:-1]]
+            y1 = [result_['th2'] for result_ in result[:-1]]
             # theta2 = [result_[2] for result_ in result]
             # hnit1 = [p.hornTohnit(result_[1], L_1=result_[3][0]) for result_ in result]
-            # hnit2 = [p.hornTohnitjunior(result_[1], result[2], L_1=result[3][0], L_2=result_[3][2]) for result_ in result]
+            hnit2 = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
 
 
-            ax[index].plot(x1, y1)
-            ax[index].set_xlim([np.min(x1)-.1,np.max(x1)+.1])
-            ax[index].set_ylim([np.min(y1)-.1,np.max(y1)+.1])
-
+            ax[index].plot([xy[0] for xy in hnit2], [xy[1] for xy in hnit2])
+            for i in range(len(hnit2)):
+                ax[index].text(hnit2[i][0]+0.01, hnit2[i][1]+0.01, i)
+            ax[index].set_xlim([-2.1, 2.1])
+            ax[index].set_ylim([-2.1, 2.1])
 
             # x = [result_[0]+50 for result_ in result] # til að bars séu ekki ofan í hvorum öðrum
             # ax[index].bar(x, theta2, 100, color='red')
-            ax[index].set_title(f"{result[0][4]}, L1: {result[0][3]}")
+            ax[index].set_title(f"{result[0]['upphafsstada']}, L1: {result[0]['pendular']}")
             # ax.bar(x, theta2)
         plt.show()
 
@@ -295,16 +296,17 @@ def frjals(plot=False):
 
 
 if __name__ == '__main__':
-    spurning1(plot=False)
-    spurning2(plot=False)
-    spurning3(plot=False)
-    spurning4(plot=False)
-    spurning5(plot=False)
-    spurning6(plot=False)
-    spurning7(plot=False)
-    spurning8(plot=False)
-    spurning9(plot=False)
+    # spurning1(plot=False)
+    # spurning2(plot=False)
+    # spurning3(plot=False)
+    # spurning4(plot=False)
+    # spurning5(plot=False)
+    # spurning6(plot=False)
+    # spurning7(plot=True)
+    # exit()
+    # spurning8(plot=False)
+    spurning9(plot=True)
     spurning10(plot=False)
-    spurning11(plot=True)
+    spurning11(plot=False)
     # spurning12(plot=False)
     # frjals(plot=False)
