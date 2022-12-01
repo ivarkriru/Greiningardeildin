@@ -73,26 +73,20 @@ class Foll:
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
             s1 = f1(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
-            s2 = f1(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
-                    horn1hradiaxis[i], horn2hradiaxis[i])
-            s3 = f1(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2),
-                    horn1hradiaxis[i], horn2hradiaxis[i])
-            s4 = f1(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i],
-                                 horn2hradiaxis[i])
+            s2 = f1(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2), horn1hradiaxis[i] + skreflengd * (s1 / 2), horn2hradiaxis[i] + skreflengd * (s1 / 2))
+            s3 = f1(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2), horn1hradiaxis[i] + skreflengd * (s2 / 2), horn2hradiaxis[i] + skreflengd * (s2 / 2))
+            s4 = f1(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i] + skreflengd * s3, horn2hradiaxis[i] + skreflengd * s3)
             w = horn1hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             horn1hradiaxis.append(w)
-            horn1axis.append(np.mod(horn1axis[i] + skreflengd * w, np.pi*2))
+            horn1axis.append((horn1axis[i] + skreflengd * w) % (math.pi*2))
 
             s1 = f2(horn1axis[i], horn2axis[i], horn1hradiaxis[i], horn2hradiaxis[i])
-            s2 = f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2),
-                    horn1hradiaxis[i], horn2hradiaxis[i])
-            s3 = f2(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2),
-                    horn1hradiaxis[i], horn2hradiaxis[i])
-            s4 = f2(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i],
-                                 horn2hradiaxis[i])
+            s2 = f2(horn1axis[i] + skreflengd * (s1 / 2), horn2axis[i] + skreflengd * (s1 / 2), horn1hradiaxis[i]+ skreflengd * (s1 / 2), horn2hradiaxis[i]+ skreflengd * (s1 / 2))
+            s3 = f2(horn1axis[i] + skreflengd * (s2 / 2), horn2axis[i] + skreflengd * (s2 / 2), horn1hradiaxis[i]+ skreflengd * (s2 / 2), horn2hradiaxis[i]+ skreflengd * (s2 / 2))
+            s4 = f2(horn1axis[i] + skreflengd * s3, horn2axis[i] + skreflengd * s3, horn1hradiaxis[i]+ skreflengd * s3, horn2hradiaxis[i]+ skreflengd * s3)
             w = horn2hradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             horn2hradiaxis.append(w)
-            horn2axis.append(np.mod(horn2axis[i] + skreflengd * w, np.pi*2))
+            horn2axis.append((horn2axis[i] + skreflengd * w) % (math.pi*2))
         if sp9:
             return horn1axis, horn2axis, horn1hradiaxis, horn2hradiaxis
         else:
@@ -135,11 +129,11 @@ class Pendulum:
         #k4 = (m1 + m2) * g * np.sin(theta1)
         #k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
 
-        k1 = m2*l2*math.pow(omega2,2)*np.sin(d)
-        k2 =-((m1+m2)*g*np.sin(theta1))
-        k3 = m2*l1*math.pow(omega1,2)*np.sin(d)*np.cos(d)
-        k4 = -m2*g*np.sin(theta2)*np.cos(d)
-        k5 = ((m1+m2)*l1 - m2*l1*np.cos(d)*np.cos(d))
+        k1 = m2*l2*math.pow(omega2,2)*math.sin(d)
+        k2 =-((m1+m2)*g*math.sin(theta1))
+        k3 = m2*l1*math.pow(omega1,2)*math.sin(d)*math.cos(d)
+        k4 = -m2*g*math.sin(theta2)*math.cos(d)
+        k5 = ((m1+m2)*l1 - m2*l1*math.cos(d)*math.cos(d))
 
         if l1 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
             return 0
@@ -165,17 +159,17 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        #k1 = m2 * l2 * math.pow(omega2, 2) * np.sin(d) * np.cos(d)
-        #k2 = (m1 + m2) * ( g * np.sin(theta1) * np.cos(d))
-        #k3 = l1 * math.pow(omega1, 2) * np.sin(d)
-        #k4 = g * np.sin(theta2)
-        #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(np.cos(d), 2)
+        #k1 = m2 * l2 * math.pow(omega2, 2) * math.sin(d) * math.cos(d)
+        #k2 = (m1 + m2) * ( g * math.sin(theta1) * math.cos(d))
+        #k3 = l1 * math.pow(omega1, 2) * math.sin(d)
+        #k4 = g * math.sin(theta2)
+        #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(math.cos(d), 2)
 
-        k1 = -m2*l2*math.pow(omega2,2)*np.sin(d)*np.cos(d)
-        k2 = -((m1+m2)*g*np.sin(theta1))*np.cos(d)
-        k3 = -(m1+m2)*l1*math.pow(omega1,2)*np.sin(d)
-        k4 = -(m1+m2)*g*np.sin(theta2)
-        k5 = (m2*l2*np.cos(d)*np.cos(d) - (m1+m2)*l2)
+        k1 = -m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
+        k2 = -((m1+m2)*g*math.sin(theta1))*math.cos(d)
+        k3 = -(m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
+        k4 = -(m1+m2)*g*math.sin(theta2)
+        k5 = (m2*l2*math.cos(d)*math.cos(d) - (m1+m2)*l2)
 
         if l2 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
             return 0

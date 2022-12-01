@@ -79,7 +79,7 @@ def spurning7(plot=False):
     follin = Foll()
     p = Pendulum(L_1=1, m_1=1, L_2=1, m_2=1)
     lengdin = 20
-    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi, horn2=np.pi,
+    y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/2, horn2=0,
                               hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 50, lengd=lengdin)
     hnitsenior = []
     hnitjunior = []
@@ -130,14 +130,14 @@ def spurning9(plot=False):
     T = 20
     n_to_power_2 = 8  # 0-7
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
-    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(2)]
-    upphafsstodur = [["π/3", 0, "π/6", 0], ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
+    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(6)]
+    upphafsstodur = [["π/3", 0, "π/6", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
     results = []
     print(f"starting with {iterations=}")
     t1 = time.time()
-    """
+
     for pendular in pendulalist:
         for upphafsstada in upphafsstodur:
             result_intermed = []
@@ -162,19 +162,19 @@ def spurning9(plot=False):
     print(f"total time: {time.time() - t1:.02f}")
     for result in results:
         print(result)
-    np.savez("results_from_sp9.npz", results=results)
-    """
-    import json
-    file = open('results2.json', 'r')
-    results = json.load(file)
-    for result in results:
-        print(result)
+    #np.savez("results_from_sp9.npz", results=results)
+
+    #import json
+    #file = open('results2.json', 'r')
+    #results = json.load(file)
+    #for result in results:
+    #    print(result)
     # todo: plotta feril á pendulum með mismunandi n
     if plot:
         list_of_hallatales = []
         difffig, diffax = plt.subplots(1)
-        # fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
-        # ax = np.asarray(ax).ravel()
+        fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
+        ax = np.asarray(ax).ravel()
         n_list = [result['n'] for result in results[0]]
         for index, result in enumerate(results):
             reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
@@ -185,6 +185,8 @@ def spurning9(plot=False):
             hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
 
             diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
+            print(n_list)
+            print(diff)
             diffax.plot(np.log(n_list[:-1]), np.log(diff))
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
             #ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
@@ -326,11 +328,11 @@ if __name__ == '__main__':
     # spurning4(plot=False)
     # spurning5(plot=False)
     # spurning6(plot=False)
-    # spurning7(plot=True)
+    #spurning7(plot=True)
     # exit()
     # spurning8(plot=False)
     spurning9(plot=True)
-    spurning10(plot=False)
-    spurning11(plot=False)
+    #spurning10(plot=False)
+    #spurning11(plot=False)
     # spurning12(plot=False)
     # frjals(plot=False)
