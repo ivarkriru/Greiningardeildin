@@ -14,7 +14,6 @@ g = 9.81
 class Foll:
     def __init__(self, ):
         self.g = g
-        self.L = 2
 
     def euler(self, f, horn, hornhradi, fjoldiskrefa, lengd):
         skreflengd = lengd / fjoldiskrefa
@@ -161,9 +160,9 @@ class Pendulum:
         #k4 = g * math.sin(theta2)
         #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(math.cos(d), 2)
 
-        k1 = -m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
+        k1 = m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
         k2 = -((m1+m2)*g*math.sin(theta1))*math.cos(d)
-        k3 = -(m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
+        k3 = (m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
         k4 = -(m1+m2)*g*math.sin(theta2)
         k5 = (m2*l2*math.cos(d)*math.cos(d) - (m1+m2)*l2)
 

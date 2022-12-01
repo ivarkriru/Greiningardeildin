@@ -1,15 +1,12 @@
 import random
 import time
-
 import numpy as np
 import matplotlib.pyplot as plt
 from adferdir import Foll, Pendulum
 import math
 
-
 def point_diff(A, B):
     return np.sqrt((A[0] - B[0]) ** 2 + (A[1] - B[1]) ** 2)
-
 
 def spurning1(plot=False):
     '''
@@ -19,7 +16,6 @@ def spurning1(plot=False):
     '''
     pass
 
-
 def spurning2(plot=False):
     '''
 
@@ -27,7 +23,6 @@ def spurning2(plot=False):
 
     '''
     pass
-
 
 def spurning3(plot=False):
     p = Pendulum()
@@ -37,7 +32,6 @@ def spurning3(plot=False):
         plt.pause(2)
         plt.clf()
         p.create_animation2d(hnit, title = "sp:3 Pendulum, theta(0) is pi/12, theta'(0) is 0 with Euler")
-
 
 def spurning4(plot=False):
     p = Pendulum()
@@ -49,7 +43,6 @@ def spurning4(plot=False):
         plt.pause(2)
         plt.clf()
         p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = "Sp4: Pendulums, blue theta(0): pi/12, green theta(0): pi/2, theta'(0): 0 with Euler")
-
 
 def spurning5(plot=False):
     p = Pendulum()
@@ -64,7 +57,6 @@ def spurning5(plot=False):
         p.create_animation2dfyrir4(data1=hnit, data2=hnit2,
                                    title="Pendulums, blue theta(0): p/12, green theta(0): p/2, theta'(0): 0 with RK")
 
-
 def spurning6(plot=False):
     '''
 
@@ -72,7 +64,6 @@ def spurning6(plot=False):
 
     '''
     pass
-
 
 def spurning7(plot=False):
     hnitsenior, hnitjunior, y1, y2 = Pendulum().hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
@@ -83,8 +74,6 @@ def spurning7(plot=False):
         plt.plot(y2)
         plt.show()
         Pendulum.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title="Sp7: Tvöfaldur pendúll,theta1 = pi/3, theta2 = pi/6, theta' = 0")
-
-
 
 def spurning8(plot=False):
     pi_ = {"π/3": np.pi / 3, "π/6": np.pi / 6, "π/2": np.pi / 2, "π": np.pi, "π/4": np.pi / 4,"3*π/4": np.pi* 3/ 4, "6*π/4": np.pi* 6 / 4, 0: 0}
@@ -131,15 +120,14 @@ def spurning8(plot=False):
     runspurning8(horn1 = np.pi, m_1=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning8(horn1 = np.pi, m_2=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
 
-
 pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning9(plot=False):
     follin = Foll()
-    p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
+    p = Pendulum()
     T = 20
     n_to_power_2 = 8  # 0-7
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
-    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(6)]
+    pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(6)]
     upphafsstodur = [["π/3", 0, "π/6", 0]]# , ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
     iterations = len(pendulalist) * len(upphafsstodur)
     counter = 0
@@ -153,17 +141,11 @@ def spurning9(plot=False):
             for i in range(n_to_power_2):
                 p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
                 if i > 6:
-                    n = 20000
+                    n = 100000
                 else:
                     n = 100*2**i
                 array = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
                                       hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=T, sp9=True)
-
-
-
-                # hnit1 = p.hornTohnit(th1[-1])
-                # hnit2 = p.hornTohnitjunior(th1[-1], th2[-1])
-                # result_intermed.append([n, y1[-1], y2[-1], pendular, upphafsstada])
 
                 result_dict = {"n": n, "th1": array[-1][0], "th2": array[-1][1], "thp1": array[-1][2], "thp2": array[-1][3], "pendular":pendular, "upphafsstada": upphafsstada}
                 result_intermed.append(result_dict)
@@ -215,7 +197,6 @@ def spurning9(plot=False):
         print(f"Average of hallatales: {np.average(list_of_hallatales)}, mean: {np.mean(list_of_hallatales)}")
         plt.show()
 
-
 def spurning10(plot=False):
     follin = Foll()
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=2)
@@ -231,7 +212,6 @@ def spurning10(plot=False):
     if plot:
         plt.plot(y1, y2)
         plt.show()
-
 
 def spurning11(plot=False):
     follin = Foll()
@@ -273,7 +253,6 @@ def spurning11(plot=False):
             plt.plot(y4)
             plt.show()
             p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
-
 
 def spurning12(plot=False):
     follin = Foll()
@@ -327,10 +306,8 @@ def spurning12(plot=False):
             plt.show()
             p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
 
-
 def frjals(plot=False):
     pass
-
 
 if __name__ == '__main__':
     # spurning1(plot=False)
@@ -339,11 +316,10 @@ if __name__ == '__main__':
     # spurning4(plot=False)
     # spurning5(plot=False)
     # spurning6(plot=False)
-    #spurning7(plot=True)
-    # exit()
+    spurning7(plot=True)
     # spurning8(plot=False)
-    spurning9(plot=True)
-    #spurning10(plot=False)
-    #spurning11(plot=False)
+    # spurning9(plot=True)
+    # spurning10(plot=False)
+    # spurning11(plot=False)
     # spurning12(plot=False)
     # frjals(plot=False)
