@@ -161,6 +161,7 @@ def spurning9(plot=False):
     print(f"total time: {time.time() - t1:.00f}")
     for result in results:
         print(result)
+    np.savez("results_from_sp9.npz", results=results)
 
     # todo: plotta feril á pendulum með mismunandi n
     if plot:
