@@ -1,3 +1,4 @@
+import random
 import time
 
 import numpy as np
@@ -127,19 +128,24 @@ def spurning9(plot=False):
     follin = Foll()
     p = Pendulum(L_1=22, m_1=11, L_2=5, m_2=107)
     T = 20
-    pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
-    upphafsstodur = [["π/3", 0, "π/6", 0], ["π", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
+    n_to_power_2 = 8  # 0-7
+    #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
+    pendulalist = [[random.randint(2, 10)/2 for _ in range(4)] for _ in range(2)]
+    upphafsstodur = [["π/3", 0, "π/6", 0], ["π/2", 0, "π/2", 0], ["π/12", 0, "-π/12", 0]]
+    iterations = len(pendulalist) * len(upphafsstodur)
+    counter = 0
     results = []
+    print(f"starting with {iterations=}")
+    t1 = time.time()
     for pendular in pendulalist:
         for upphafsstada in upphafsstodur:
             result_intermed = []
-            for i in range(8):
+            for i in range(n_to_power_2):
                 p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
                 if i > 6:
                     n = 20000
                 else:
                     n = 100*2**i
-                t1 = time.time()
                 th1, th2, thp1, thp2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
                                       hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=T, sp9=True)
 
@@ -150,6 +156,9 @@ def spurning9(plot=False):
                 result_dict = {"n": n, "th1": th1[-1], "th2": th2[-1], "thp1": thp1[-1], "thp2": thp2[-1], "pendular":pendular, "upphafsstada": upphafsstada}
                 result_intermed.append(result_dict)
             results.append(result_intermed)
+            counter+=1
+            print(f"{counter/ iterations* 100:.00f}%", end="\n", flush=True)
+    print(f"total time: {time.time() - t1:.00f}")
     for result in results:
         print(result)
 
@@ -169,7 +178,7 @@ def spurning9(plot=False):
             hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
 
             diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
-            diffax.plot(n_list[:-1], diff)
+            diffax.loglog(n_list[:-1], diff)
             ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
             for i in range(len(hnit2_list)):
                 ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
