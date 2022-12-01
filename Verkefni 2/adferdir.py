@@ -80,7 +80,7 @@ class Foll:
             s3 = f2(*(axis[i] + skreflengd*s2/2))
             s4 = f2(*(axis[i] * s3))
             nyr_hornhradi2 = axis[i][3] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            nytt_horn2 = axis[i][0] + skreflengd * nyr_hornhradi2
+            nytt_horn2 = axis[i][1] + skreflengd * nyr_hornhradi2
             axis = np.append(axis, np.array([[nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2]]), axis=0)
 
         if sp9:
