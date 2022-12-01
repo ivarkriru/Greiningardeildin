@@ -56,7 +56,7 @@ class Foll:
 
         return hornaxis
 
-    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd, sp9=False):
+    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
 
@@ -68,24 +68,21 @@ class Foll:
             s1 = f1(*axis[i])
             s2 = f1(*(axis[i] + skreflengd*s1/2))
             s3 = f1(*(axis[i] + skreflengd*s2/2))
-            s4 = f1(*(axis[i]*s3))
+            s4 = f1(*(axis[i] + skreflengd*s3))
+
             nyr_hornhradi1 = axis[i][2] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            # horn1hradiaxis.append(w)
             nytt_horn1 = axis[i][0] + skreflengd * nyr_hornhradi1
-                # horn1axis.append((horn1axis[i] + skreflengd * w) % (math.pi*2))
 
             s1 = f2(*axis[i])
             s2 = f2(*(axis[i] + skreflengd*s1/2))
             s3 = f2(*(axis[i] + skreflengd*s2/2))
-            s4 = f2(*(axis[i] * s3))
+            s4 = f2(*(axis[i] + skreflengd*s3))
+
             nyr_hornhradi2 = axis[i][3] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             nytt_horn2 = axis[i][1] + skreflengd * nyr_hornhradi2
-            axis = np.append(axis, np.array([[nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2]]), axis=0)
 
-        if sp9:
-            return axis
-        #else:
-            #return horn1axis, horn2axis
+            axis = np.append(axis, np.array([[nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2]]), axis=0)
+        return axis
 
 
 class Pendulum:
@@ -118,22 +115,16 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        #k1 = m2 * l1 * math.pow(omega1, 2) * np.sin(d) * np.cos(d)
-        #k2 = m2 * g * np.sin(theta2) * np.cos(d)
-        #k3 = m2 * l2 * math.pow(omega2, 2) * np.sin(d)
-        #k4 = (m1 + m2) * g * np.sin(theta1)
-        #k5 = (m1 + m2) * l1 - m2 * l1 * math.pow(np.cos(d), 2)
-
-        k1 = m2*l2*math.pow(omega2,2)*math.sin(d)
-        k2 =-((m1+m2)*g*math.sin(theta1))
-        k3 = m2*l1*math.pow(omega1,2)*math.sin(d)*math.cos(d)
-        k4 = -m2*g*math.sin(theta2)*math.cos(d)
+        k1 = m2*l1*math.pow(omega1,2)*math.sin(d)*math.cos(d)
+        k2 = m2*g*math.sin(theta2)*math.cos(d)
+        k3 = m2*l2*math.pow(omega2,2)*math.sin(d)
+        k4 = -((m1+m2)*g*math.sin(theta1))
         k5 = ((m1+m2)*l1 - m2*l1*math.cos(d)*math.cos(d))
 
-        if l1 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
+        if l1 == 0 or k5 == 0 or (k1 + k2 + k3 + k4) == 0:
             return 0
 
-        theta1_2prime = (k1 + k2 + k3 - k4) / k5
+        theta1_2prime = (k1 + k2 + k3 + k4) / k5
         return theta1_2prime
 
     def double_pendulum2(self, theta1, theta2, omega1, omega2):
@@ -154,22 +145,16 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        #k1 = m2 * l2 * math.pow(omega2, 2) * math.sin(d) * math.cos(d)
-        #k2 = (m1 + m2) * ( g * math.sin(theta1) * math.cos(d))
-        #k3 = l1 * math.pow(omega1, 2) * math.sin(d)
-        #k4 = g * math.sin(theta2)
-        #k5 = (m1 + m2) * l2 - m2 * l2 * math.pow(math.cos(d), 2)
-
-        k1 = m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
-        k2 = -((m1+m2)*g*math.sin(theta1))*math.cos(d)
-        k3 = (m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
+        k1 = -m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
+        k2 = ((m1+m2)*g*math.sin(theta1))*math.cos(d)
+        k3 = -(m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
         k4 = -(m1+m2)*g*math.sin(theta2)
-        k5 = (m2*l2*math.cos(d)*math.cos(d) - (m1+m2)*l2)
+        k5 = (m1+m2)*l2 - m2*l2*math.cos(d)*math.cos(d)
 
-        if l2 == 0 or k5 == 0 or (k1 + k2 + k3 - k4) == 0:
+        if l2 == 0 or k5 == 0 or (k1 + k2 + k3 + k4) == 0:
             return 0
 
-        theta2_2prime = (-k1 + k2 - k3 - k4) / k5
+        theta2_2prime = (k1 + k2 + k3 + k4) / k5
         return theta2_2prime
 
     def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
@@ -195,9 +180,13 @@ class Pendulum:
                                   hornhradi1=1, hornhradi2=0, fjoldiskrefa=100, lengd=100):
         follin = Foll()
         p = Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2)
-        y1, y2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1= horn1,
+        arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1= horn1,
                                   horn2= horn2,
                                   hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa * 30, lengd=lengd)
+
+        y1 = arr[:,0]
+        y2 = arr[:,1]
+
         hnitsenior = []
         hnitjunior = []
 
@@ -210,16 +199,13 @@ class Pendulum:
         hnitjunior = np.array(hnitjunior)
         return hnitsenior,hnitjunior,y1,y2
 
-    def hornTohnit(self, th, L_1=None):
-        if L_1 is None:
-            L_1 = self.L_1
+    def hornTohnit(self, th):
+        L_1 = self.L_1
         return L_1 * np.sin(th), -L_1 * np.cos(th)
 
-    def hornTohnitjunior(self, th, th2, L_1=None, L_2=None):
-        if L_1 is None:
-            L_1=self.L_1
-        if L_2 is None:
-            L_2=self.L_2
+    def hornTohnitjunior(self, th, th2):
+        L_1 = self.L_1
+        L_2 = self.L_2
         return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
 
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):

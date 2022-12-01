@@ -66,14 +66,15 @@ def spurning6(plot=False):
     pass
 
 def spurning7(plot=False):
-    hnitsenior, hnitjunior, y1, y2 = Pendulum().hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
+    p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
+    hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
                                   horn2=np.pi * 6 / 4,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=100, lengd=100)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=100, lengd=20)
     if plot:
         plt.plot(y1)
         plt.plot(y2)
         plt.show()
-        Pendulum.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title="Sp7: Tvöfaldur pendúll,theta1 = pi/3, theta2 = pi/6, theta' = 0")
+        p.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title="Sp7: Tvöfaldur pendúll,theta1 = pi/3, theta2 = pi/6, theta' = 0")
 
 def spurning8(plot=False):
     pi_ = {"π/3": np.pi / 3, "π/6": np.pi / 6, "π/2": np.pi / 2, "π": np.pi, "π/4": np.pi / 4,"3*π/4": np.pi* 3/ 4, "6*π/4": np.pi* 6 / 4, 0: 0}
@@ -141,11 +142,11 @@ def spurning9(plot=False):
             for i in range(n_to_power_2):
                 p = Pendulum(L_1=pendular[0], m_1=pendular[1], L_2=pendular[2], m_2=pendular[3])
                 if i > 6:
-                    n = 100000
+                    n = 100*2**i
                 else:
                     n = 100*2**i
                 array = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=pi_[upphafsstada[0]], horn2=pi_[upphafsstada[2]],
-                                      hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=T, sp9=True)
+                                      hornhradi1=upphafsstada[1], hornhradi2=upphafsstada[3], fjoldiskrefa=n, lengd=T)
 
                 result_dict = {"n": n, "th1": array[-1][0], "th2": array[-1][1], "thp1": array[-1][2], "thp2": array[-1][3], "pendular":pendular, "upphafsstada": upphafsstada}
                 result_intermed.append(result_dict)
@@ -170,12 +171,13 @@ def spurning9(plot=False):
         ax = np.asarray(ax).ravel()
         n_list = [result['n'] for result in results[0]]
         for index, result in enumerate(results):
-            reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2])
+            p = Pendulum(L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2],m_1=result[-1]['pendular'][1], m_2=result[-1]['pendular'][3])
+            reasonable_coordinate = p.hornTohnitjunior(result[-1]['th1'], result[-1]['th2'], )
             x1 = [result_['th1'] for result_ in result[:-1]]
             y1 = [result_['th2'] for result_ in result[:-1]]
             # theta2 = [result_[2] for result_ in result]
             # hnit1 = [p.hornTohnit(result_[1], L_1=result_[3][0]) for result_ in result]
-            hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2'], L_1=result_['pendular'][0], L_2=result_['pendular'][2]) for result_ in result[:-1]]
+            hnit2_list = [p.hornTohnitjunior(result_['th1'], result_['th2']) for result_ in result[:-1]]
 
             diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
             print(n_list)
@@ -310,15 +312,15 @@ def frjals(plot=False):
     pass
 
 if __name__ == '__main__':
-    # spurning1(plot=False)
-    # spurning2(plot=False)
-    # spurning3(plot=False)
-    # spurning4(plot=False)
-    # spurning5(plot=False)
-    # spurning6(plot=False)
+    #spurning1(plot=True)
+    #spurning2(plot=True)
+    #spurning3(plot=True)
+    #spurning4(plot=True)
+    #spurning5(plot=True)
+    #spurning6(plot=True)
     spurning7(plot=True)
     # spurning8(plot=False)
-    # spurning9(plot=True)
+    #spurning9(plot=True)
     # spurning10(plot=False)
     # spurning11(plot=False)
     # spurning12(plot=False)
