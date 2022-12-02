@@ -149,7 +149,7 @@ def spurning9(plot=False):
     follin = Foll()
     T = 20
     n_to_power_2 = 8  # 0-7
-    fjoldi_uppsetninga = 33
+    fjoldi_uppsetninga = 0
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
     pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(fjoldi_uppsetninga)]
     upphafsstodur = [["π/6", 0, "π/6", 0], ["π/2", 0, "π/12", 0], ["π/12", 0, "-π/12", 0]]
@@ -181,9 +181,10 @@ def spurning9(plot=False):
             estimated_time_left = estimated_total_time - sum(time_vectors)
             print(f"estimated time left: {estimated_time_left:.00f}")
     print(f"total time: {time.time() - t1:.02f}")
-    for result in results:
-        print(result)
-    np.savez(f"results_from_sp9_{time.time():.00f}.npz", results=results)
+    results = np.load("results_from_sp9_1669987822.npz", allow_pickle=True)['results']
+    print(results)
+    #np.savez(f"results_from_sp9_{time.time():.00f}.npz", results=results)
+
 
     #import json
     #file = open('results2.json', 'r')
@@ -194,8 +195,8 @@ def spurning9(plot=False):
     if plot:
         list_of_hallatales = []
         difffig, diffax = plt.subplots(1)
-        fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
-        ax = np.asarray(ax).ravel()
+        #fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
+        #ax = np.asarray(ax).ravel()
         n_list = [result['n'] for result in results[0]]
         for index, result in enumerate(results):
             p = Pendulum(L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2],m_1=result[-1]['pendular'][1], m_2=result[-1]['pendular'][3])
