@@ -211,15 +211,20 @@ def spurning9(plot=False):
             # diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
             # (theta2-theta1)(thetaprime2 - thetaprime1)(thetabest1-thetabest2)
             #diff = [math.sqrt((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])**2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2) for result_ in result[:-1]]
-            diff = [np.max(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
+            diff = [np.average(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
 
-            if diff[0] > 10 or diff[1] > 10:
+            if diff[0] > 100 or diff[1] > 100:
                 print(f"throwing away {diff}")
                 continue
 
             print(n_list)
             print(diff)
-            diffax.plot(np.log(n_list[:-1]), np.log(diff))
+
+            #### uncommenta fyrir svar9c.png og svar9d.png #####
+
+            #if diff[-1] > 1e-9:
+            #    continue
+            diffax.loglog(n_list[:-1], diff)
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
 
             # uncomment til að fá plot á lokastaðsetningum
@@ -234,8 +239,15 @@ def spurning9(plot=False):
             # ax[index].bar(x, theta2, 100, color='red')
             #ax[index].set_title(f"{result[0]['upphafsstada']}, L1: {result[0]['pendular']}")
             # ax.bar(x, theta2)
+        plt.xlabel("n")
+        plt.ylabel("hámarks skekkja af θ_1, θ_2, θ'_1, θ'_2")
+        plt.xticks([100, 200, 400, 800, 1600, 3200, 6400], [str(100*2**i) for i in range(7)])
+        plt.savefig("svar9a.png")
         plt.figure()
-        plt.hist(list_of_hallatales)
+        plt.hist(list_of_hallatales, bins=40)
+        plt.xlabel("hallatala")
+        plt.ylabel("")
+        plt.savefig("svar9b.png")
         print(f"Average of hallatales: {np.average(list_of_hallatales)}, mean: {np.mean(list_of_hallatales)}")
         plt.show()
 
