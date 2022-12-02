@@ -16,32 +16,29 @@ class Foll:
     def __init__(self, ):
         self.g = g
 
-    def euler(self, f, horn, hornhradi, fjoldiskrefa, lengd):
+    def euler(self, f, horn, hornhradi, fjoldiskrefa, lengd,dempunarstuðull = 0):
         skreflengd = lengd / fjoldiskrefa
         skref = 0
         hornaxis = []
         hornhradiaxis = []
 
-        demparastuðull = 0.00
-
         hornaxis.append(horn)
-        hornhradiaxis.append(hornhradi + 0.0000000001)
+        hornhradiaxis.append(hornhradi)
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
             hornaxis.append(hornaxis[i] + skreflengd * hornhradiaxis[i])
-            dempun = -1 * demparastuðull * (hornhradiaxis[i] / (abs(hornhradiaxis[i])))
+            dempun = -1 * dempunarstuðull * (hornhradiaxis[i] / (abs(hornhradiaxis[i])))
             hornhradiaxis.append(hornhradiaxis[i] + skreflengd * f(hornaxis[i]) + dempun)
 
         return hornaxis
 
-    def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd):
+    def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd,dempunarstuðull = 0):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
         hornaxis = []
         hornhradiaxis = []
 
-        dempari = 0
         hornaxis.append(horn)
         hornhradiaxis.append(hornhradi)
 
@@ -53,12 +50,15 @@ class Foll:
             s4 =  f(hornaxis[i] + skreflengd * s3)
 
             w = hornhradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            hornhradiaxis.append(w)
+
+            dempun = -1 * dempunarstuðull * (w/ (abs(w)))
+
+            hornhradiaxis.append(w+dempun)
             hornaxis.append(hornaxis[i] + skreflengd * w)
 
         return hornaxis
 
-    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd):
+    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd,dempunarstuðull = 0):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
         axis = np.zeros((fjoldiskrefa+1, 4))
@@ -66,8 +66,16 @@ class Foll:
 
         def f(y):
             th1, th2, thp1, thp2 = y
+            if thp1 != 0:
+                dempun = -1 * dempunarstuðull * (thp1/ (abs(thp1)))
+            else:
+                dempun = 0
+            if thp2 != 0:
+                dempun2 = -1 * dempunarstuðull * (thp2/ (abs(thp2)))
+            else:
+                dempun2 = 0
 
-            return np.array([thp1, thp2, f1(*y), f2(*y)])
+            return np.array([thp1, thp2, f1(*y)+dempun, f2(*y)+dempun2])
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
@@ -78,8 +86,6 @@ class Foll:
             s4 = f((axis[i] + skreflengd*s3))
 
             axis[i+1] = axis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-
-
         return axis
 
 
