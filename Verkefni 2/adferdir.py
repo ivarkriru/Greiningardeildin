@@ -164,34 +164,33 @@ class Pendulum:
         theta2_2prime = (k1 + k2 + k3 + k4) / k5
         return theta2_2prime
 
-    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
         follin = Foll()
-        y = Foll().euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
+        y = follin.euler(f=fall,horn= horn,hornhradi= hornhradi,fjoldiskrefa= fjoldiskrefa,lengd= lengd,dempunarstuðull=dempunarstuðull)
         hnit = []
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
-        #y = np.array(y) * (180 / np.pi)
         return hnit, y
 
-    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
-        y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
+        follin = Foll()
+        y = follin.RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd,dempunarstuðull=dempunarstuðull)
         hnit = []
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
         y = np.array(y) * (180 / np.pi)
-
         return hnit,y
 
     def hnitforanimationusingRK2(self, L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
                                   horn2=np.pi * 6 / 4,
-                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=20*1000, lengd=20):
+                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=20*1000, lengd=20,dempunarstuðull=0):
         follin = Foll()
         p = Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2)
         arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1= horn1,
                                   horn2= horn2,
-                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa, lengd=lengd,dempunarstuðull=dempunarstuðull)
 
         y1 = arr[:,0]
         y2 = arr[:,1]
@@ -282,7 +281,6 @@ class Pendulum:
             for index in range(0, data1.shape[0], 8):
                 plt.clf()
                 plt.title(label=title)
-
 
                 x1 = data1[index, 0]
                 y1 = data1[index, 1]
