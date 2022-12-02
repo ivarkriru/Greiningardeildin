@@ -240,9 +240,8 @@ class Pendulum:
         d31 = theta3 - theta1
         d32 = theta3 - theta2
 
-        Afylki = np.array([[L_1 * (m1 + m2 + m3), m2 * L_1 * L_2 * math.cos(d12), m3 * L_1 * L_3 * math.cos(d13)],
-                           [L_2 * L_2 * m2 + L_2 * L_2 * m3,
-                            (m2 + m3) * L_1 * L_2 * math.cos(d21), m3 * L_2 * L_3 * math.cos(d23)],
+        Afylki = np.array([[L_1 * L_1* (m1 + m2 + m3), m2 * L_1 * L_2 * math.cos(d12), m3 * L_1 * L_3 * math.cos(d13)],
+                           [L_2 * L_2 * (m2 + m3), (m2 + m3) * L_1 * L_2 * math.cos(d21), m3 * L_2 * L_3 * math.cos(d23)],
                            [m3 * L_1 * L_3 * math.cos(d13), m3 * L_2 * L_3 * math.cos(d23), m3 * L_3 * L_3]])
 
         bfylki = np.array([[g * L_1*(m1 * math.sin(theta1) + m2 * math.sin(theta1) + m3 * math.sin(theta1))
@@ -330,20 +329,17 @@ class Pendulum:
         hnitjunior = []
         hnitjuniorjunior = []
 
-        for theta in y1:
-            hnitsenior.append(p.hornTohnit(theta))
-        for index, theta in enumerate(y2):
-            hnitjunior.append(p.hornTohnitjunior(y1[index], theta))
-        for index, theta in enumerate(y3):
-            hnitjuniorjunior.append(p.hornTohnitjuniorjunior(th1=y1[index],th2=y2[index],th3=theta))
+        for horn in y1:
+            hnitsenior.append(p.hornTohnit(horn))
+        for index, horn in enumerate(y2):
+            hnitjunior.append(p.hornTohnitjunior(y1[index], horn))
+        for index, horn in enumerate(y3):
+            hnitjuniorjunior.append(p.hornTohnitjuniorjunior(th1=y1[index],th2=y2[index],th3=horn))
 
         hnitsenior = np.array(hnitsenior)
         hnitjunior = np.array(hnitjunior)
         hnitjuniorjunior = np.array(hnitjuniorjunior)
 
-        y1 = np.array(y1) * (180 / np.pi)
-        y2 = np.array(y2) * (180 / np.pi)
-        y3 = np.array(y3) * (180 / np.pi)
         return hnitsenior,hnitjunior,hnitjuniorjunior,y1,y2,y3
 
     def hornTohnit(self, th):
@@ -359,7 +355,7 @@ class Pendulum:
         L_1 = self.L_1
         L_2 = self.L_2
         L_3 = self.L_3
-        return L_1 * np.sin(th1) + L_2 * np.sin(th2) + L_3*np.sin(th3), -L_1 * np.cos(th3) - L_2 * np.cos(th2)- L_3 * np.cos(th3)
+        return L_1 * np.sin(th1) + L_2 * np.sin(th2) + L_3*np.sin(th3), -(L_1 * np.cos(th1) + L_2 * np.cos(th2) + L_3 * np.cos(th3))
 
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
         # initializing a figure in
@@ -537,7 +533,7 @@ class Pendulum:
     def create_animation3d(self, data1, data2, data3, title=None):
         staerdramma = self.L_2*2 + self.L_1*2 + self.L_3 + 3
 
-        for index in range(0, data1.shape[0], 10):
+        for index in range(0, data1.shape[0], 20):
             plt.clf()
             plt.title(label=title)
 
