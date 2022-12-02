@@ -165,6 +165,7 @@ class Pendulum:
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
+        #y = np.array(y) * (180 / np.pi)
         return hnit, y
 
     def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
@@ -173,6 +174,7 @@ class Pendulum:
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
+        y = np.array(y) * (180 / np.pi)
 
         return hnit,y
 
@@ -198,6 +200,8 @@ class Pendulum:
 
         hnitsenior = np.array(hnitsenior)
         hnitjunior = np.array(hnitjunior)
+        y1 = np.array(y1) * (180 / np.pi)
+        y2 = np.array(y2) * (180 / np.pi)
         return hnitsenior,hnitjunior,y1,y2
 
     def hornTohnit(self, th):
@@ -210,7 +214,6 @@ class Pendulum:
         return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
 
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
-        print("here")
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
@@ -222,14 +225,16 @@ class Pendulum:
             for index in range(data1.shape[0]):
                 plt.clf()
                 plt.title(label=title)
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
                 x = data1[index, 0]
                 y = data1[index, 1]
-                plt.xticks([])
-                plt.yticks([])
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
-
+                plt.xticks([])
+                plt.yticks([])
+                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+                plt.xlabel('Staðsetning á x-ás í radíönum')
+                plt.ylabel('Staðsetning á y-ás í radíönum')
                 plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
                 plt.scatter(x, y, lw=20, c="orange")
                 plt.plot([0, x], [0, y], lw=5, c="blue",alpha=1)
@@ -250,11 +255,15 @@ class Pendulum:
         if fjoldipendula == 1:
             for index in range(data1.shape[0]):
                 plt.clf()
-
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
                 plt.title(label=title)
                 x = data1[index, 0]
                 y = data1[index, 1]
+                plt.xticks([])
+                plt.yticks([])
+                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+                plt.xlabel('Staðsetning á x-ás í radíönum')
+                plt.ylabel('Staðsetning á y-ás í radíönum')
+
                 plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
 
                 if trace:
@@ -268,15 +277,20 @@ class Pendulum:
                 plt.clf()
                 plt.title(label=title)
 
+
                 x1 = data1[index, 0]
                 y1 = data1[index, 1]
-
+                plt.xticks([])
+                plt.yticks([])
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
 
                 plt.xticks([])
                 plt.yticks([])
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
+                plt.xlabel('Staðsetning á x-ás í radíönum')
+                plt.ylabel('Staðsetning á y-ás í radíönum')
                 x1plot = data1[0:index, 0]
                 y1plot = data1[0:index, 1]
 
@@ -315,7 +329,7 @@ class Pendulum:
         for index in range(0, data1.shape[0], 100):
             plt.clf()
             plt.title(label=title)
-            plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
 
             x1 = data1[index, 0] + offset
             y1 = data1[index, 1]
@@ -328,8 +342,12 @@ class Pendulum:
 
             x4 = data4[index, 0] - offset
             y4 = data4[index, 1]
+            plt.xticks([])
+            plt.yticks([])
+            plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
-
+            plt.xlabel('Staðsetning á x-ás í radíönum')
+            plt.ylabel('Staðsetning á y-ás í radíönum')
             x1plot = data1[0:index, 0]
             x1plot = x1plot + offset
             y1plot = data1[0:index, 1]
@@ -367,29 +385,4 @@ class Pendulum:
 
             print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
         plt.show()
-'''
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False,trace=True):
 
-        L = 2
-        fig = plt.figure()
-        ax = fig.add_subplot(aspect='equal')
-        ax.set_xlim(-L * 1.5, L * 1.5)
-        ax.set_ylim(-L * 1.5, L * 1.5)
-        line, = ax.plot([0, data1[0][0]], [0, data1[1][0]], zorder=0, lw=5, c='b')
-        kulustaerd = 0.04
-        circle = ax.add_patch(plt.Circle(data1[0]*data1[1], kulustaerd,
-                                         fc='y', zorder=1))
-        def animate(i):
-            """Update the animation at frame i."""
-
-            line.set_data([0, data1[0][0]], [0, data1[1][0]])
-            circle.set_center((data1[0][i], data1[1][i]))
-        nsteps=100
-        dt=1
-
-        nframes = nsteps
-        interval = dt * 100
-        ani = animation.FuncAnimation(fig, animate, frames=nframes, repeat=True,
-                                      interval=interval)
-        plt.show()
-'''
