@@ -25,10 +25,18 @@ class Foll:
         hornaxis.append(horn)
         hornhradiaxis.append(hornhradi)
 
+        if not (0<=dempunarstuðull<=1):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
+
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
             hornaxis.append(hornaxis[i] + skreflengd * hornhradiaxis[i])
-            dempun = -1 * dempunarstuðull * (hornhradiaxis[i] / (abs(hornhradiaxis[i])))
+
+            if hornhradiaxis[i] != 0:
+                dempun = -1 * hornhradiaxis[i] * dempunarstuðull
+            else:
+                dempun = 0
+
             hornhradiaxis.append(hornhradiaxis[i] + skreflengd * f(hornaxis[i]) + dempun)
 
         return hornaxis
@@ -42,6 +50,10 @@ class Foll:
         hornaxis.append(horn)
         hornhradiaxis.append(hornhradi)
 
+        if not (0<=dempunarstuðull<=1):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
+
+
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
             s1 =  f(hornaxis[i])
@@ -51,7 +63,10 @@ class Foll:
 
             w = hornhradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
 
-            dempun = -1 * dempunarstuðull * (w/ (abs(w)))
+            if w != 0:
+                dempun = -1 * w * dempunarstuðull
+            else:
+                dempun = 0
 
             hornhradiaxis.append(w+dempun)
             hornaxis.append(hornaxis[i] + skreflengd * w)
@@ -64,14 +79,17 @@ class Foll:
         axis = np.zeros((fjoldiskrefa+1, 4))
         axis[0] = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
+        if not (0<=dempunarstuðull<=1):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
+
         def f(y):
             th1, th2, thp1, thp2 = y
             if thp1 != 0:
-                dempun = -1 * dempunarstuðull * (thp1/ (abs(thp1)))
+                dempun = -1 * thp1 * dempunarstuðull
             else:
                 dempun = 0
             if thp2 != 0:
-                dempun2 = -1 * dempunarstuðull * (thp2/ (abs(thp2)))
+                dempun2 = -1 * thp2 * dempunarstuðull
             else:
                 dempun2 = 0
 

@@ -82,7 +82,7 @@ def spurning7(plot=False):
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
     hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi ,
                                   horn2=np.pi/2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20,dempunarstuðull=0.5)
     if plot:
         plt.clf()
         plt.plot(y1)
