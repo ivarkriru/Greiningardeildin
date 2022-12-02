@@ -79,7 +79,7 @@ class Foll:
         axis = np.zeros((fjoldiskrefa+1, 4))
         axis[0] = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
-        if not (0<=dempunarstuðull<=1):
+        if not (0<=dempunarstuðull<=10):
             raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
 
         def f(y):
