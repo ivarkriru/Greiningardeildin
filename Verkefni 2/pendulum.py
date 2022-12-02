@@ -149,7 +149,7 @@ def spurning9(plot=False):
     follin = Foll()
     T = 20
     n_to_power_2 = 8  # 0-7
-    fjoldi_uppsetninga = 10
+    fjoldi_uppsetninga = 0
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
     pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(fjoldi_uppsetninga)]
     upphafsstodur = [["π/6", 0, "π/6", 0], ["π/2", 0, "π/12", 0], ["π/12", 0, "-π/12", 0]]
@@ -158,7 +158,7 @@ def spurning9(plot=False):
     results = []
     print(f"starting with {iterations=}")
     t1 = time.time()
-
+    time_vectors = []
     for pendular in pendulalist:
         for upphafsstada in upphafsstodur:
             result_intermed = []
@@ -176,10 +176,15 @@ def spurning9(plot=False):
             results.append(result_intermed)
             counter+=1
             print(f"{counter/ iterations* 100:.00f}%", end="\n", flush=True)
+            time_vectors.append((time.time() - t1) / counter)
+            estimated_total_time = iterations * np.average(time_vectors)
+            estimated_time_left = estimated_total_time - sum(time_vectors)
+            print(f"estimated time left: {estimated_time_left:.00f}")
     print(f"total time: {time.time() - t1:.02f}")
-    for result in results:
-        print(result)
-    #np.savez("results_from_sp9.npz", results=results)
+    results = np.load("results_from_sp9_1669987822.npz", allow_pickle=True)['results']
+    print(results)
+    #np.savez(f"results_from_sp9_{time.time():.00f}.npz", results=results)
+
 
     #import json
     #file = open('results2.json', 'r')
@@ -190,8 +195,8 @@ def spurning9(plot=False):
     if plot:
         list_of_hallatales = []
         difffig, diffax = plt.subplots(1)
-        fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
-        ax = np.asarray(ax).ravel()
+        #fig, ax = plt.subplots(len(pendulalist), len(upphafsstodur), figsize=(10,6), facecolor=(.94, .94, .94))
+        #ax = np.asarray(ax).ravel()
         n_list = [result['n'] for result in results[0]]
         for index, result in enumerate(results):
             p = Pendulum(L_1=result[-1]['pendular'][0], L_2=result[-1]['pendular'][2],m_1=result[-1]['pendular'][1], m_2=result[-1]['pendular'][3])
@@ -208,14 +213,20 @@ def spurning9(plot=False):
             #diff = [math.sqrt((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])**2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2) for result_ in result[:-1]]
             diff = [np.max(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
 
+            if diff[0] > 10 or diff[1] > 10:
+                print(f"throwing away {diff}")
+                continue
 
             print(n_list)
             print(diff)
             diffax.plot(np.log(n_list[:-1]), np.log(diff))
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
-            ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
-            for i in range(len(hnit2_list)):
-                ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
+
+            # uncomment til að fá plot á lokastaðsetningum
+            #ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
+            #for i in range(len(hnit2_list)):
+            #    ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
+
             #ax[index].set_xlim([-10.1, 10.1])
             #ax[index].set_ylim([-10.1, 10.1])
 
