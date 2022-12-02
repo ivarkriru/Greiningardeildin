@@ -90,10 +90,9 @@ def spurning7(plot=False):
         plt.xlabel('Fjöldi skrefa í aðferð RK')
         plt.ylabel('Horn [°] pendúls')
         plt.title(r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3, appelsínugulur er $\dot{\Theta}$2(0) = $\dot{\pi}$/6,"+ "\n" + r"$\dot{\Theta}$' = 0")
-
-        plt.show()
         plt.pause(2)
         plt.clf()
+
         p.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title=r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3, grænn er $\dot{\Theta}$2(0) = $\dot{\pi}$/6,"+ "\n" + r"$\dot{\Theta}$' = 0")
         plt.clf()
 

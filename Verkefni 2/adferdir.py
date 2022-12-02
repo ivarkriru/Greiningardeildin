@@ -180,12 +180,12 @@ class Pendulum:
 
     def hnitforanimationusingRK2(self, L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
                                   horn2=np.pi * 6 / 4,
-                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=100, lengd=100):
+                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=20*1000, lengd=20):
         follin = Foll()
         p = Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2)
         arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1= horn1,
                                   horn2= horn2,
-                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa * 30, lengd=lengd)
+                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
 
         y1 = arr[:,0]
         y2 = arr[:,1]
@@ -273,7 +273,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 50):
+            for index in range(0, data1.shape[0], 8):
                 plt.clf()
                 plt.title(label=title)
 
