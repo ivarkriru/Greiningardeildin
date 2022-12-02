@@ -52,7 +52,7 @@ class Foll:
             s3 =  f(hornaxis[i] + skreflengd * (s2 / 2))
             s4 =  f(hornaxis[i] + skreflengd * s3)
 
-            w = hornhradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6
+            w = hornhradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
             hornhradiaxis.append(w)
             hornaxis.append(hornaxis[i] + skreflengd * w)
 
