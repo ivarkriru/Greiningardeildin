@@ -214,7 +214,6 @@ class Pendulum:
         return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
 
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
-        print("here")
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
@@ -261,9 +260,10 @@ class Pendulum:
                 y = data1[index, 1]
                 plt.xticks([])
                 plt.yticks([])
+                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
                 plt.xlabel('Staðsetning á x-ás í radíönum')
                 plt.ylabel('Staðsetning á y-ás í radíönum')
-                plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
                 plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
 
                 if trace:

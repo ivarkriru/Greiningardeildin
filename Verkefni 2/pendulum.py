@@ -29,8 +29,9 @@ def spurning3(plot=False):
     hnit, y = p.hnitforanimationusingEuler(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
     if plot:
         plt.plot(y)
+
+
         plt.title(r"Sp:3 Graf yfir pendúll $\dot{\Theta}$(0) er $\dot{\pi}$/12, $\dot{\Theta}$'(0) er 0 með Euler")
-        #plt.title(r"$\dot{\Theta}$ = $\dot{\pi}$/12")
         plt.xlabel('Fjöldi skrefa í aðferð Eulers')
         plt.ylabel('Horn [°] pendúls')
         plt.pause(2)
@@ -355,11 +356,11 @@ def frjals(plot=False):
 if __name__ == '__main__':
     spurning1(plot=False)
     spurning2(plot=False)
-    spurning3(plot=False)
+    spurning3(plot=True)
     spurning4(plot=False)
     spurning5(plot=False)
     spurning6(plot=False)
-    spurning7(plot=True)
+    spurning7(plot=False)
     spurning8(plot=False)
     #spurning9(plot=False)
     # spurning10(plot=True)
