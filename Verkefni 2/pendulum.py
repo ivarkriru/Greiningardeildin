@@ -36,6 +36,7 @@ def spurning3(plot=False):
         plt.pause(2)
         plt.clf()
         p.create_animation2d(hnit, title = r"Sp:3 Einfaldur pendúll, $\dot{\Theta}$(0) er pi/12, $\dot{\Theta}$'(0) er 0 með Euler")
+        plt.clf()
 
 
 def spurning4(plot=False):
@@ -82,7 +83,7 @@ def spurning7(plot=False):
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
     hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi ,
                                   horn2=np.pi/2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20,dempunarstuðull=0.5)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=10, lengd=20,dempunarstuðull=0.5)
     if plot:
         plt.clf()
         plt.plot(y1)
@@ -98,7 +99,7 @@ def spurning7(plot=False):
 
 pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning8(plot=False):
-    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=100, lengd=100):
+    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=10, lengd=100):
         p= Pendulum()
         hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2, horn1= horn1,
                                       horn2= horn2, hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa= fjoldiskrefa, lengd= lengd)
@@ -109,11 +110,13 @@ def spurning8(plot=False):
             plt.plot(y2)
             plt.xlabel('Fjöldi skrefa í aðferð RK')
             plt.ylabel('Horn [°] pendúls')
-            # plt.title("")
+            plt.title(r"Sp8: Graf af pendúlum, blár er $\dot{\Theta}$1(0) ="+
+                                 str(horn1) +
+                                 r", grænn er $\dot{\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
             plt.pause(2)
             plt.clf()
             p.create_animation2d(hnitsenior, hnitjunior, 2,
-                                 r"Sp8: ,blár er $\dot{\Theta}$1(0) ="+
+                                 r"Sp8:, blár er $\dot{\Theta}$1(0) ="+
                                  str(horn1) +
                                  r", grænn er $\dot{\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
             plt.clf()
@@ -211,15 +214,20 @@ def spurning9(plot=False):
             # diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
             # (theta2-theta1)(thetaprime2 - thetaprime1)(thetabest1-thetabest2)
             #diff = [math.sqrt((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])**2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2) for result_ in result[:-1]]
-            diff = [np.max(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
+            diff = [np.average(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
 
-            if diff[0] > 10 or diff[1] > 10:
+            if diff[0] > 100 or diff[1] > 100:
                 print(f"throwing away {diff}")
                 continue
 
             print(n_list)
             print(diff)
-            diffax.plot(np.log(n_list[:-1]), np.log(diff))
+
+            #### uncommenta fyrir svar9c.png og svar9d.png #####
+
+            #if diff[-1] > 1e-9:
+            #    continue
+            diffax.loglog(n_list[:-1], diff)
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
 
             # uncomment til að fá plot á lokastaðsetningum
@@ -234,29 +242,76 @@ def spurning9(plot=False):
             # ax[index].bar(x, theta2, 100, color='red')
             #ax[index].set_title(f"{result[0]['upphafsstada']}, L1: {result[0]['pendular']}")
             # ax.bar(x, theta2)
+        plt.title("Sp9a: Hámarksskekkja eftir fjölda(n)")
+        plt.xlabel("Fjöldi (n)")
+        plt.ylabel("hámarks skekkja af θ_1, θ_2, θ'_1, θ'_2")
+        plt.xticks([100, 200, 400, 800, 1600, 3200, 6400], [str(100*2**i) for i in range(7)])
+        plt.savefig("svar9a.png")
         plt.figure()
-        plt.hist(list_of_hallatales)
+        plt.hist(list_of_hallatales, bins=40)
+        plt.title("Sp9b: Súlurit, fjöldi skekkja í hverjum stuðli á skekkju")
+        plt.xlabel("Hallatala")
+        plt.ylabel("Fjöldi")
+        plt.savefig("svar9b.png")
         print(f"Average of hallatales: {np.average(list_of_hallatales)}, mean: {np.mean(list_of_hallatales)}")
+
         plt.show()
+        #plt.title("Sp9: Súlurit, fjöldi skekkja í hverjum stuðli á skekkju")
+        #plt.xlabel("Stuðull á skekkju")
+        #plt.ylabel("Fjöldi skekkja")
+        #plt.title("Sp9: Súlurit, fjöldi skekkja í hverjum stuðli á skekkju")
 
 def spurning10(plot=False):
-    follin = Foll()
-    p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=2)
-    lengdin = 20
-    arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi/2 , horn2=np.pi/8,
-                              hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+    def runspurning10(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /3, horn2=np.pi /6, hornhradi1=0, hornhradi2=0, fjoldiskrefa=10, lengd=20):
+        follin = Foll()
+        p = Pendulum(L_1= L_1, m_1= m_1, L_2= L_2, m_2= m_2)
+        arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=horn1 , horn2=horn2,
+                              hornhradi1=hornhradi1, hornhradi2=hornhradi2, fjoldiskrefa=lengd * 1000, lengd=lengd)
+        y1 = arr[:,0]
+        y2 = arr[:,1]
+        '''
+        for i,x in enumerate(y1):
+            y1[i] = x%np.pi
+        for i,x in enumerate(y2):
+            y2[i] = x%np.pi
+        '''
+        if plot:
+            plt.plot(y1, y2)
+            plt.xlabel('Staðsetning á x-ás í radíönum')
+            plt.ylabel('Staðsetning á y-ás í radíönum')
+            plt.title(r"Sp8:, blár= $\dot{\Theta}$1(0) ="+str(horn1)+r", grænn er $\dot{\Theta}$2(0) ="+ str(horn2)
+                + ",\n" + r"$\dot{\Theta}$1'= " + str(hornhradi1) + r"$\dot{\Theta}$2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
+            plt.show()
+            plt.pause(2)
+            plt.clf()
 
-    y1 = arr[:,0]
-    y2 = arr[:,1]
-    '''
-    for i,x in enumerate(y1):
-        y1[i] = x%np.pi
-    for i,x in enumerate(y2):
-        y2[i] = x%np.pi
-    '''
-    if plot:
-        plt.plot(y1, y2)
-        plt.show()
+
+    fjoldiskrefa = 100
+    lengd = 20
+    runspurning10(horn1=np.pi,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(horn1=np.pi/2,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(horn1=0,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    #Áhrif breytinga á theta2
+    runspurning10(horn2=np.pi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    #Áhrif breytinga á l1
+    runspurning10(L_1 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(L_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    #Áhrif breytinga á l2
+    runspurning10(L_2 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    #Áhrif breytinga á m1
+    runspurning10(m_1 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(m_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    #Áhrif breytinga á m2
+    runspurning10(m_2 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    #Áhrif breytinga á m2
+    runspurning10(horn1 = np.pi, m_1=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning10(horn1 = np.pi, m_2=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+
+
 
 def spurning11(plot=False):
     follin = Foll()
