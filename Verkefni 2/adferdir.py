@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 import io
 import os
+import subprocess
 
 from matplotlib import animation
 
@@ -63,27 +64,22 @@ class Foll:
         axis = np.zeros((fjoldiskrefa+1, 4))
         axis[0] = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
-        for i in range(0, fjoldiskrefa):
+        def f(y):
+            th1, th2, thp1, thp2 = y
 
+            return np.array([thp1, thp2, f1(*y), f2(*y)])
+
+        for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
 
-            s1 = f1(*axis[i])
-            s2 = f1(*(axis[i] + skreflengd*s1/2))
-            s3 = f1(*(axis[i] + skreflengd*s2/2))
-            s4 = f1(*(axis[i] + skreflengd*s3))
+            s1 = f(axis[i])
+            s2 = f((axis[i] + skreflengd*s1/2))
+            s3 = f((axis[i] + skreflengd*s2/2))
+            s4 = f((axis[i] + skreflengd*s3))
 
-            nyr_hornhradi1 = axis[i][2] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            nytt_horn1 = axis[i][0] + skreflengd * nyr_hornhradi1
+            axis[i+1] = axis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
 
-            s1 = f2(*axis[i])
-            s2 = f2(*(axis[i] + skreflengd*s1/2))
-            s3 = f2(*(axis[i] + skreflengd*s2/2))
-            s4 = f2(*(axis[i] + skreflengd*s3))
 
-            nyr_hornhradi2 = axis[i][3] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            nytt_horn2 = axis[i][1] + skreflengd * nyr_hornhradi2
-
-            axis[i+1] = np.array([nytt_horn1, nytt_horn2, nyr_hornhradi1, nyr_hornhradi2])
         return axis
 
 
@@ -117,11 +113,13 @@ class Pendulum:
         if omega2 < -2e+50:
             omega2 = -2e+50
 
-        k1 = m2*l1*math.pow(omega1,2)*math.sin(d)*math.cos(d)
-        k2 = m2*g*math.sin(theta2)*math.cos(d)
-        k3 = m2*l2*math.pow(omega2,2)*math.sin(d)
+        cosd = math.cos(d)
+        sind = math.sin(d)
+        k1 = m2*l1*math.pow(omega1,2)*sind*cosd
+        k2 = m2*g*math.sin(theta2)*cosd
+        k3 = m2*l2*math.pow(omega2,2)*sind
         k4 = -((m1+m2)*g*math.sin(theta1))
-        k5 = ((m1+m2)*l1 - m2*l1*math.cos(d)*math.cos(d))
+        k5 = ((m1+m2)*l1 - m2*l1*cosd*cosd)
 
         if l1 == 0 or k5 == 0 or (k1 + k2 + k3 + k4) == 0:
             return 0
@@ -146,12 +144,13 @@ class Pendulum:
             omega1 = -2e+50
         if omega2 < -2e+50:
             omega2 = -2e+50
-
-        k1 = -m2*l2*math.pow(omega2,2)*math.sin(d)*math.cos(d)
-        k2 = ((m1+m2)*g*math.sin(theta1))*math.cos(d)
-        k3 = -(m1+m2)*l1*math.pow(omega1,2)*math.sin(d)
+        cosd = math.cos(d)
+        sind = math.sin(d)
+        k1 = -m2*l2*math.pow(omega2,2)*sind*cosd
+        k2 = ((m1+m2)*g*math.sin(theta1))*cosd
+        k3 = -(m1+m2)*l1*math.pow(omega1,2)*sind
         k4 = -(m1+m2)*g*math.sin(theta2)
-        k5 = (m1+m2)*l2 - m2*l2*math.cos(d)*math.cos(d)
+        k5 = (m1+m2)*l2 - m2*l2 * cosd
 
         if l2 == 0 or k5 == 0 or (k1 + k2 + k3 + k4) == 0:
             return 0
