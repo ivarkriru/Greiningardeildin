@@ -16,34 +16,43 @@ class Foll:
     def __init__(self, ):
         self.g = g
 
-    def euler(self, f, horn, hornhradi, fjoldiskrefa, lengd):
+    def euler(self, f, horn, hornhradi, fjoldiskrefa, lengd,dempunarstuðull = 0):
         skreflengd = lengd / fjoldiskrefa
         skref = 0
         hornaxis = []
         hornhradiaxis = []
 
-        demparastuðull = 0.00
-
         hornaxis.append(horn)
-        hornhradiaxis.append(hornhradi + 0.0000000001)
+        hornhradiaxis.append(hornhradi)
+
+        if not (0<=dempunarstuðull<=1):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
             hornaxis.append(hornaxis[i] + skreflengd * hornhradiaxis[i])
-            dempun = -1 * demparastuðull * (hornhradiaxis[i] / (abs(hornhradiaxis[i])))
+
+            if hornhradiaxis[i] != 0:
+                dempun = -1 * hornhradiaxis[i] * dempunarstuðull
+            else:
+                dempun = 0
+
             hornhradiaxis.append(hornhradiaxis[i] + skreflengd * f(hornaxis[i]) + dempun)
 
         return hornaxis
 
-    def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd):
+    def RKmethod(self, f, horn, hornhradi, fjoldiskrefa, lengd,dempunarstuðull = 0):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
         hornaxis = []
         hornhradiaxis = []
 
-        dempari = 0
         hornaxis.append(horn)
         hornhradiaxis.append(hornhradi)
+
+        if not (0<=dempunarstuðull<=1):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
+
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
@@ -53,21 +62,38 @@ class Foll:
             s4 =  f(hornaxis[i] + skreflengd * s3)
 
             w = hornhradiaxis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-            hornhradiaxis.append(w)
+
+            if w != 0:
+                dempun = -1 * w * dempunarstuðull
+            else:
+                dempun = 0
+
+            hornhradiaxis.append(w+dempun)
             hornaxis.append(hornaxis[i] + skreflengd * w)
 
         return hornaxis
 
-    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd):
+    def RKmethod2(self, f1, f2, horn1, horn2, hornhradi1, hornhradi2, fjoldiskrefa, lengd,dempunarstuðull = 0):
         skreflengd = lengd / fjoldiskrefa  # h = skreflengd
         skref = 0  # skref = t
         axis = np.zeros((fjoldiskrefa+1, 4))
         axis[0] = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
+        if not (0<=dempunarstuðull<=1):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
+
         def f(y):
             th1, th2, thp1, thp2 = y
+            if thp1 != 0:
+                dempun = -1 * thp1 * dempunarstuðull
+            else:
+                dempun = 0
+            if thp2 != 0:
+                dempun2 = -1 * thp2 * dempunarstuðull
+            else:
+                dempun2 = 0
 
-            return np.array([thp1, thp2, f1(*y), f2(*y)])
+            return np.array([thp1, thp2, f1(*y)+dempun, f2(*y)+dempun2])
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
@@ -78,8 +104,6 @@ class Foll:
             s4 = f((axis[i] + skreflengd*s3))
 
             axis[i+1] = axis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
-
-
         return axis
 
 
@@ -158,34 +182,33 @@ class Pendulum:
         theta2_2prime = (k1 + k2 + k3 + k4) / k5
         return theta2_2prime
 
-    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
+    def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
         follin = Foll()
-        y = Foll().euler(fall, horn, hornhradi, fjoldiskrefa, lengd)
+        y = follin.euler(f=fall,horn= horn,hornhradi= hornhradi,fjoldiskrefa= fjoldiskrefa,lengd= lengd,dempunarstuðull=dempunarstuðull)
         hnit = []
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
-        #y = np.array(y) * (180 / np.pi)
         return hnit, y
 
-    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20):
-        y = Foll().RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    def hnitforanimationusingRK(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
+        follin = Foll()
+        y = follin.RKmethod(f=fall, horn=horn, hornhradi=hornhradi, fjoldiskrefa=fjoldiskrefa, lengd=lengd,dempunarstuðull=dempunarstuðull)
         hnit = []
         for theta in y:
             hnit.append(self.hornTohnit(theta))
         hnit = np.array(hnit)
         y = np.array(y) * (180 / np.pi)
-
         return hnit,y
 
     def hnitforanimationusingRK2(self, L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi * 3 / 4,
                                   horn2=np.pi * 6 / 4,
-                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=100, lengd=100):
+                                  hornhradi1=1, hornhradi2=0, fjoldiskrefa=20*1000, lengd=20,dempunarstuðull=0):
         follin = Foll()
         p = Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2)
         arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1= horn1,
                                   horn2= horn2,
-                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa * 30, lengd=lengd)
+                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, fjoldiskrefa=fjoldiskrefa, lengd=lengd,dempunarstuðull=dempunarstuðull)
 
         y1 = arr[:,0]
         y2 = arr[:,1]
@@ -273,10 +296,9 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 50):
+            for index in range(0, data1.shape[0], 8):
                 plt.clf()
                 plt.title(label=title)
-
 
                 x1 = data1[index, 0]
                 y1 = data1[index, 1]

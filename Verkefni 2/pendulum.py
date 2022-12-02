@@ -82,7 +82,7 @@ def spurning7(plot=False):
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
     hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi ,
                                   horn2=np.pi/2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=20,dempunarstuðull=0.5)
     if plot:
         plt.clf()
         plt.plot(y1)
@@ -90,10 +90,9 @@ def spurning7(plot=False):
         plt.xlabel('Fjöldi skrefa í aðferð RK')
         plt.ylabel('Horn [°] pendúls')
         plt.title(r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3, appelsínugulur er $\dot{\Theta}$2(0) = $\dot{\pi}$/6,"+ "\n" + r"$\dot{\Theta}$' = 0")
-
-        plt.show()
         plt.pause(2)
         plt.clf()
+
         p.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title=r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3, grænn er $\dot{\Theta}$2(0) = $\dot{\pi}$/6,"+ "\n" + r"$\dot{\Theta}$' = 0")
         plt.clf()
 
