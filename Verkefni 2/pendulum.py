@@ -30,13 +30,13 @@ def spurning3(plot=False):
     if plot:
         plt.plot(y)
 
-
         plt.title(r"Sp:3 Graf yfir pendúll $\dot{\Theta}$(0) er $\dot{\pi}$/12, $\dot{\Theta}$'(0) er 0 með Euler")
         plt.xlabel('Fjöldi skrefa í aðferð Eulers')
         plt.ylabel('Horn [°] pendúls')
         plt.pause(2)
         plt.clf()
         p.create_animation2d(hnit, title = r"Sp:3 Einfaldur pendúll, $\dot{\Theta}$(0) er pi/12, $\dot{\Theta}$'(0) er 0 með Euler")
+
 
 def spurning4(plot=False):
     p = Pendulum()
@@ -56,7 +56,7 @@ def spurning4(plot=False):
 
 def spurning5(plot=False):
     p = Pendulum()
-    hnit, y = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
+    hnit, y = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0.1)
     hnit2, y2 = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
 
     if plot:
@@ -254,15 +254,17 @@ def spurning11(plot=False):
     for x in [1, 2, 3, 4, 5]:
         epsilon = math.pow(10, -1 * x)
         arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin,dempunarstuðull=0)
 
         arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
                                   horn2=np.pi / 6 + epsilon,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin,dempunarstuðull=0)
+
         y1 = arr1[:,0]
         y2 = arr1[:,1]
         y3 = arr2[:,0]
         y4 = arr2[:,1]
+
         hnit1 = []
         hnit2 = []
         hnit3 = []
