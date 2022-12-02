@@ -264,7 +264,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 10):
+            for index in range(0, data1.shape[0], 50):
                 plt.clf()
                 plt.title(label=title)
 

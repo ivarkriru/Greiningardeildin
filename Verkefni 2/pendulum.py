@@ -180,9 +180,8 @@ def spurning9(plot=False):
             thp2_best = result[-1]['thp2']
             # diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
             # (theta2-theta1)(thetaprime2 - thetaprime1)(thetabest1-thetabest2)
-            pi2 = np.pi*2
             #diff = [math.sqrt((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])**2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2) for result_ in result[:-1]]
-            diff = [np.min(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
+            diff = [np.max(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
 
 
             print(n_list)
@@ -327,17 +326,25 @@ def spurning12(plot=False):
 def frjals(plot=False):
     pass
 
-if __name__ == '__main__':
-    #spurning1(plot=True)
-    #spurning2(plot=True)
-    #spurning3(plot=True)
-    #spurning4(plot=True)
-    # spurning5(plot=True)
-    #spurning6(plot=True)
-    #spurning7(plot=True)
-    # spurning8(plot=False)
-    spurning9(plot=True)
-    # spurning10(plot=True)
-    #spurning11(plot=True)
-    #spurning12(plot=True)
-    # frjals(plot=False)
+""" 
+ATH: ný leið til að keyra föll til að fækka conflicts: 
+
+búa til skjal sem heitir main.py sem inniheldur: 
+from pendulum import *
+
+# spurning1(plot=False)
+# spurning2(plot=False)
+# spurning3(plot=False)
+# spurning4(plot=False)
+# spurning5(plot=False)
+# spurning6(plot=False)
+# spurning7(plot=False)
+# spurning8(plot=False)
+spurning9(plot=True)
+# spurning10(plot=False)
+# spurning11(plot=False)
+# spurning12(plot=True)
+# frjals(plot=False)
+
+og keyra það 
+"""
