@@ -417,10 +417,10 @@ def spurning12(plot=False):
             p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
 
 def frjals(plot=False):
-    p = Pendulum(L_1=1, m_1=1, L_2=1, m_2=1,L_3=1,m_3=1)
+    p = Pendulum(L_1=1, m_1=1, L_2=1, m_2=1,L_3=5,m_3=10)
     hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi/2, horn2=np.pi / 2, horn3=np.pi/2,
                                                                 hornhradi1=0, hornhradi2=0, hornhradi3=0,
-                                                                fjoldiskrefa=1000*20, lengd=20, dempunarstuðull=0)
+                                                                fjoldiskrefa=1000*20, lengd=20, dempunarstuðull=1)
     if plot:
         plt.clf()
         plt.plot(y1)
