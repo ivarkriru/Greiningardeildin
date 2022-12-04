@@ -220,9 +220,9 @@ class Pendulum:
 
     def triple(self, theta1, theta2, theta3, omega1, omega2, omega3):
 
-        theta1 = theta1 % (np.pi * 2)
-        theta2 = theta2 % (np.pi * 2)
-        theta3 = theta3 % (np.pi * 2)
+        theta1 %= np.pi * 2
+        theta2 %= np.pi * 2
+        theta3 %= np.pi * 2
 
         m1 = self.m_1
         m2 = self.m_2
@@ -231,40 +231,78 @@ class Pendulum:
         L_2 = self.L_2
         L_3 = self.L_3
 
-        d12 = theta1 - theta2
-        d13 = theta1 - theta3
-        d23 = theta2 - theta3
-        d21 = theta2 - theta1
-        d31 = theta3 - theta1
-        d32 = theta3 - theta2
+        theta1_theta2 = theta1 - theta2
+        theta1_theta3 = theta1 - theta3
+        theta2_theta3 = theta2 - theta3
+        theta2_theta1 = theta2 - theta1
+        theta3_theta1 = theta3 - theta1
+        theta3_theta2 = theta3 - theta2
 
-        Afylki = np.array([[L_1 * L_1 * (m1 + m2 + m3), m2 * L_1 * L_2 * math.cos(d12) + m3*L_1*L_2*math.cos(d12), m3 * L_1 * L_3 * math.cos(d13)],
-                           [(m2+m3)*L_1*L_2*math.cos(d21), (m2 + m3) * L_2 * L_2, m3 * L_2 * L_3 * math.cos(d23)],
-                           [m3 * L_1 * L_3 * math.cos(d13), m3 * L_2 * L_3 * math.cos(d23), m3 * L_3 * L_3]])
+        # Pre-calculate the cosines of the differences between the angles of each pair of pendulums
+        cos_theta1_theta2 = math.cos(theta1_theta2)
+        cos_theta1_theta3 = math.cos(theta1_theta3)
+        cos_theta2_theta3 = math.cos(theta2_theta3)
+        cos_theta2_theta1 = math.cos(theta2_theta1)
+        cos_theta3_theta1 = math.cos(theta3_theta1)
+        cos_theta3_theta2 = math.cos(theta3_theta2)
 
-        bfylki = np.array([[g * L_1*(m1 * math.sin(theta1) + m2 * math.sin(theta1) + m3 * math.sin(theta1))
-                                  + m2 * L_1 * L_2 * math.sin(d12) * omega1 * omega2
-                                  + m3 * L_1 * L_3 * math.sin(d13) * omega1 * omega3
-                                  + m3 * L_1 * L_2 * math.sin(d12) * omega1 * omega2
-                                  + m2 * L_1 * L_2 * math.sin(d21) * (omega1 - omega2) * omega2
-                                  + m3 * L_1 * L_2 * math.sin(d21) * (omega1 - omega2) * omega2
-                                  + m3 * L_1 * L_3 * math.sin(d31) * (omega1 - omega3) * omega3],
+        # Pre-calculate the sines of the angles of each pendulum
+        sin_theta1 = math.sin(theta1)
+        sin_theta2 = math.sin(theta2)
+        sin_theta3 = math.sin(theta3)
 
-                           [g * L_2 * (m2 * math.sin(theta2) + m3 * math.sin(theta2))
-                                  + omega1 * omega2 * L_1 * L_2 * math.sin(d21) * (m2 + m3)
-                                  + m3 * L_2 * L_3 * math.sin(d23) * omega2 * omega3
-                                  + (m2 + m3) * L_1 * L_2 * math.sin(d21) * (omega1 - omega2) * omega1
-                                  + m3 * L_2 * L_3 * math.sin(d32) * (omega2 - omega3) * omega3],
+        # Pre-calculate the cosines of the differences between the angles of each pair of pendulums
+        sin_theta1_theta2 = math.sin(theta1_theta2)
+        sin_theta1_theta3 = math.sin(theta1_theta3)
+        sin_theta2_theta3 = math.sin(theta2_theta3)
+        sin_theta2_theta1 = math.sin(theta2_theta1)
+        sin_theta3_theta1 = math.sin(theta3_theta1)
+        sin_theta3_theta2 = math.sin(theta3_theta2)
 
-                           [m3 * g * L_3 * math.sin(theta3)
-                                  - m3 * L_2 * L_3 * math.sin(d23) * omega2 * omega3
-                                  - m3 * L_1 * L_3 * math.sin(d13) * omega1 * omega3
-                                  + m3 * L_1 * L_3 * math.sin(d31) * (omega1 - omega3) * omega1
-                                  + m3 * L_2 * L_3 * math.sin(d32) * (omega2 - omega3) * omega2]])
+        # Pre-calculate the terms that are used multiple times in Afylki and bfylki
+        m1_plus_m2_plus_m3 = m1 + m2 + m3
+        m2_plus_m3 = m2 + m3
+        m2_plus_m3_times_L1_times_L2 = m2_plus_m3 * L_1 * L_2
+        m3_times_L1_times_L2 = m3 * L_1 * L_2
+        m3_times_L1_times_L3 = m3 * L_1 * L_3
+        m3_times_L2_times_L3 = m3 * L_2 * L_3
+        m1_sin_theta1 = m1 * sin_theta1
+        m2_sin_theta1 = m2 * sin_theta1
+        m3_sin_theta1 = m3 * sin_theta1
+        m2_plus_m3_times_sin_theta2 = m2_plus_m3 * sin_theta2
+        m3_times_L3_sin_theta3 = m3 * L_3 * sin_theta3
+        m3_times_omega1_times_omega2_times_sin_theta1_theta2 = m3_times_L1_times_L2 * omega1 * omega2 * sin_theta1_theta2
+        m3_times_omega1_times_omega3_times_sin_theta1_theta3 = m3_times_L1_times_L3 * omega1 * omega3 * sin_theta1_theta3
+        m3_times_omega2_times_omega3_times_sin_theta2_theta3 = m3_times_L2_times_L3 * omega2 * omega3 * sin_theta2_theta3
+
+        Afylki = np.array([[L_1 * L_1 * m1_plus_m2_plus_m3, m2_plus_m3_times_L1_times_L2 * cos_theta1_theta2,
+                            m3_times_L1_times_L3 * cos_theta1_theta3],
+                           [m2_plus_m3_times_L1_times_L2 * cos_theta2_theta1, m2_plus_m3 * L_2 * L_2,
+                            m3_times_L2_times_L3 * cos_theta2_theta3],
+                           [m3_times_L1_times_L3 * cos_theta1_theta3, m3_times_L2_times_L3 * cos_theta2_theta3,
+                            m3 * L_3 * L_3]])
+
+        bfylki = np.array([[g * L_1 * (m1 * sin_theta1 + m2 * sin_theta1 + m3 * sin_theta1)
+                            + m2 * L_1 * L_2 * sin_theta1_theta2 * omega1 * omega2
+                            + m3 * L_1 * L_3 * sin_theta1_theta3 * omega1 * omega3
+                            + m3 * L_1 * L_2 * sin_theta1_theta2 * omega1 * omega2
+                            + m2 * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
+                            + m3 * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
+                            + m3 * L_1 * L_3 * sin_theta3_theta1 * (omega1 - omega3) * omega3],
+
+                           [g * L_2 * (m2 * sin_theta2 + m3 * sin_theta2)
+                            + omega1 * omega2 * L_1 * L_2 * sin_theta2_theta1 * (m2 + m3)
+                            + m3 * L_2 * L_3 * sin_theta2_theta3 * omega2 * omega3
+                            + (m2 + m3) * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega1
+                            + m3 * L_2 * L_3 * sin_theta3_theta2 * (omega2 - omega3) * omega3],
+
+                           [m3 * g * L_3 * sin_theta3
+                            - m3 * L_2 * L_3 * sin_theta2_theta3 * omega2 * omega3
+                            - m3 * L_1 * L_3 * sin_theta1_theta3 * omega1 * omega3
+                            + m3 * L_1 * L_3 * sin_theta3_theta1 * (omega1 - omega3) * omega1
+                            + m3 * L_2 * L_3 * sin_theta3_theta2 * (omega2 - omega3) * omega2]])
         bfylki = bfylki*-1
-        AT = np.transpose(Afylki)
-
-        return la.solve(np.matmul(AT, Afylki), np.matmul(AT,bfylki))
+        return la.solve(Afylki,bfylki)
 
 
     def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
