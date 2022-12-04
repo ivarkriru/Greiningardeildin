@@ -398,7 +398,7 @@ class Pendulum:
 
         plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
         if fjoldipendula == 1:
-            for index in range(data1.shape[0]):
+            for index in range(0, data1.shape[0], 80):
                 plt.clf()
                 plt.title(label=title)
 
@@ -435,7 +435,7 @@ class Pendulum:
         bufs = []
 
         if fjoldipendula == 1:
-            for index in range(data1.shape[0]):
+            for index in range(0,data1.shape[0], 80):
                 plt.clf()
                 plt.title(label=title)
                 x = data1[index, 0]
@@ -455,7 +455,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 50):
+            for index in range(0, data1.shape[0], 80):
                 plt.clf()
                 plt.title(label=title)
 
@@ -497,7 +497,7 @@ class Pendulum:
                     bufs.append(Image.open(buf))
 
                 print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
-                plt.pause(0.0001)
+                plt.pause(0.001)
 
         if savegif:
             filename = "animation_" + str(random.randint(0, 10000)) + "_gif.gif"
@@ -512,7 +512,7 @@ class Pendulum:
         # marking the x-axis and y-axis
         staerdramma = self.L_2 * 2 + self.L_1 * 2 + 3
 
-        for index in range(0, data1.shape[0], 100):
+        for index in range(0, data1.shape[0], 80):
             plt.clf()
             plt.title(label=title)
 
@@ -574,7 +574,7 @@ class Pendulum:
     def create_animation3d(self, data1, data2, data3, title=None):
         staerdramma = self.L_2 * 2 + self.L_1 * 2 + self.L_3 + 3
 
-        for index in range(0, data1.shape[0], 90):
+        for index in range(0, data1.shape[0], 80):
             plt.clf()
             plt.title(label=title)
 
