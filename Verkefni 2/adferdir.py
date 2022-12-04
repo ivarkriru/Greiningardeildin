@@ -243,8 +243,6 @@ class Pendulum:
         cos_theta1_theta3 = math.cos(theta1_theta3)
         cos_theta2_theta3 = math.cos(theta2_theta3)
         cos_theta2_theta1 = math.cos(theta2_theta1)
-        cos_theta3_theta1 = math.cos(theta3_theta1)
-        cos_theta3_theta2 = math.cos(theta3_theta2)
 
         # Pre-calculate the sines of the angles of each pendulum
         sin_theta1 = math.sin(theta1)
@@ -269,8 +267,6 @@ class Pendulum:
         m1_sin_theta1 = m1 * sin_theta1
         m2_sin_theta1 = m2 * sin_theta1
         m3_sin_theta1 = m3 * sin_theta1
-        m2_plus_m3_times_sin_theta2 = m2_plus_m3 * sin_theta2
-        m3_times_L3_sin_theta3 = m3 * L_3 * sin_theta3
         m3_times_omega1_times_omega2_times_sin_theta1_theta2 = m3_times_L1_times_L2 * omega1 * omega2 * sin_theta1_theta2
         m3_times_omega1_times_omega3_times_sin_theta1_theta3 = m3_times_L1_times_L3 * omega1 * omega3 * sin_theta1_theta3
         m3_times_omega2_times_omega3_times_sin_theta2_theta3 = m3_times_L2_times_L3 * omega2 * omega3 * sin_theta2_theta3
@@ -282,25 +278,25 @@ class Pendulum:
                            [m3_times_L1_times_L3 * cos_theta1_theta3, m3_times_L2_times_L3 * cos_theta2_theta3,
                             m3 * L_3 * L_3]])
 
-        bfylki = np.array([[g * L_1 * (m1 * sin_theta1 + m2 * sin_theta1 + m3 * sin_theta1)
+        bfylki = np.array([[g * L_1 * (m1_sin_theta1 + m2_sin_theta1 + m3_sin_theta1)
                             + m2 * L_1 * L_2 * sin_theta1_theta2 * omega1 * omega2
-                            + m3 * L_1 * L_3 * sin_theta1_theta3 * omega1 * omega3
-                            + m3 * L_1 * L_2 * sin_theta1_theta2 * omega1 * omega2
+                            + m3_times_omega1_times_omega3_times_sin_theta1_theta3
+                            + m3_times_omega1_times_omega2_times_sin_theta1_theta2
                             + m2 * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
-                            + m3 * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
-                            + m3 * L_1 * L_3 * sin_theta3_theta1 * (omega1 - omega3) * omega3],
+                            + m3_times_L1_times_L2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
+                            + m3_times_L1_times_L3 * sin_theta3_theta1 * (omega1 - omega3) * omega3],
 
                            [g * L_2 * (m2 * sin_theta2 + m3 * sin_theta2)
                             + omega1 * omega2 * L_1 * L_2 * sin_theta2_theta1 * (m2 + m3)
-                            + m3 * L_2 * L_3 * sin_theta2_theta3 * omega2 * omega3
+                            + m3_times_omega2_times_omega3_times_sin_theta2_theta3
                             + (m2 + m3) * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega1
-                            + m3 * L_2 * L_3 * sin_theta3_theta2 * (omega2 - omega3) * omega3],
+                            + m3_times_L2_times_L3 * sin_theta3_theta2 * (omega2 - omega3) * omega3],
 
                            [m3 * g * L_3 * sin_theta3
-                            - m3 * L_2 * L_3 * sin_theta2_theta3 * omega2 * omega3
-                            - m3 * L_1 * L_3 * sin_theta1_theta3 * omega1 * omega3
-                            + m3 * L_1 * L_3 * sin_theta3_theta1 * (omega1 - omega3) * omega1
-                            + m3 * L_2 * L_3 * sin_theta3_theta2 * (omega2 - omega3) * omega2]])
+                            - m3_times_omega2_times_omega3_times_sin_theta2_theta3
+                            - m3_times_omega1_times_omega3_times_sin_theta1_theta3
+                            + m3_times_L1_times_L3 * sin_theta3_theta1 * (omega1 - omega3) * omega1
+                            + m3_times_L2_times_L3 * sin_theta3_theta2 * (omega2 - omega3) * omega2]])
         bfylki = bfylki*-1
         return la.solve(Afylki,bfylki)
 
