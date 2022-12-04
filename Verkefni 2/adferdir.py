@@ -587,7 +587,7 @@ class Pendulum:
     def create_animation3d(self, data1, data2, data3, title=None):
         staerdramma = self.L_2 * 2 + self.L_1 * 2 + self.L_3 + 3
         bufs = []
-        for index in range(0, data1.shape[0], 10):
+        for index in range(0, data1.shape[0], 2):
             plt.clf()
             plt.title(label=title)
 
