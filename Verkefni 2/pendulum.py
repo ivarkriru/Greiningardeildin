@@ -455,7 +455,7 @@ def frjals(plot=False):
     lengd = 40
     hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi*2/3, horn2=np.pi*4/3, horn3=np.pi*2/3,
                                                                 hornhradi1=0, hornhradi2=0, hornhradi3=0,
-                                                                fjoldiskrefa=1000, lengd=lengd, dempunarstuðull=10)
+                                                                fjoldiskrefa=1000, lengd=lengd, dempunarstuðull=0.1)
     if plot:
         plt.clf()
         plt.plot(y1)

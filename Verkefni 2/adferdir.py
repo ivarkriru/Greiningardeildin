@@ -586,8 +586,8 @@ class Pendulum:
 
     def create_animation3d(self, data1, data2, data3, title=None):
         staerdramma = self.L_2 * 2 + self.L_1 * 2 + self.L_3 + 3
-
-        for index in range(0, data1.shape[0], 80):
+        bufs = []
+        for index in range(0, data1.shape[0], 10):
             plt.clf()
             plt.title(label=title)
 
@@ -634,4 +634,16 @@ class Pendulum:
             plt.pause(0.001)
 
             print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
+            if True:
+                buf = io.BytesIO()
+                plt.savefig(buf, format="png")
+                bufs.append(Image.open(buf))
+            else:
+                plt.pause(0.001)
+            print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
+        if True:
+            filename = "pendull" + str(random.randint(0, 10000)) + "_gif.gif"
+            f = os.path.join(os.getcwd(), filename)
+            bufs[0].save(f, save_all=True, append_images=bufs[1:], optimize=False, duration=10)
+            plt.close()
         plt.show()
