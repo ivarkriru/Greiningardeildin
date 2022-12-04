@@ -300,7 +300,7 @@ class Pendulum:
                             - m3_times_omega1_times_omega3_times_sin_theta1_theta3
                             + m3_times_L1_times_L3 * sin_theta3_theta1 * (omega1 - omega3) * omega1
                             + m3_times_L2_times_L3 * sin_theta3_theta2 * (omega2 - omega3) * omega2]])
-        bfylki = bfylki*-1
+        bfylki *= -1
         return la.solve(Afylki,bfylki)
 
 

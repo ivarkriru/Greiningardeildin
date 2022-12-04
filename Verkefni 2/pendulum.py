@@ -57,7 +57,7 @@ def spurning4(plot=False):
 
 def spurning5(plot=False):
     p = Pendulum()
-    hnit, y = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0.1)
+    hnit, y = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20)
     hnit2, y2 = p.hnitforanimationusingRK(fall=p.pendulum, horn=np.pi / 2, hornhradi=0, fjoldiskrefa=500, lengd=20)
 
     if plot:
@@ -81,9 +81,11 @@ def spurning6(plot=False):
 
 def spurning7(plot=False):
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
+    lengd = 20
+    nakvaemni = lengd * 1000
     hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi ,
                                   horn2=np.pi/2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=10, lengd=20,dempunarstuðull=0.5)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=nakvaemni, lengd=20)
     if plot:
         plt.clf()
         plt.plot(y1)
@@ -314,8 +316,6 @@ def spurning10(plot=False):
     runspurning10(horn1 = np.pi, m_1=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
     runspurning10(horn1 = np.pi, m_2=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
 
-
-
 def spurning11(plot=False):
     follin = Foll()
     p = Pendulum()
@@ -372,7 +372,7 @@ def spurning12(plot=False):
     # skoða breytingu á lengd tímabila
     lengdin = 40
     # nákvæmni gildanna
-    n = 30
+    n = 1000
     nakvaemni = lengdin * n
     # upphafsgildi theta 1 og theta 2
     theta1 = np.pi * 2 / 3
@@ -381,7 +381,7 @@ def spurning12(plot=False):
     for x in [*range(1, 13)]:
         epsilon = math.pow(10, -1 * x)
         arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=theta1, horn2=theta2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=nakvaemni, lengd=lengdin)
 
         arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
                                   horn2=np.pi / 6 + epsilon,
