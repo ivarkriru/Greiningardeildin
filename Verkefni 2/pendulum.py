@@ -450,7 +450,7 @@ def frjals(plot=False):
         plt.plot(y2)
         plt.plot(y3)
         plt.xlabel('Fjöldi skrefa í aðferð RK')
-        plt.ylabel('Horn [°] pendúls')
+        plt.ylabel('Horn [°] pendúls í radíönum')
         plt.title(r"Þrefaldur pendúll")
         plt.pause(2)
         plt.clf()

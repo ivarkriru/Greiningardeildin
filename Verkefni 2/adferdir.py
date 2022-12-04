@@ -24,7 +24,7 @@ class Foll:
         hornhradiaxis.append(hornhradi)
 
         if not (0 <= dempunarstuðull <= 10):
-            raise ValueError("Dempunarstuðull þarf að vera prósenta frá 0 til 10")
+            raise ValueError("Dempunarstuðull þarf að vera frá 0 til 10")
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
@@ -48,7 +48,7 @@ class Foll:
         hornhradiaxis.append(hornhradi)
 
         if not (0 <= dempunarstuðull <= 10):
-            raise "Dempunarstuðull þarf að vera prósenta frá 0 til 10"
+            raise "Dempunarstuðull þarf að vera frá 0 til 10"
 
         for i in range(0, fjoldiskrefa):
             skref = skref + skreflengd
@@ -76,7 +76,7 @@ class Foll:
         axis[0] = np.array([[horn1, horn2, hornhradi1, hornhradi2]])
 
         if not (0 <= dempunarstuðull <= 10):
-            raise ValueError("Dempunarstuðull þarf að vera prósenta frá 0 til 10")
+            raise ValueError("Dempunarstuðull þarf að vera frá 0 til 10")
 
         def f(y):
             th1, th2, thp1, thp2 = y
@@ -110,7 +110,7 @@ class Foll:
         axis[0] = np.array([[horn1, horn2, horn3, hornhradi1, hornhradi2, hornhradi3]])
 
         if not (0 <= dempunarstuðull <= 10):
-            raise "Dempunarstuðull þarf að vera prósenta frá 0 til 10"
+            raise "Dempunarstuðull þarf að vera frá 0 til 10"
 
         def f(y):
             th1, th2, th3, thp1, thp2, thp3 = y
