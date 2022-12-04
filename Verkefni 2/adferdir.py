@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw
 import io
 import os
 import subprocess
+import numpy.linalg as la
 
 from matplotlib import animation
 
@@ -106,13 +107,48 @@ class Foll:
             axis[i+1] = axis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
         return axis
 
+    def RKmethod3(self, triplediple, horn1, horn2, horn3, hornhradi1, hornhradi2, hornhradi3, fjoldiskrefa, lengd, dempunarstuðull = 0):
+        skreflengd = lengd / fjoldiskrefa  # h = skreflengd
+        skref = 0  # skref = t
+        axis = np.zeros((fjoldiskrefa+1, 6))
+        axis[0] = np.array([[horn1, horn2, horn3, hornhradi1, hornhradi2, hornhradi3]])
+
+        if not (0<=dempunarstuðull<=10):
+            raise   "Dempunarstuðull þarf að vera prósenta frá 0 til 1"
+
+        def f(y):
+            th1, th2, th3, thp1, thp2, thp3 = y
+
+            dempun = -1 * thp1 * dempunarstuðull
+            dempun2 = -1 * thp2 * dempunarstuðull
+            dempun3 = -1 * thp3 * dempunarstuðull
+
+
+            svar = triplediple(*y)
+
+            return np.array([thp1, thp2, thp3, *svar[0]+dempun, *svar[1]+dempun2, *svar[2]+dempun3])
+
+        for i in range(0, fjoldiskrefa):
+            skref = skref + skreflengd
+
+            s1 = f(axis[i])
+            s2 = f((axis[i] + skreflengd*s1/2))
+            s3 = f((axis[i] + skreflengd*s2/2))
+            s4 = f((axis[i] + skreflengd*s3))
+
+            axis[i+1] = axis[i] + (s1 + s2 * 2 + s3 * 2 + s4) / 6 * skreflengd
+        return axis
+
 
 class Pendulum:
-    def __init__(self, L_1=2, m_1=1, L_2=2, m_2=1):
+    def __init__(self, L_1=2, m_1=1, L_2=2, m_2=1,L_3=2, m_3=1):
         self.L_1 = L_1
         self.m_1 = m_1
         self.L_2 = L_2
         self.m_2 = m_2
+        self.L_3 = L_3
+        self.m_3 = m_3
+
         self.g = g
 
     def pendulum(self, theta):
@@ -182,6 +218,89 @@ class Pendulum:
         theta2_2prime = (k1 + k2 + k3 + k4) / k5
         return theta2_2prime
 
+    def triple(self, theta1, theta2, theta3, omega1, omega2, omega3):
+
+        theta1 %= np.pi * 2
+        theta2 %= np.pi * 2
+        theta3 %= np.pi * 2
+
+        m1 = self.m_1
+        m2 = self.m_2
+        m3 = self.m_3
+        L_1 = self.L_1
+        L_2 = self.L_2
+        L_3 = self.L_3
+
+        theta1_theta2 = theta1 - theta2
+        theta1_theta3 = theta1 - theta3
+        theta2_theta3 = theta2 - theta3
+        theta2_theta1 = theta2 - theta1
+        theta3_theta1 = theta3 - theta1
+        theta3_theta2 = theta3 - theta2
+
+        # Pre-calculate the cosines of the differences between the angles of each pair of pendulums
+        cos_theta1_theta2 = math.cos(theta1_theta2)
+        cos_theta1_theta3 = math.cos(theta1_theta3)
+        cos_theta2_theta3 = math.cos(theta2_theta3)
+        cos_theta2_theta1 = math.cos(theta2_theta1)
+
+        # Pre-calculate the sines of the angles of each pendulum
+        sin_theta1 = math.sin(theta1)
+        sin_theta2 = math.sin(theta2)
+        sin_theta3 = math.sin(theta3)
+
+        # Pre-calculate the cosines of the differences between the angles of each pair of pendulums
+        sin_theta1_theta2 = math.sin(theta1_theta2)
+        sin_theta1_theta3 = math.sin(theta1_theta3)
+        sin_theta2_theta3 = math.sin(theta2_theta3)
+        sin_theta2_theta1 = math.sin(theta2_theta1)
+        sin_theta3_theta1 = math.sin(theta3_theta1)
+        sin_theta3_theta2 = math.sin(theta3_theta2)
+
+        # Pre-calculate the terms that are used multiple times in Afylki and bfylki
+        m1_plus_m2_plus_m3 = m1 + m2 + m3
+        m2_plus_m3 = m2 + m3
+        m2_plus_m3_times_L1_times_L2 = m2_plus_m3 * L_1 * L_2
+        m3_times_L1_times_L2 = m3 * L_1 * L_2
+        m3_times_L1_times_L3 = m3 * L_1 * L_3
+        m3_times_L2_times_L3 = m3 * L_2 * L_3
+        m1_sin_theta1 = m1 * sin_theta1
+        m2_sin_theta1 = m2 * sin_theta1
+        m3_sin_theta1 = m3 * sin_theta1
+        m3_times_omega1_times_omega2_times_sin_theta1_theta2 = m3_times_L1_times_L2 * omega1 * omega2 * sin_theta1_theta2
+        m3_times_omega1_times_omega3_times_sin_theta1_theta3 = m3_times_L1_times_L3 * omega1 * omega3 * sin_theta1_theta3
+        m3_times_omega2_times_omega3_times_sin_theta2_theta3 = m3_times_L2_times_L3 * omega2 * omega3 * sin_theta2_theta3
+
+        Afylki = np.array([[L_1 * L_1 * m1_plus_m2_plus_m3, m2_plus_m3_times_L1_times_L2 * cos_theta1_theta2,
+                            m3_times_L1_times_L3 * cos_theta1_theta3],
+                           [m2_plus_m3_times_L1_times_L2 * cos_theta2_theta1, m2_plus_m3 * L_2 * L_2,
+                            m3_times_L2_times_L3 * cos_theta2_theta3],
+                           [m3_times_L1_times_L3 * cos_theta1_theta3, m3_times_L2_times_L3 * cos_theta2_theta3,
+                            m3 * L_3 * L_3]])
+
+        bfylki = np.array([[g * L_1 * (m1_sin_theta1 + m2_sin_theta1 + m3_sin_theta1)
+                            + m2 * L_1 * L_2 * sin_theta1_theta2 * omega1 * omega2
+                            + m3_times_omega1_times_omega3_times_sin_theta1_theta3
+                            + m3_times_omega1_times_omega2_times_sin_theta1_theta2
+                            + m2 * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
+                            + m3_times_L1_times_L2 * sin_theta2_theta1 * (omega1 - omega2) * omega2
+                            + m3_times_L1_times_L3 * sin_theta3_theta1 * (omega1 - omega3) * omega3],
+
+                           [g * L_2 * (m2 * sin_theta2 + m3 * sin_theta2)
+                            + omega1 * omega2 * L_1 * L_2 * sin_theta2_theta1 * (m2 + m3)
+                            + m3_times_omega2_times_omega3_times_sin_theta2_theta3
+                            + (m2 + m3) * L_1 * L_2 * sin_theta2_theta1 * (omega1 - omega2) * omega1
+                            + m3_times_L2_times_L3 * sin_theta3_theta2 * (omega2 - omega3) * omega3],
+
+                           [m3 * g * L_3 * sin_theta3
+                            - m3_times_omega2_times_omega3_times_sin_theta2_theta3
+                            - m3_times_omega1_times_omega3_times_sin_theta1_theta3
+                            + m3_times_L1_times_L3 * sin_theta3_theta1 * (omega1 - omega3) * omega1
+                            + m3_times_L2_times_L3 * sin_theta3_theta2 * (omega2 - omega3) * omega2]])
+        bfylki = bfylki*-1
+        return la.solve(Afylki,bfylki)
+
+
     def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
         follin = Foll()
         y = follin.euler(f=fall,horn= horn,hornhradi= hornhradi,fjoldiskrefa= fjoldiskrefa,lengd= lengd,dempunarstuðull=dempunarstuðull)
@@ -226,6 +345,35 @@ class Pendulum:
         y1 = np.array(y1) * (180 / np.pi)
         y2 = np.array(y2) * (180 / np.pi)
         return hnitsenior,hnitjunior,y1,y2
+    def hnitforanimationusingRK3(self, horn1=np.pi * 3 / 4,
+                                  horn2=np.pi * 6 / 4,horn3=np.pi * 6 / 4,
+                                  hornhradi1=1, hornhradi2=0,hornhradi3=0, fjoldiskrefa=20*1000, lengd=20,dempunarstuðull=0):
+        follin = Foll()
+        p = Pendulum(L_1=self.L_1, m_1=self.m_1, L_2=self.L_2, m_2=self.m_2,L_3=self.L_3 ,m_3=self.m_3)
+        arr = follin.RKmethod3(triplediple=p.triple, horn1= horn1, horn2= horn2, horn3 = horn3,
+                                  hornhradi1= hornhradi1, hornhradi2= hornhradi2, hornhradi3= hornhradi3,
+                               fjoldiskrefa=fjoldiskrefa, lengd=lengd,dempunarstuðull=dempunarstuðull)
+
+        y1 = arr[:,0]
+        y2 = arr[:,1]
+        y3 = arr[:,2]
+
+        hnitsenior = []
+        hnitjunior = []
+        hnitjuniorjunior = []
+
+        for horn in y1:
+            hnitsenior.append(p.hornTohnit(th=horn))
+        for index, horn in enumerate(y2):
+            hnitjunior.append(p.hornTohnitjunior(th=y1[index],th2= horn))
+        for index, horn in enumerate(y3):
+            hnitjuniorjunior.append(p.hornTohnitjuniorjunior(th1=y1[index],th2=y2[index],th3=horn))
+
+        hnitsenior = np.array(hnitsenior)
+        hnitjunior = np.array(hnitjunior)
+        hnitjuniorjunior = np.array(hnitjuniorjunior)
+
+        return hnitsenior,hnitjunior,hnitjuniorjunior,y1,y2,y3
 
     def hornTohnit(self, th):
         L_1 = self.L_1
@@ -235,6 +383,12 @@ class Pendulum:
         L_1 = self.L_1
         L_2 = self.L_2
         return L_1 * np.sin(th) + L_2 * np.sin(th2), -L_1 * np.cos(th) - L_2 * np.cos(th2)
+
+    def hornTohnitjuniorjunior(self, th1, th2, th3):
+        L_1 = self.L_1
+        L_2 = self.L_2
+        L_3 = self.L_3
+        return L_1 * np.sin(th1) + L_2 * np.sin(th2) + L_3*np.sin(th3), -(L_1 * np.cos(th1) + L_2 * np.cos(th2) + L_3 * np.cos(th3))
 
     def create_animation2dfyrir4(self, data1, data2=None, fjoldipendula=1, title=None):
         # initializing a figure in
@@ -341,6 +495,7 @@ class Pendulum:
             f = os.path.join(os.getcwd(), filename)
             bufs[0].save(f, save_all = True, append_images=bufs[1:], optimize=False, duration = 10)
         plt.show()
+
     def create_animation2ex2(self, data1, data2, data3, data4, fjoldipendula=1, title=None, savegif=False,offset = 5):
 
         # initializing a figure in
@@ -402,6 +557,57 @@ class Pendulum:
             plt.scatter(x2, y2, lw=self.m_2 * 5*2, c="orange")
             plt.scatter(x3, y3, lw=self.m_1 * 5*2, c="orange")
             plt.scatter(x4, y4, lw=self.m_2 * 5*2, c="orange")
+
+            plt.pause(0.001)
+
+            print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
+        plt.show()
+
+    def create_animation3d(self, data1, data2, data3, title=None):
+        staerdramma = self.L_2*2 + self.L_1*2 + self.L_3 + 3
+
+        for index in range(0, data1.shape[0], 90):
+            plt.clf()
+            plt.title(label=title)
+
+            x1 = data1[index, 0]
+            y1 = data1[index, 1]
+
+            x2 = data2[index, 0]
+            y2 = data2[index, 1]
+
+            x3 = data3[index, 0]
+            y3 = data3[index, 1]
+
+            plt.xticks([])
+            plt.yticks([])
+            plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
+            plt.title(r"Þrefaldur pendúll")
+            plt.xlabel('Staðsetning á x-ás')
+            plt.ylabel('Staðsetning á y-ás')
+            x1plot = data1[0:index, 0]
+            y1plot = data1[0:index, 1]
+
+            x2plot = data2[0:index, 0]
+            y2plot = data2[0:index, 1]
+
+            x3plot = data3[0:index, 0]
+            y3plot = data3[0:index, 1]
+
+            plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
+
+            plt.plot(x1plot, y1plot,alpha=0.5)
+            plt.plot(x2plot, y2plot,alpha=0.5)
+            plt.plot(x3plot, y3plot,alpha=0.5)
+
+            plt.plot([0, x1], [0, y1], lw=5, c="blue")
+            plt.plot([x1, x2], [y1, y2], lw=5, c="blue")
+            plt.plot([x2, x3], [y2, y3], lw=5, c="blue")
+
+            plt.scatter(x1, y1, lw=self.m_1 * 5*2, c="orange")
+            plt.scatter(x2, y2, lw=self.m_2 * 5*2, c="orange")
+            plt.scatter(x3, y3, lw=self.m_3 * 5*2, c="orange")
 
             plt.pause(0.001)
 
