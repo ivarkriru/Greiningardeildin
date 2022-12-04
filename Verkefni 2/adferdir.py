@@ -507,13 +507,14 @@ class Pendulum:
         if not savegif:
             plt.show()
 
-    def create_animation2ex2(self, data1, data2, data3, data4, fjoldipendula=1, title=None, savegif=False, offset=5):
+    def create_animation2ex2(self, data1, data2, data3, data4, fjoldipendula=1, title=None, savegif=False, offset=5, nafn=""):
 
         # initializing a figure in
         # which the graph will be plotted
         # marking the x-axis and y-axis
         staerdramma = self.L_2 * 2 + self.L_1 * 2 + 3
 
+        bufs = []
         for index in range(0, data1.shape[0], 80):
             plt.clf()
             plt.title(label=title)
@@ -569,8 +570,18 @@ class Pendulum:
             plt.scatter(x3, y3, lw=self.m_1 * 5 * 2, c="orange")
             plt.scatter(x4, y4, lw=self.m_2 * 5 * 2, c="orange")
 
-            plt.pause(0.001)
+            if savegif:
+                buf = io.BytesIO()
+                plt.savefig(buf, format="png")
+                bufs.append(Image.open(buf))
+            else:
+                plt.pause(0.001)
             print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
+        if savegif:
+            filename = str(nafn) + str(random.randint(0, 10000)) + "_gif.gif"
+            f = os.path.join(os.getcwd(), filename)
+            bufs[0].save(f, save_all=True, append_images=bufs[1:], optimize=False, duration=10)
+            plt.close()
         plt.show()
 
     def create_animation3d(self, data1, data2, data3, title=None):
