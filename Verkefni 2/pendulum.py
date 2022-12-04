@@ -53,7 +53,7 @@ def spurning4(plot=False):
                   "\n" + r"$\dot{\Theta}$(0) er 0 á báðum pendúlum með Euler")
         plt.pause(2)
         plt.clf()
-        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = r"Sp4: Pendúlar, blár $\dot{\Theta}_1$(0) er ${\pi}$/12, grænn  ${\Theta}_2$(0)  er ${\pi}$/2"+ "\n" + r"$\dot{\Theta}$(0) er 0 á báðum pendúlum með Euler")
+        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = r"Sp4: Pendúlar, blár ${\Theta}_1$(0) er ${\pi}$/12, grænn  ${\Theta}_2$(0)  er ${\pi}$/2"+ "\n" + r"$\dot{\Theta}$(0) er 0 á báðum pendúlum með Euler")
         plt.clf()
 
 def spurning5(plot=False):
@@ -118,16 +118,16 @@ def spurning8(plot=False):
             plt.plot(y2)
             plt.xlabel('Fjöldi skrefa í aðferð RK')
             plt.ylabel('Horn [°] pendúls í radíönum')
-            plt.title(r"Sp8: Graf af pendúlum, blár er $\dot{\Theta}_1$(0) er " +
+            plt.title(r"Sp8: Graf af pendúlum, blár er ${\Theta}_1$(0) er " +
                                  str(horn1) +
-                                 r", appelsínugulur er $\dot{\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
+                                 r", appelsínugulur er ${\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
             plt.pause(2)
             #plt.savefig("8 "+str(i))
             plt.clf()
             p.create_animation2d(hnitsenior, hnitjunior, 2,
-                                 r"Sp8:, blár er $\dot{\Theta}$1(0) ="+
+                                 r"Sp8:, blár er ${\Theta}$1(0) ="+
                                  str(horn1) +
-                                 r", grænn er $\dot{\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
+                                 r", grænn er ${\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
             plt.clf()
 
     #title = r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3r", grænn er $\dot{\Theta}$2(0) =" $\dot{\pi}$/6," + "\n" + r"$\dot{\Theta}$' = 0")
@@ -295,10 +295,10 @@ def spurning10(plot=False):
             horn1 = str(list(pi_.keys())[list(pi_.values()).index(horn1)])
             horn2 = str(list(pi_.keys())[list(pi_.values()).index(horn2)])
             plt.plot(y1, y2)
-            plt.xlabel('Staðsetning á x-ás í radíönum')
-            plt.ylabel('Staðsetning á y-ás í radíönum')
-            plt.title(r"Sp10:, blár= $\dot{\Theta}$1(0) ="+str(horn1)+r", grænn er $\dot{\Theta}$2(0) ="+ str(horn2)
-                + ",\n" + r"$\dot{\Theta}$1'= " + str(hornhradi1) + r", $\dot{\Theta}$2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
+            plt.xlabel('Staðsetning á x-ás')
+            plt.ylabel('Staðsetning á y-ás')
+            plt.title(r"Sp10:, blár= ${\Theta}$1(0) ="+str(horn1)+r", grænn er ${\Theta}$2(0) ="+ str(horn2)
+                + ",\n" + r"$\dot{\Theta}$1= " + str(hornhradi1) + r", $\dot{\Theta}$2= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
             plt.show()
             plt.pause(2)
             plt.clf()
@@ -350,18 +350,21 @@ def spurning11(plot=False):
         hnit2 = np.array(hnit2)
         hnit3 = np.array(hnit3)
         hnit4 = np.array(hnit4)
-
+        print("Difference on pendulum with or without \u03B5= 1e-"+str(x))
+        print(point_diff(hnit3[-1], hnit1[-1]))
         if plot:
-            print("here")
-            plt.title(r"Sp11: Gul ${\Theta}_1$(0) er 2*π/3 og rauð ${\Theta}_2$(0) er π/6, báðir eru fyrsti pendúll."+"\n"+r"Græn er ${\Theta}_2$(0) =2*π/3, og blá er ${\Theta}_2$(0) = π/6 + $\epsilon$, báðir eru neðri pendúlar.")
+            plt.title(r"Sp11: Gul lína er ${\Theta}$1(0) =2*π/3 og rauð lína er ${\Theta}$(0) =π/6."+"\n"+r"Græn lína er ${\Theta}$1(0) =2*π/3 + villa, blá lína er ${\Theta}$2(0) =π/6 + villa.")
             plt.plot(y1,color="yellow")
             plt.plot(y2,color="red")
             plt.plot(y3,color="green")
             plt.plot(y4,color="blue")
+            plt.savefig("11 1"+str(x)+".png")
             plt.pause(2)
             plt.clf()
             p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4, title=r"Sp11: Báðir pendúlar eru ${\Theta}_1$(0) = 2*π/3 og ${\Theta}_2$(0) = π/6"+"\n"+" hægri hliðin með $\epsilon$ skekkju")
+            plt.savefig("11 2"+str(x)+".png")
             plt.pause(2)
+            plt.clf()
 
 def spurning12(plot=False):
     follin = Foll()
