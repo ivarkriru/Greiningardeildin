@@ -118,21 +118,14 @@ class Foll:
 
         def f(y):
             th1, th2, th3, thp1, thp2, thp3 = y
-            if thp1 != 0:
-                dempun = -1 * thp1 * dempunarstuðull
-            else:
-                dempun = 0
-            if thp2 != 0:
-                dempun2 = -1 * thp2 * dempunarstuðull
-            else:
-                dempun2 = 0
-            if thp3 != 0:
-                dempun3 = -1 * thp3 * dempunarstuðull
-            else:
-                dempun3 = 0
+
+            dempun = -1 * thp1 * dempunarstuðull
+            dempun2 = -1 * thp2 * dempunarstuðull
+            dempun3 = -1 * thp3 * dempunarstuðull
 
 
             svar = triplediple(*y)
+
             return np.array([thp1, thp2, thp3, *svar[0]+dempun, *svar[1]+dempun2, *svar[2]+dempun3])
 
         for i in range(0, fjoldiskrefa):
@@ -226,6 +219,11 @@ class Pendulum:
         return theta2_2prime
 
     def triple(self, theta1, theta2, theta3, omega1, omega2, omega3):
+
+        theta1 = theta1 % (np.pi * 2)
+        theta2 = theta2 % (np.pi * 2)
+        theta3 = theta3 % (np.pi * 2)
+
         m1 = self.m_1
         m2 = self.m_2
         m3 = self.m_3
@@ -240,8 +238,8 @@ class Pendulum:
         d31 = theta3 - theta1
         d32 = theta3 - theta2
 
-        Afylki = np.array([[L_1 * L_1* (m1 + m2 + m3), m2 * L_1 * L_2 * math.cos(d12), m3 * L_1 * L_3 * math.cos(d13)],
-                           [L_2 * L_2 * (m2 + m3), (m2 + m3) * L_1 * L_2 * math.cos(d21), m3 * L_2 * L_3 * math.cos(d23)],
+        Afylki = np.array([[L_1 * L_1 * (m1 + m2 + m3), m2 * L_1 * L_2 * math.cos(d12) + m3*L_1*L_2*math.cos(d12), m3 * L_1 * L_3 * math.cos(d13)],
+                           [(m2+m3)*L_1*L_2*math.cos(d21), (m2 + m3) * L_2 * L_2, m3 * L_2 * L_3 * math.cos(d23)],
                            [m3 * L_1 * L_3 * math.cos(d13), m3 * L_2 * L_3 * math.cos(d23), m3 * L_3 * L_3]])
 
         bfylki = np.array([[g * L_1*(m1 * math.sin(theta1) + m2 * math.sin(theta1) + m3 * math.sin(theta1))
@@ -264,8 +262,9 @@ class Pendulum:
                                   + m3 * L_1 * L_3 * math.sin(d31) * (omega1 - omega3) * omega1
                                   + m3 * L_2 * L_3 * math.sin(d32) * (omega2 - omega3) * omega2]])
         bfylki = bfylki*-1
-        Afylki = np.transpose(Afylki)
-        return la.solve(Afylki, bfylki)
+        AT = np.transpose(Afylki)
+
+        return la.solve(np.matmul(AT, Afylki), np.matmul(AT,bfylki))
 
 
     def hnitforanimationusingEuler(self, fall, horn=np.pi / 12, hornhradi=0, fjoldiskrefa=500, lengd=20,dempunarstuðull=0):
@@ -312,11 +311,11 @@ class Pendulum:
         y1 = np.array(y1) * (180 / np.pi)
         y2 = np.array(y2) * (180 / np.pi)
         return hnitsenior,hnitjunior,y1,y2
-    def hnitforanimationusingRK3(self, L_1=2, L_2=2, L_3=2,m_1=1,  m_2=1,m_3=1, horn1=np.pi * 3 / 4,
+    def hnitforanimationusingRK3(self, horn1=np.pi * 3 / 4,
                                   horn2=np.pi * 6 / 4,horn3=np.pi * 6 / 4,
                                   hornhradi1=1, hornhradi2=0,hornhradi3=0, fjoldiskrefa=20*1000, lengd=20,dempunarstuðull=0):
         follin = Foll()
-        p = Pendulum(L_1=L_1, m_1=m_1, L_2=L_2, m_2=m_2,L_3=L_3 ,m_3=m_3)
+        p = Pendulum(L_1=self.L_1, m_1=self.m_1, L_2=self.L_2, m_2=self.m_2,L_3=self.L_3 ,m_3=self.m_3)
         arr = follin.RKmethod3(triplediple=p.triple, horn1= horn1, horn2= horn2, horn3 = horn3,
                                   hornhradi1= hornhradi1, hornhradi2= hornhradi2, hornhradi3= hornhradi3,
                                fjoldiskrefa=fjoldiskrefa, lengd=lengd,dempunarstuðull=dempunarstuðull)
@@ -330,9 +329,9 @@ class Pendulum:
         hnitjuniorjunior = []
 
         for horn in y1:
-            hnitsenior.append(p.hornTohnit(horn))
+            hnitsenior.append(p.hornTohnit(th=horn))
         for index, horn in enumerate(y2):
-            hnitjunior.append(p.hornTohnitjunior(y1[index], horn))
+            hnitjunior.append(p.hornTohnitjunior(th=y1[index],th2= horn))
         for index, horn in enumerate(y3):
             hnitjuniorjunior.append(p.hornTohnitjuniorjunior(th1=y1[index],th2=y2[index],th3=horn))
 
@@ -533,7 +532,7 @@ class Pendulum:
     def create_animation3d(self, data1, data2, data3, title=None):
         staerdramma = self.L_2*2 + self.L_1*2 + self.L_3 + 3
 
-        for index in range(0, data1.shape[0], 40):
+        for index in range(0, data1.shape[0], 80):
             plt.clf()
             plt.title(label=title)
 
