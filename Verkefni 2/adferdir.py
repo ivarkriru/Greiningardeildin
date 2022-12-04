@@ -532,7 +532,7 @@ class Pendulum:
     def create_animation3d(self, data1, data2, data3, title=None):
         staerdramma = self.L_2*2 + self.L_1*2 + self.L_3 + 3
 
-        for index in range(0, data1.shape[0], 80):
+        for index in range(0, data1.shape[0], 90):
             plt.clf()
             plt.title(label=title)
 
@@ -549,8 +549,9 @@ class Pendulum:
             plt.yticks([])
             plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
 
-            plt.xlabel('Staðsetning á x-ás í radíönum')
-            plt.ylabel('Staðsetning á y-ás í radíönum')
+            plt.title(r"Þrefaldur pendúll")
+            plt.xlabel('Staðsetning á x-ás')
+            plt.ylabel('Staðsetning á y-ás')
             x1plot = data1[0:index, 0]
             y1plot = data1[0:index, 1]
 
@@ -562,9 +563,9 @@ class Pendulum:
 
             plt.plot([-staerdramma * 2, staerdramma * 2], [0, 0], lw=3, c="black")
 
-            plt.plot(x1plot, y1plot)
-            plt.plot(x2plot, y2plot)
-            plt.plot(x3plot, y3plot)
+            plt.plot(x1plot, y1plot,alpha=0.5)
+            plt.plot(x2plot, y2plot,alpha=0.5)
+            plt.plot(x3plot, y3plot,alpha=0.5)
 
             plt.plot([0, x1], [0, y1], lw=5, c="blue")
             plt.plot([x1, x2], [y1, y2], lw=5, c="blue")
