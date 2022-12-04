@@ -425,7 +425,7 @@ class Pendulum:
                 plt.pause(0.001)
         plt.show()
 
-    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False, trace=True):
+    def create_animation2d(self, data1, data2=None, fjoldipendula=1, title=None, savegif=False, trace=True, nafn=""):
 
         # initializing a figure in
         # which the graph will be plotted
@@ -455,7 +455,7 @@ class Pendulum:
                 plt.pause(0.001)
 
         elif fjoldipendula == 2:
-            for index in range(0, data1.shape[0], 80):
+            for index in range(0, data1.shape[0], 40):
                 plt.clf()
                 plt.title(label=title)
 
@@ -495,15 +495,17 @@ class Pendulum:
                     buf = io.BytesIO()
                     plt.savefig(buf, format="png")
                     bufs.append(Image.open(buf))
+                else:
+                    plt.pause(0.001)
 
                 print(f"{index / data1.shape[0] * 100:.00f}%", end="\n", flush=True)
-                plt.pause(0.001)
 
         if savegif:
-            filename = "animation_" + str(random.randint(0, 10000)) + "_gif.gif"
+            filename = str(nafn) + str(random.randint(0, 10000)) + "_gif.gif"
             f = os.path.join(os.getcwd(), filename)
             bufs[0].save(f, save_all=True, append_images=bufs[1:], optimize=False, duration=10)
-        plt.show()
+        if not savegif:
+            plt.show()
 
     def create_animation2ex2(self, data1, data2, data3, data4, fjoldipendula=1, title=None, savegif=False, offset=5):
 

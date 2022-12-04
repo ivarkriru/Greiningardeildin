@@ -105,7 +105,7 @@ def spurning7(plot=False):
 pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning8(plot=False):
 
-    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=1000*20, lengd=20):
+    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=1000*20, lengd=20, nafn=""):
         global i
         i= i+1
         p= Pendulum()
@@ -127,7 +127,8 @@ def spurning8(plot=False):
             p.create_animation2d(hnitsenior, hnitjunior, 2,
                                  r"Sp8:, blár er ${\Theta}$1(0) ="+
                                  str(horn1) +
-                                 r", grænn er ${\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
+                                 r", grænn er ${\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2),
+                                 nafn=nafn, savegif=True)
             plt.clf()
 
     #title = r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3r", grænn er $\dot{\Theta}$2(0) =" $\dot{\pi}$/6," + "\n" + r"$\dot{\Theta}$' = 0")
@@ -135,28 +136,28 @@ def spurning8(plot=False):
     i=0
     lengd = 20
     fjoldiskrefa = 1000*lengd
-    runspurning8(horn1=np.pi,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(horn1=np.pi/2,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(horn1=0,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(horn1=np.pi,fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8a")
+    runspurning8(horn1=np.pi/2,fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8b")
+    runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8c")
+    runspurning8(horn1=0,fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8d")
     #Áhrif breytinga á theta2
-    runspurning8(horn2=np.pi, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(horn2=np.pi, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8e")
+    runspurning8(horn1=np.pi/4,fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8f")
     #Áhrif breytinga á l1
-    runspurning8(L_1 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(L_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_1 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8g")
+    runspurning8(L_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8h")
     #Áhrif breytinga á l2
-    runspurning8(L_2 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(L_2 = 1, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8i")
+    runspurning8(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8j")
     #Áhrif breytinga á m1
-    runspurning8(m_1 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(m_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(m_1 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8k")
+    runspurning8(m_1 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8l")
     #Áhrif breytinga á m2
-    runspurning8(m_2 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(m_2 = 2, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8m")
+    runspurning8(L_2 = 3, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8n")
     #Áhrif breytinga á m2
-    runspurning8(horn1 = np.pi, m_1=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
-    runspurning8(horn1 = np.pi, m_2=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd)
+    runspurning8(horn1 = np.pi, m_1=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8o")
+    runspurning8(horn1 = np.pi, m_2=10, fjoldiskrefa=fjoldiskrefa, lengd=lengd, nafn="8p")
 
 def spurning9(plot=False):
     follin = Foll()
