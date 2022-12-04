@@ -30,12 +30,12 @@ def spurning3(plot=False):
     if plot:
         plt.plot(y)
 
-        plt.title(r"Sp:3 Graf yfir pendúll $\dot{\Theta}$(0) er $\dot{\pi}$/12, $\dot{\Theta}$'(0) er 0 með Euler")
+        plt.title(r"Sp:3 Graf yfir pendúll $\dot{\Theta}$1(0) er ${\pi}$/12, $\dot{\Theta}$'(0) er 0 með Euler")
         plt.xlabel('Fjöldi skrefa í aðferð Eulers')
-        plt.ylabel('Horn [°] pendúls')
+        plt.ylabel('Horn [°] pendúls í radíönum')
         plt.pause(2)
         plt.clf()
-        p.create_animation2d(hnit, title = r"Sp:3 Einfaldur pendúll, $\dot{\Theta}$(0) er pi/12, $\dot{\Theta}$'(0) er 0 með Euler")
+        p.create_animation2d(hnit, title = r"Sp:3 Einfaldur pendúll, $\dot{\Theta}$(0) er pi/12, $\dot{\Theta}$(0) er 0 með Euler")
         plt.clf()
 
 
@@ -48,11 +48,11 @@ def spurning4(plot=False):
         plt.plot(y)
         plt.plot(y2)
         plt.xlabel('Fjöldi skrefa í aðferð Eulers')
-        plt.ylabel('Horn [°] pendúls')
-        plt.title(r"Sp:4 Graf yfir pendúla blár er $\dot{\Theta}$(0) er $\dot{\pi}$/12, grænn er $\dot{\pi}$/2"+ "\n" + r"$\dot{\Theta}$'(0) er 0 með Euler")
+        plt.ylabel('Horn [°] pendúls í radíönum')
+        plt.title(r"Sp:4 Graf yfir pendúla blár er $\dot{\Theta}$(0) er ${\pi}$/12, grænn er ${\pi}$/2"+ "\n" + r"$\dot{\Theta}$(0) er 0 með Euler")
         plt.pause(2)
         plt.clf()
-        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = r"Sp4: Pendúlar, blár er $\dot{\Theta}$(0) er $\dot{\pi}$/12, grænn er $\dot{\pi}$/2"+ "\n" + r"$\dot{\Theta}$'(0) er 0 með Euler")
+        p.create_animation2dfyrir4(data1 = hnit,data2=hnit2, title = r"Sp4: Pendúlar, blár er $\dot{\Theta}$(0) er ${\pi}$/12, grænn er ${\pi}$/2"+ "\n" + r"$\dot{\Theta}$(0) er 0 með Euler")
         plt.clf()
 
 def spurning5(plot=False):
@@ -64,11 +64,11 @@ def spurning5(plot=False):
         plt.plot(y)
         plt.plot(y2)
         plt.xlabel('Fjöldi skrefa í aðferð RK')
-        plt.ylabel('Horn [°] pendúls')
-        plt.title(r"Sp:5 Graf yfir pendúla, blár er $\dot{\Theta}$(0)= $\dot{\pi}$/12, grænn er $\dot{\Theta}$(0)= $\dot{\pi}$/2"+ "\n" + r"$\dot{\Theta}$'(0)= 0 með RK")
+        plt.ylabel('Horn [°] pendúls í radíönum')
+        plt.title(r"Sp:5 Graf yfir pendúla, blár er $\dot{\Theta}$(0)= ${\pi}$/12, grænn er $\dot{\Theta}$(0)= ${\pi}$/2"+ "\n" + r"$\dot{\Theta}$(0)= 0 með RK")
         plt.pause(2)
         plt.clf()
-        p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = r"Sp5: Pendúlar, blár er $\dot{\Theta}$(0)= $\dot{\pi}$/12, grænn er $\dot{\Theta}$(0)= $\dot{\pi}$/2"+ "\n" + r"$\dot{\Theta}$'(0)= 0 með RK")
+        p.create_animation2dfyrir4(data1 = hnit, data2=hnit2, title = r"Sp5: Pendúlar, blár er $\dot{\Theta}$(0)= ${\pi}$/12, grænn er $\dot{\Theta}$(0)= ${\pi}$/2"+ "\n" + r"$\dot{\Theta}$(0)= 0 með RK")
         plt.clf()
 
 def spurning6(plot=False):
@@ -91,12 +91,12 @@ def spurning7(plot=False):
         plt.plot(y1)
         plt.plot(y2)
         plt.xlabel('Fjöldi skrefa í aðferð RK')
-        plt.ylabel('Horn [°] pendúls')
-        plt.title(r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3, appelsínugulur er $\dot{\Theta}$2(0) = $\dot{\pi}$/6,"+ "\n" + r"$\dot{\Theta}$' = 0")
+        plt.ylabel('Horn [°] pendúls í radíönum')
+        plt.title(r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = ${\pi}$/3, appelsínugulur er $\dot{\Theta}$2(0) = ${\pi}$/6,"+ "\n" + r"$\dot{\Theta}$ = 0")
         plt.pause(2)
         plt.clf()
 
-        p.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title=r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = $\dot{\pi}$/3, grænn er $\dot{\Theta}$2(0) = $\dot{\pi}$/6,"+ "\n" + r"$\dot{\Theta}$' = 0")
+        p.create_animation2d(hnitsenior, hnitjunior, 2, trace=False, title=r"Sp7: Tvöfaldur pendúll,blár er $\dot{\Theta}$1(0) = ${\pi}$/3, grænn er $\dot{\Theta}$2(0) = ${\pi}$/6,"+ "\n" + r"$\dot{\Theta}$ = 0")
         plt.clf()
 
 pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
@@ -114,7 +114,7 @@ def spurning8(plot=False):
             plt.plot(y1)
             plt.plot(y2)
             plt.xlabel('Fjöldi skrefa í aðferð RK')
-            plt.ylabel('Horn [°] pendúls')
+            plt.ylabel('Horn [°] pendúls í radíönum')
             plt.title(r"Sp8: Graf af pendúlum, blár er $\dot{\Theta}$1(0) ="+
                                  str(horn1) +
                                  r", appelsínugulur er $\dot{\Theta}$2(0) ="+ str(horn2)  + ",\ntheta1'= " + str(hornhradi1) + ", theta2'= " + str(hornhradi2) + ", lengd 1= "+ str(L_1)+ ", lengd 2= "+ str(L_2) +", þyngd 1= "+ str(m_1)+ ", þyngd 2= "+ str(m_2))
@@ -234,6 +234,7 @@ def spurning9(plot=False):
 
             #if diff[-1] > 1e-9:
             #    continue
+
             diffax.loglog(n_list[:-1], diff)
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
 
@@ -279,12 +280,14 @@ def spurning10(plot=False):
                               hornhradi1=hornhradi1, hornhradi2=hornhradi2, fjoldiskrefa=lengd * 1000, lengd=lengd)
         y1 = arr[:,0]
         y2 = arr[:,1]
+
         '''
         for i,x in enumerate(y1):
             y1[i] = x%np.pi
         for i,x in enumerate(y2):
             y2[i] = x%np.pi
         '''
+
         if plot:
             horn1 = str(list(pi_.keys())[list(pi_.values()).index(horn1)])
             horn2 = str(list(pi_.keys())[list(pi_.values()).index(horn2)])
