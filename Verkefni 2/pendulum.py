@@ -152,7 +152,7 @@ def spurning9(plot=False):
     follin = Foll()
     T = 20
     n_to_power_2 = 8  # 0-7
-    fjoldi_uppsetninga = 0
+    fjoldi_uppsetninga = 15
     #pendulalist = [[1,1,1,1]]#, [2,1,2,1], [2,2,1,1]]
     pendulalist = [[random.randint(1, 10)/2 for _ in range(4)] for _ in range(fjoldi_uppsetninga)]
     upphafsstodur = [["π/6", 0, "π/6", 0], ["π/2", 0, "π/12", 0], ["π/12", 0, "-π/12", 0]]
@@ -370,22 +370,27 @@ def spurning12(plot=False):
     # breyta eftirfarandi og skoða áhrifin
 
     # skoða breytingu á lengd tímabila
-    lengdin = 40
+    lengdin = 10
     # nákvæmni gildanna
-    n = 30
-    nakvaemni = lengdin * n
+    n = 1000
     # upphafsgildi theta 1 og theta 2
-    theta1 = np.pi * 2 / 3
-    theta2 = np.pi / 6
-
-    for x in [*range(1, 13)]:
-        epsilon = math.pow(10, -1 * x)
+    theta1 = np.pi
+    theta2 = np.pi /2
+    hnit1 = []
+    hnit2 = []
+    hnit3 = []
+    hnit4 = []
+    hnit1_list = []
+    hnit2_list = []
+    for x in range(1, 13):
+        print(x)
+        epsilon = math.pow(10, -x)
         arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=theta1, horn2=theta2,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=n, lengd=lengdin)
 
-        arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
-                                  horn2=np.pi / 6 + epsilon,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=nakvaemni, lengd=lengdin)
+        arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=theta1 + epsilon,
+                                  horn2=theta2 + epsilon,
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=n, lengd=lengdin)
         y1 = arr1[:,0]
         y2 = arr1[:,1]
         y3 = arr2[:,0]
@@ -394,6 +399,9 @@ def spurning12(plot=False):
         hnit2 = []
         hnit3 = []
         hnit4 = []
+
+        hnit1_list.append(p.hornTohnitjunior(y1[-1], y2[-1]))
+        hnit2_list.append(p.hornTohnitjunior(y3[-1], y4[-1]))
 
         for theta in y1:
             hnit1.append(p.hornTohnit(theta))
@@ -411,14 +419,21 @@ def spurning12(plot=False):
         hnit4 = np.array(hnit4)
 
         if plot:
-            plt.plot(y1)
-            plt.plot(y2)
+            pass
+            # plt.plot(y1)
+            # plt.plot(y2)
 
-            plt.plot(y3)
-            plt.plot(y4)
-            plt.show()
-            p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
-
+            # plt.plot(y3)
+            # plt.plot(y4)
+            # plt.show()
+            #p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
+    if plot:
+        diff = [point_diff(hnit1, hnit2) for hnit1, hnit2 in zip(hnit1_list, hnit2_list)]
+        plt.plot([i for i in range(1,13)], diff)
+        plt.xlabel("k")
+        plt.ylabel("norm á milli punkta")
+        plt.xticks([i for i in range(1,13)], [i for i in range(1,13)])
+        plt.show()
 def frjals(plot=False):
     p = Pendulum(L_1=3, m_1=1, L_2=2, m_2=3,L_3=3,m_3=1)
     lengd = 40
