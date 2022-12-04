@@ -220,6 +220,9 @@ class Pendulum:
 
     def triple(self, theta1, theta2, theta3, omega1, omega2, omega3):
 
+        # við gerðum alla handavinnuna, en fengum svo vin okkar chatgpt til þess að optimiza kóðann okkar
+        # credit due fyrir openai fyrir það!
+
         theta1 %= np.pi * 2
         theta2 %= np.pi * 2
         theta3 %= np.pi * 2

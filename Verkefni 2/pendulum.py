@@ -417,11 +417,11 @@ def spurning12(plot=False):
             p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4)
 
 def frjals(plot=False):
-    p = Pendulum(L_1=3, m_1=1, L_2=2, m_2=3,L_3=3,m_3=1)
+    p = Pendulum(L_1=4, m_1=4, L_2=2, m_2=2,L_3=1,m_3=1)
     lengd = 40
-    hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi+0.00001, horn2=np.pi-0.00001, horn3=np.pi,
+    hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi*2/3, horn2=np.pi*4/3, horn3=np.pi*2/3,
                                                                 hornhradi1=0, hornhradi2=0, hornhradi3=0,
-                                                                fjoldiskrefa=1000*lengd, lengd=lengd, dempunarstuðull=0)
+                                                                fjoldiskrefa=1000*lengd, lengd=lengd, dempunarstuðull=0.1)
     if plot:
         plt.clf()
         plt.plot(y1)
@@ -433,6 +433,14 @@ def frjals(plot=False):
         plt.pause(2)
         plt.clf()
         p.create_animation3d(hnitsenior, hnitjunior, hnitjuniorjunior)
+        plt.clf()
+
+        plt.clf()
+        ax = plt.axes(projection='3d')
+        ax.plot3D(y1, y2, y3, 'green')
+        ax.set_title('3D line plot geeks for geeks')
+        plt.show()
+        plt.pause(10)
         plt.clf()
 
 """ 
