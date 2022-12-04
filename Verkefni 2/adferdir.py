@@ -404,14 +404,20 @@ class Pendulum:
 
                 x = data1[index, 0]
                 y = data1[index, 1]
+
                 x2 = data2[index, 0]
                 y2 = data2[index, 1]
+
                 plt.xticks([])
                 plt.yticks([])
+
                 plt.axes(xlim=(-staerdramma, staerdramma), ylim=(-staerdramma, staerdramma))
+
                 plt.xlabel('Staðsetning á x-ás')
                 plt.ylabel('Staðsetning á y-ás')
+
                 plt.plot([-staerdramma, staerdramma], [0, 0], lw=4, c="black")
+
                 plt.scatter(x, y, lw=20, c="orange")
                 plt.plot([0, x], [0, y], lw=5, c="blue", alpha=1)
                 plt.scatter(x2, y2, lw=20, c="red")
