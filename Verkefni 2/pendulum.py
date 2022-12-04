@@ -317,7 +317,9 @@ def spurning11(plot=False):
     follin = Foll()
     p = Pendulum()
     lengdin = 40
-    for x in [1, 2, 3, 4, 5]:
+    hnit1_list = []
+    hnit2_list = []
+    for x in [1,  2, 3, 4, 5]:
         epsilon = math.pow(10, -1 * x)
         arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
                                   hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=lengdin,dempunarstuðull=0)
@@ -352,7 +354,9 @@ def spurning11(plot=False):
         hnit4 = np.array(hnit4)
         print("Difference on pendulum with or without \u03B5= 1e-"+str(x))
         print(point_diff(hnit3[-1], hnit1[-1]))
-        if plot:
+        hnit1_list.append(p.hornTohnitjunior(y1[-1], y2[-1]))
+        hnit2_list.append(p.hornTohnitjunior(y3[-1], y4[-1]))
+        if False:
             plt.title(r"Sp11: Gul lína er ${\Theta}$1(0) =2*π/3 og rauð lína er ${\Theta}$(0) =π/6."+"\n"+r"Græn lína er ${\Theta}$1(0) =2*π/3 + villa, blá lína er ${\Theta}$2(0) =π/6 + villa.")
             plt.plot(y1,color="yellow")
             plt.plot(y2,color="red")
@@ -361,10 +365,19 @@ def spurning11(plot=False):
             plt.savefig("11 1"+str(x)+".png")
             plt.pause(2)
             plt.clf()
-            p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4, title=r"Sp11: Báðir pendúlar eru ${\Theta}_1$(0) = 2*π/3 og ${\Theta}_2$(0) = π/6"+"\n"+" hægri hliðin með $\epsilon$ skekkju")
+            p.create_animation2ex2(hnit1, hnit2, hnit3, hnit4, title=r"Sp11: Báðir pendúlar eru ${\Theta}_1$(0) = 2*π/3 og ${\Theta}_2$(0) = π/6, k=" + str(x) +"\n"+" hægri hliðin með $\epsilon$ skekkju"
+                                   , nafn=f"10_{x}_", savegif=True)
             plt.savefig("11 2"+str(x)+".png")
             plt.pause(2)
             plt.clf()
+    if plot:
+        print("here")
+        diff = [point_diff(hnit1, hnit2) for hnit1, hnit2 in zip(hnit1_list, hnit2_list)]
+        plt.plot([i for i in range(1,6)], diff)
+        plt.xlabel("ε")
+        plt.ylabel("norm á milli punkta")
+        plt.xticks([i for i in range(1,6)], [i for i in range(1,6)])
+        plt.show()
 
 def spurning12(plot=False):
     follin = Foll()
@@ -442,7 +455,7 @@ def frjals(plot=False):
     lengd = 40
     hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi*2/3, horn2=np.pi*4/3, horn3=np.pi*2/3,
                                                                 hornhradi1=0, hornhradi2=0, hornhradi3=0,
-                                                                fjoldiskrefa=1000*lengd, lengd=lengd, dempunarstuðull=0.1)
+                                                                fjoldiskrefa=1000, lengd=lengd, dempunarstuðull=0.1)
     if plot:
         plt.clf()
         plt.plot(y1)
