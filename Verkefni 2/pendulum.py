@@ -214,7 +214,7 @@ def spurning9(plot=False):
             # diff = [point_diff(hnit2, reasonable_coordinate) for hnit2 in hnit2_list]
             # (theta2-theta1)(thetaprime2 - thetaprime1)(thetabest1-thetabest2)
             #diff = [math.sqrt((theta1_best-result_['th1'])**2 + (theta2_best-result_['th2'])**2 + (thp1_best-result_['thp1'])**2 + (thp2_best-result_['thp2'])**2) for result_ in result[:-1]]
-            diff = [np.average(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
+            diff = [np.linalg.norm(np.abs([(result_['th1']-theta1_best), (result_['th2']-theta2_best), (result_['thp1']- thp1_best),  result_['thp2']-thp2_best])) for result_ in result[:-1]]
 
             if diff[0] > 100 or diff[1] > 100:
                 print(f"throwing away {diff}")
@@ -231,9 +231,12 @@ def spurning9(plot=False):
             list_of_hallatales.append(np.polyfit(np.log(n_list[:-1]), np.log(diff), 1)[0])
 
             # uncomment til að fá plot á lokastaðsetningum
-            #ax[index].plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
+            #plt.plot([xy[0] for xy in hnit2_list], [xy[1] for xy in hnit2_list])
             #for i in range(len(hnit2_list)):
-            #    ax[index].text(hnit2_list[i][0]+0.01, hnit2_list[i][1]+0.01, i)
+            #    plt.text(hnit2_list[i][0]+0.0001, hnit2_list[i][1]+0.0001, i)
+            #plt.xlabel("x")
+            #plt.ylabel("y")
+            #plt.show()
 
             #ax[index].set_xlim([-10.1, 10.1])
             #ax[index].set_ylim([-10.1, 10.1])
