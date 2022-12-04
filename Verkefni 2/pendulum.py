@@ -85,7 +85,7 @@ def spurning6(plot=False):
 def spurning7(plot=False):
     p = Pendulum(L_1=2, m_1=1, L_2=2, m_2=1)
     lengd = 20
-    nakvaemni = lengd * 1000
+    nakvaemni = 1000
     hnitsenior, hnitjunior, y1, y2 = p.hnitforanimationusingRK2(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi ,
                                   horn2=np.pi/2,
                                   hornhradi1=0, hornhradi2=0, fjoldiskrefa=nakvaemni, lengd=20)
@@ -105,7 +105,7 @@ def spurning7(plot=False):
 pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning8(plot=False):
 
-    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=1000*20, lengd=20, nafn=""):
+    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=1000, lengd=20, nafn=""):
         global i
         i= i+1
         p= Pendulum()
@@ -205,7 +205,6 @@ def spurning9(plot=False):
     #results = json.load(file)
     #for result in results:
     #    print(result)
-    # todo: plotta feril á pendulum með mismunandi n
     if plot:
         list_of_hallatales = []
         difffig, diffax = plt.subplots(1)
@@ -281,7 +280,7 @@ def spurning10(plot=False):
         follin = Foll()
         p = Pendulum(L_1= L_1, m_1= m_1, L_2= L_2, m_2= m_2)
         arr = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=horn1 , horn2=horn2,
-                              hornhradi1=hornhradi1, hornhradi2=hornhradi2, fjoldiskrefa=lengd * 1000, lengd=lengd)
+                              hornhradi1=hornhradi1, hornhradi2=hornhradi2, fjoldiskrefa=1000, lengd=lengd)
         y1 = arr[:,0]
         y2 = arr[:,1]
 
@@ -321,11 +320,11 @@ def spurning11(plot=False):
     for x in [1, 2, 3, 4, 5]:
         epsilon = math.pow(10, -1 * x)
         arr1 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3, horn2=np.pi / 6,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin,dempunarstuðull=0)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=lengdin,dempunarstuðull=0)
 
         arr2 = follin.RKmethod2(f1=p.double_pendulum1, f2=p.double_pendulum2, horn1=np.pi * 2 / 3 + epsilon,
                                   horn2=np.pi / 6 + epsilon,
-                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=lengdin * 1000, lengd=lengdin,dempunarstuðull=0)
+                                  hornhradi1=0, hornhradi2=0, fjoldiskrefa=1000, lengd=lengdin,dempunarstuðull=0)
 
         y1 = arr1[:,0]
         y2 = arr1[:,1]
@@ -443,7 +442,7 @@ def frjals(plot=False):
     lengd = 40
     hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi*2/3, horn2=np.pi*4/3, horn3=np.pi*2/3,
                                                                 hornhradi1=0, hornhradi2=0, hornhradi3=0,
-                                                                fjoldiskrefa=1000*lengd, lengd=lengd, dempunarstuðull=0.1)
+                                                                fjoldiskrefa=1000, lengd=lengd, dempunarstuðull=10)
     if plot:
         plt.clf()
         plt.plot(y1)
