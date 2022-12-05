@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import numpy.linalg as la
 
 def solutionfall(x,c1=1,c2=1):
     return c1*math.exp(x) + c2*math.exp(-x)
@@ -21,7 +22,9 @@ def merkt(f,naesti,undan,h):
 
 
 def daemi1():
-    n = 1000
+    n = 10000
+    c1 = 1
+    c2 = 1
     bil = np.array([*range(0, n)]) * 1 / (n - 1)
     h = bil[1]
 
@@ -29,22 +32,32 @@ def daemi1():
     for x in bil:
         solutiondata.append(solutionfall(x))
 
-    datahermi = []
+    A = np.zeros([n-2,n-2])
+    b = np.zeros([n-2,1])
+    gildi = [1/(h*h),-2/(h*h),1/(h*h)]
 
     for index,x in enumerate(bil[1:-1]):
-        datahermi.append(tvimerkt(f=solutionfall,x=x, h=h))
-
-
+        for j in range(3):
+            if not (j + index > n - 3):
+                A[index, j + index] = gildi[j]
+        b[index,0] = c1*math.exp(x) + c2*math.exp(-x)
     #plt.plot(bil,solutiondata,c="green")
     #plt.plot(bil[1:-1],datahermi,c="red")
+    svar = la.solve(A, b)
+    plt.plot(bil,solutiondata,c="green")
+    plt.plot(bil[1:-1],svar,c="red")
+
+
+    '''
     skekkja = []
     prosentuskekkja = []
     for index, x in enumerate(solutiondata[1:-1]):
-        skekkja.append((x - datahermi[index]))
-        prosentuskekkja.append((x - datahermi[index])/x)
+        skekkja.append((x - A[index]))
+        prosentuskekkja.append((x - A[index])/x)
     print(sum(skekkja))
     plt.plot(bil[1:-1], skekkja)
     #plt.plot(bil[1:-1], prosentuskekkja)
+    '''
     plt.show()
 
 def daemi2():
