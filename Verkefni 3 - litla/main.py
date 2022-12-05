@@ -150,17 +150,23 @@ def daemi3():
         for j in range(3):
             if not (j + index > n - 3):
                 A[index, j + index - 1] = gildi[j]
-        b[index, 0] = c1 * math.exp(x) + c2 * math.exp(-x)
+        b[index, 0] = 0
 
-    A[0, 0] = 1
-    A[0, 1] = 0
-    A[1, 0] = 0
+    b[0, 0] = 0
+    b[-1, 0] = 1
 
-    A[-1, -1] = 1
+    A[0, 0] = -3/(2*h)
+    A[0, 1] = 4/(2*h)
+    A[0, 2] = -1/(2*h)
+
+    A[-1, -1] = -3/(-2*h)
+    A[-1, -2] = 4/(-2*h)
+    A[-1, -3] = -1/(-2*h)
+
+    A[-2, -1] = gildi[2]
     A[-3, -2] = gildi[2]
     A[-2, -2] = gildi[1]
     A[0, -1] = 0
-
     # plt.plot(bil,solutiondata,c="green")
     # plt.plot(bil[1:-1],datahermi,c="red")
     svar = la.solve(A, b)
@@ -168,8 +174,17 @@ def daemi3():
     plt.plot(bil, solutiondata, c="green")
     plt.plot(bil[1:], svar, c="red")
 
+    '''
+    skekkja = []
+    prosentuskekkja = []
+    for index, x in enumerate(solutiondata[1:-1]):
+        skekkja.append((x - A[index]))
+        prosentuskekkja.append((x - A[index])/x)
+    print(sum(skekkja))
+    plt.plot(bil[1:-1], skekkja)
+    #plt.plot(bil[1:-1], prosentuskekkja)
+    '''
     plt.show()
-
 def daemi4():
     n = 100
     c1 = 0
@@ -191,7 +206,7 @@ def daemi4():
         for j in range(3):
             if not (j + index > n - 3):
                 A[index, j + index - 1] = gildi[j]
-        b[index, 0] = c1 * math.exp(x) + c2 * math.exp(-x)
+        b[index, 0] = 0
 
     A[0, 0] = 1
     A[0, 1] = 0
@@ -222,7 +237,7 @@ def daemi4():
     plt.show()
 
 if __name__ == '__main__':
-    daemi1()
+    #daemi1()
     #daemi2()
-    #daemi3()
+    daemi3()
     #daemi4()
