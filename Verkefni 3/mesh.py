@@ -26,7 +26,7 @@ def mesh(x_min, x_max, y_min, y_max, n,m):
     for i in range(1, n-1):
         for j in range(1, m-1):
             #u[i][j] = (2*u[i-1][j] - 2*u[i+1][j] + u[i][j+1] + 2*u[i][j-1]) / 4
-            u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K/d*u[i][j]
+            u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K_/delta*u[i][j]
     return u
 def u(x, y):
     return 1
@@ -122,18 +122,12 @@ def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
         except IndexError:  # við vorum að reyna að gera eitthvað útfyrir fylki
             print(i)
 
-
-
-    midjupunktur = int(n/2)
-    kvart = int(n/4)
-    for i in range(midjupunktur-kvart,midjupunktur+kvart):
-        u[i][0] = 100  # test fyrir upphafsgildi þarf að laga
-
     for i in range(1, n-1):
         for j in range(1, m-1):
             #u[i][j] = (2*u[i-1][j] - 2*u[i+1][j] + u[i][j+1] + 2*u[i][j-1]) / 4
-            u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K/d*u[i][j]
+            u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K_/delta*u[i][j]
     #ax = np.asarray(ax).ravel() # til að breyta array í vigur
+    print(A)
     return u
 
 # def poisson(xl, xr, yb, yt, M, N):
@@ -174,7 +168,7 @@ def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
 #         b[i + (j-1)*m] = g3(y[j])
 
 if __name__ == '__main__':
-    n, m = 10, 10
+    n, m = 3, 3
     Lx, Ly = 2, 2
     Lp = 2
     # Lp = (0,2)
@@ -182,11 +176,11 @@ if __name__ == '__main__':
     # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     pde(0, Lx, 0, Ly, n, m, Lp, P)
-    meshh = mesh(0, 5, 0, 5, 20, 20)
-    for mes in meshh:
-        for num in mes:
-            print(f"{num:.00f}", end="\t")
-        print()
+    # meshh = mesh(0, 5, 0, 5, 3, 3)
+    # for mes in meshh:
+    #     for num in mes:
+    #         print(f"{num:.00f}", end="\t")
+    #     print()
 
-    plt.pcolormesh(meshh)
-    plt.show()
+    # plt.pcolormesh(meshh)
+    # plt.show()
