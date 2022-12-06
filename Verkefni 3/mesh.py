@@ -33,7 +33,7 @@ def u(x, y):
 
 def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
     debug = True
-    f = F_test(P, L, delta, K_)
+    f = F(P, L, delta, K_)
     A = np.identity(n*m)
     # b er boundaries
     b = np.zeros((1, m*n))  # ath, kannski þarf að bylta
@@ -130,7 +130,7 @@ def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
             u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K_/delta*u[i][j]
     #ax = np.asarray(ax).ravel() # til að breyta array í vigur
     print(A)
-    return u
+    return A, v.ravel()
 
 # def poisson(xl, xr, yb, yt, M, N):
 #     f = lambda x, y: 0 # define input function data
@@ -170,14 +170,20 @@ def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
 #         b[i + (j-1)*m] = g3(y[j])
 
 if __name__ == '__main__':
-    n, m = 3, 3
+    n, m = 10, 10
     Lx, Ly = 2, 2
     Lp = 2
     # Lp = (0,2)
     P = 1
     # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-    pde(0, Lx, 0, Ly, n, m, Lp, P)
+    A, u = pde(0, Lx, 0, Ly, n, m, Lp, P)
+    print(A)
+    print(u)
+    w = np.linalg.solve(A, u.T)
+    print(w.reshape(n,m))
+    plt.pcolormesh(w.reshape(n,m))
+    plt.show()
     # meshh = mesh(0, 5, 0, 5, 3, 3)
     # for mes in meshh:
     #     for num in mes:
