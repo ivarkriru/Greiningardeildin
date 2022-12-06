@@ -65,28 +65,29 @@ class F_test:
         self.L = L
         self.delta = delta
         self.K = K
-    @staticmethod
-    def nidri(i, j, h):
-        return i+j
+        self.count = 0
+    def nidri(self, i, j, h):
+        self.count += 1
+        return self.count
 
-    @staticmethod
-    def uppi(i, j, h):
-        return i+j
+    def uppi(self, i, j, h):
+        self.count += 1
+        return self.count
 
-    @staticmethod
-    def vinstri(i, j, h):
-        return i+j
-    @staticmethod
-    def haegri(i, j, h):
-        return i+j
+    def vinstri(self, i, j, h):
+        self.count += 1
+        return self.count
+    def haegri(self, i, j, h):
+        self.count += 1
+        return self.count
 
-    @staticmethod
-    def innrii(i, j, h):
-        return i+j
+    def innrii(self, i, j, h):
+        self.count += 1
+        return self.count
 
-    @staticmethod
-    def innrij(i, j, h):
-        return i+j
+    def innrij(self, i, j, h):
+        self.count += 1
+        return self.count
 
     def innri(self, i, j, h):
         return self.innrii(i, j, h) + self.innrij(i, j, h)

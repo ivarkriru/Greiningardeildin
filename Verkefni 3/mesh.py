@@ -33,6 +33,7 @@ def u(x, y):
     return 1
 
 def pde(x_min, x_max, y_min, y_max, n,m):
+    debug = True
     f = F_test(P, L, delta, K_)
     A = np.identity(n*m)
     # b er boundaries
@@ -42,73 +43,68 @@ def pde(x_min, x_max, y_min, y_max, n,m):
     k = (y_max - y_min) / m
 
     u = np.zeros((n, m))
-
+    ###################################
+    ###### setja inn upphafsgildi #####
+    ###################################
     # m hleypur á x og n hleypur á y
-    # setja uppi
-    print("uppi")
-    for i in range(0, m-1):  # -1 því við viljum að upphafsgildi fyrir vigurinn endi ekki í horninu
-        #v[y][x] = v[j][i]
-        j = n-1
-        v[j][i] = f.uppi(i, j, h)
-    print(v)
 
-    print("niðri")
     #setja niðri
-    for i in range(0, m-1):
+    for i in range(1, m):
         #v[y][x] = v[j][i]
         j = 0
         v[j][i] = f.nidri(i, j, h)
-    print(v)
+    if debug: print("niðri", v[::-1])
 
-    print("vinstri")
-    # setja vinstri
-    for j in range(0, n-1):
-        #v[y][x] = v[j][i]
-        i=0
-        v[j][i] = f.vinstri(i, j, k)
-    print(v)
     # setja hægri
-    print("haegri")
-    for j in range(0, n-1):
+    for j in range(1, n):
         #v[y][x] = v[j][i]
         i=m-1
         v[j][i] = f.haegri(i, j, k)
-    print(v)
-    print(v.ravel())
+    if debug: print("haegri", v[::-1])
+
+    # uppi
+    for i in range(m-2, 0, -1):  # -1 því við viljum að upphafsgildi fyrir vigurinn endi ekki í horninu
+        #v[y][x] = v[j][i]
+        j = n-1
+        v[j][i] = f.uppi(i, j, h)
+    if debug: print("uppi", v[::-1])
+
+    # setja vinstri
+    for j in range(n-1, 0, -1):
+        #v[y][x] = v[j][i]
+        i=0
+        v[j][i] = f.vinstri(i, j, k)
+    if debug: print("vinstri", v[::-1])
+
+    # setja power inn:
+
+    ###################################
+    ######### setja inn innri #########
+    ###################################
+
+    for i in range(1, m-1):
+        for j in range(1, n-1):
+            v[j][i] = f.innri(i, j, h)
+    if debug: print("innri", v[::-1])
+    if debug: print(v.ravel())
+
     # ítra í gegnum A
-    for i in range(1, m*n):
+    for i in range(0, m*n):
         # pseudocode
         def wij(i_, diff):
             u = [-4, 1, 0,  1, 1, 0, 1]
             return u[diff]
-            #if diff == 0:
-            #    return u[i][j]
-            #if diff == -1:
-            #    return u[i][j]
-            #return (2*u[i-1][j] + *u[i+1][j] + u[i][j+1] + u[i][j-1]) / 4
         try:
-            if not boundary_condition:
-                A[i][i] = wij(i, 0)
-                A[i][i-1] = wij(i, -1)
-                A[i][i-4] = wij(i, -4)
-                A[i][i+1] = wij(i, +1)
-                A[i][i+4] = wij(i, +4)
-            elif i==xmin:
-                pass
-
-
-
+            A[i][i] = wij(i, 0)
+            A[i][i-1] = wij(i, -1)
+            A[i][i-4] = wij(i, -4)
+            A[i][i+1] = wij(i, +1)
+            A[i][i+4] = wij(i, +4)
         except IndexError:  # við vorum að reyna að gera eitthvað útfyrir fylki
             print(i)
 
 
 
-    # setja upphafsgildi
-    for i in range(1, n):
-        for j in range(1, m):
-            pass
-            #
-            #u[i][j] = u_0(x[i], y[j])
     midjupunktur = int(n/2)
     kvart = int(n/4)
     for i in range(midjupunktur-kvart,midjupunktur+kvart):
