@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from F import F, F_test, F_str
-P = 1
 L = 1
 delta = 0.1
 H = 5e-3
@@ -32,15 +31,31 @@ def mesh(x_min, x_max, y_min, y_max, n,m):
 def u(x, y):
     return 1
 
-def pde(x_min, x_max, y_min, y_max, n,m):
+def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
     debug = True
     f = F_test(P, L, delta, K_)
     A = np.identity(n*m)
     # b er boundaries
     b = np.zeros((1, m*n))  # ath, kannski þarf að bylta
     v = np.zeros((m, n)) # höfum hann 2d til að einfalda innsetningar, breytum svo í vigur í restina
-    h = (x_max - x_min) / n
-    k = (y_max - y_min) / m
+    h = (x_max - x_min) / m
+    k = (y_max - y_min) / n
+    ###
+    # reikna út power in
+    if type(Lp) is tuple:
+        if (Lp[1] - Lp[0]) > y_max:
+            raise ValueError("Lp má ekki vera stærra en y_max")
+
+        Lmin = int(Lp[0]/h)
+        Lmax = int(Lp[1]/h)
+    else:
+        if Lp > y_max:
+            raise ValueError("Lp má ekki vera stærra en y_max")
+        # hérna er best ef h gengur upp í Lp en þarf að testa
+        padding = n - np.floor(Lp/h)  # n[i] - Lp[cm]/h[cm/i]
+        padding /= 2
+        Lmin = int(padding)
+        Lmax = int(n - padding)
 
     u = np.zeros((n, m))
     ###################################
@@ -77,6 +92,10 @@ def pde(x_min, x_max, y_min, y_max, n,m):
     if debug: print("vinstri", v[::-1])
 
     # setja power inn:
+    for j in range(Lmin, Lmax):
+        i=0
+        v[j][i] = P
+    if debug: print("Power", v[::-1])
 
     ###################################
     ######### setja inn innri #########
@@ -155,7 +174,14 @@ def pde(x_min, x_max, y_min, y_max, n,m):
 #         b[i + (j-1)*m] = g3(y[j])
 
 if __name__ == '__main__':
-    pde(0, 5, 0, 5, 6, 6)
+    n, m = 10, 10
+    Lx, Ly = 2, 2
+    Lp = 2
+    # Lp = (0,2)
+    P = 1
+    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+    pde(0, Lx, 0, Ly, n, m, Lp, P)
     meshh = mesh(0, 5, 0, 5, 20, 20)
     for mes in meshh:
         for num in mes:
