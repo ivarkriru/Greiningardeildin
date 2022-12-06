@@ -31,9 +31,9 @@ def mesh(x_min, x_max, y_min, y_max, n,m):
 def u(x, y):
     return 1
 
-def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
+def pde(x_min, x_max, y_min, y_max, n,m, Lp, P, H):
     debug = True
-    f = F(P, L, delta, K_)
+    f = F(P, L, delta, K_, H)
     A = np.identity(n*m)
     # b er boundaries
     b = np.zeros((1, m*n))  # ath, kannski þarf að bylta
@@ -177,7 +177,7 @@ if __name__ == '__main__':
     P = 1
     # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-    A, u = pde(0, Lx, 0, Ly, n, m, Lp, P)
+    A, u = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
     print(A)
     print(u)
     w = np.linalg.solve(A, u.T)

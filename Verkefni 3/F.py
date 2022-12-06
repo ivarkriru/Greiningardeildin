@@ -1,53 +1,48 @@
 def u(i, j):
     return i*j
 class F:
-    def __init__(self, P, L, delta, K):
+    def __init__(self, P, L, delta, K, H):
         self.P = P
         self.L = L
         self.delta = delta
         self.K = K
-    @staticmethod
-    def nidri(i, j, h):
-        k1 = -3*u(i, j)
-        k2 = 4*u(i+h, j)
-        k3 = -u(i+2*h, j)
+        self.H = H
+
+    def nidri(self, i, j, h):
+        k1 = 3*u(i,j)/2/h
+        k2 = self.H/self.K*u(i,j)
+        k3 = -4 * u(i+1, j) / 2/h
+        k4 = u(i+2, j) / 2 / h
+        return k1 + k2 + k3 + k4
+    def uppi(self, i, j, h):
+        k1 = -3*u(i,j)/2/h
+        k2 = -self.H/self.K*u(i,j)
+        k3 = -4 * u(i-1, j) / 2/h
+        k4 = u(i-2, j) / 2 / h
+        return k1 + k2 + k3 + k4
+
+    def vinstri(self, i, j, h):
+        k1 = -3*u(i,j)
+        k2 = 4*u(i, j+h)
+        k3 = -u(i, j+h+h)
         k4 = 2*h
         return (k1 + k2 + k3) / k4
 
-    @staticmethod
-    def uppi(i, j, h):
+    def haegri(self, i, j, h):
         k1 = -3*u(i, j)
         k2 = 4*u(i+h, j)
         k3 = -u(i+2*h, j)
         k4 = -2*h
         return (k1 + k2 + k3) / k4
 
-    @staticmethod
-    def vinstri(i, j, h):
-        k1 = -3*u(i, j)
-        k2 = 4*u(i+h, j)
-        k3 = -u(i+2*h, j)
-        k4 = 2*h
-        return (k1 + k2 + k3) / k4
-
-    @staticmethod
-    def haegri(i, j, h):
-        k1 = -3*u(i, j)
-        k2 = 4*u(i+h, j)
-        k3 = -u(i+2*h, j)
-        k4 = -2*h
-        return (k1 + k2 + k3) / k4
-
-    @staticmethod
-    def innrii(i, j, h):
+    def innrii(self, i, j, h):
         k1 = u(i-h, j)
         k2 = -2*u(i,j)
         k3 = u(i+h, j)
         k4 = h*h
         return (k1 + k2 + k3) / k4
 
-    @staticmethod
-    def innrij(i, j, h):
+    def innrij(self, i, j, h):
         k1 = u(i, j-h)
         k2 = -2*u(i,j)
         k3 = u(i+h, j+h)
