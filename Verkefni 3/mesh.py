@@ -30,20 +30,6 @@ def mesh(x_min, x_max, y_min, y_max, n,m):
 def u(x, y):
     return 1
 
-def f_nidri(x, y, h):
-    k1 = -3*u(x, y)
-    k2 = 4*u(x+h, y)
-    k3 = -u(x+2*h, y)
-    k4 = 2*h
-    return (k1 + k2 + k3) / k4
-
-def f_uppi(x, y, h):
-    k1 = -3*u(x, y)
-    k2 = 4*u(x+h, y)
-    k3 = -u(x+2*h, y)
-    k4 = -2*h
-    return (k1 + k2 + k3) / k4
-
 def pde(x_min, x_max, y_min, y_max, n,m):
     A = np.identity(n*m)
     # b er boundaries
