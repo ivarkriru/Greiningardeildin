@@ -1,4 +1,4 @@
-def u(x, y):
+def u(i, j):
     return 1
 class F:
     def __init__(self, P, L, delta, K):
@@ -7,55 +7,55 @@ class F:
         self.delta = delta
         self.K = K
     @staticmethod
-    def nidri(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def nidri(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = 2*h
         return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def uppi(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def uppi(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = -2*h
         return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def vinstri(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def vinstri(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = 2*h
         return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def haegri(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def haegri(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = -2*h
         return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def innrix(x, y, h):
-        k1 = u(x-h, y)
-        k2 = -2*u(x,y)
-        k3 = u(x+h, y)
+    def innrii(i, j, h):
+        k1 = u(i-h, j)
+        k2 = -2*u(i,j)
+        k3 = u(i+h, j)
         k4 = h*h
         return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def innriy(x, y, h):
-        k1 = u(x, y-h)
-        k2 = -2*u(x,y)
-        k3 = u(x+h, y+h)
+    def innrij(i, j, h):
+        k1 = u(i, j-h)
+        k2 = -2*u(i,j)
+        k3 = u(i+h, j+h)
         k4 = h*h
         return (k1 + k2 + k3) / k4
 
-    def innri(self, x, y, h):
-        return self.innrix(x, y, h) + self.innriy(x, y, h)
+    def innri(self, i, j, h):
+        return self.innrii(i, j, h) + self.innrij(i, j, h)
 
     def input(self):
         return self.P/(self.L*self.delta*self.K)
@@ -66,60 +66,60 @@ class F_str:
         self.delta = delta
         self.K = K
     @staticmethod
-    def nidri(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def nidri(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = 2*h
-        return  "(-3u(x,y) + 4u(x+h, y) - u(x+2h, y)) / 2h"
+        return  "(-3u(i,j) + 4u(i+h, j) - u(i+2h, j)) / 2h"
         #return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def uppi(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def uppi(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = -2*h
-        return  "(-3u(x,y) + 4u(x+h, y) - u(x+2h, y)) / -2h"
+        return  "(-3u(i,j) + 4u(i+h, j) - u(i+2h, j)) / -2h"
         #return (k1 + k2 + k3) / k4
 
     @staticmethod
-    def vinstri(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def vinstri(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = 2*h
         # return (k1 + k2 + k3) / k4
-        return "(-3u(x,y) + 4u(x+h, y) - u(x+2h, y)) / 2h"
+        return "(-3u(i,j) + 4u(i+h, j) - u(i+2h, j)) / 2h"
 
     @staticmethod
-    def haegri(x, y, h):
-        k1 = -3*u(x, y)
-        k2 = 4*u(x+h, y)
-        k3 = -u(x+2*h, y)
+    def haegri(i, j, h):
+        k1 = -3*u(i, j)
+        k2 = 4*u(i+h, j)
+        k3 = -u(i+2*h, j)
         k4 = -2*h
         # return (k1 + k2 + k3) / k4
-        return "(-3u(x,y) + 4u(x+h, y) - u(x+2h, y)) / -2h"
+        return "(-3u(i,j) + 4u(i+h, j) - u(i+2h, j)) / -2h"
 
     @staticmethod
-    def innrix(x, y, h):
-        k1 = u(x-h, y)
-        k2 = -2*u(x,y)
-        k3 = u(x+h, y)
+    def innrii(i, j, h):
+        k1 = u(i-h, j)
+        k2 = -2*u(i,j)
+        k3 = u(i+h, j)
         k4 = h*h
         # return (k1 + k2 + k3) / k4
-        return "(u(x-h, y) - 2u(x, y) + u(x+h, y)) / h^2"
+        return "(u(i-h, j) - 2u(i, j) + u(i+h, j)) / h^2"
 
     @staticmethod
-    def innriy(x, y, h):
-        k1 = u(x, y-h)
-        k2 = -2*u(x,y)
-        k3 = u(x+h, y+h)
+    def innrij(i, j, h):
+        k1 = u(i, j-h)
+        k2 = -2*u(i,j)
+        k3 = u(i+h, j+h)
         k4 = h*h
         # return (k1 + k2 + k3) / k4
-        return "(u(x, y-h) - 2u(x, y) + u(x, y+h)) / h^2"
+        return "(u(i, j-h) - 2u(i, j) + u(i, j+h)) / h^2"
     def innri(self):
-        return self.innrix(0,0,0) + "+" + self.innriy(0,0,0)
+        return self.innrii(0,0,0) + "+" + self.innrij(0,0,0)
 
     def input(self):
         #return self.P/(self.L*self.delta*self.K)

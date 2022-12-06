@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from F import F
+P = 1
+L = 1
+delta = 0.1
+H = 5e-3
+K_ = 1.68
 def mesh(x_min, x_max, y_min, y_max, n,m):
     dx = (x_max - x_min) / n
     dy = (y_max - y_min) / m
@@ -19,9 +24,6 @@ def mesh(x_min, x_max, y_min, y_max, n,m):
         u[i][0] = 100  # test fyrir upphafsgildi þarf að laga
 
     # Iterate over the grid points and update the values of u using the finite difference formula
-    H = 5e-3
-    K = 1.68
-    d = 0.1
     for i in range(1, n-1):
         for j in range(1, m-1):
             #u[i][j] = (2*u[i-1][j] - 2*u[i+1][j] + u[i][j+1] + 2*u[i][j-1]) / 4
@@ -31,10 +33,11 @@ def u(x, y):
     return 1
 
 def pde(x_min, x_max, y_min, y_max, n,m):
+    f = F(P, L, delta, K_)
     A = np.identity(n*m)
     # b er boundaries
     b = np.zeros((1, m*n))  # ath, kannski þarf að bylta
-    v = np.zeros((1, m*n))
+    v = np.zeros((m, n)) # höfum hann 2d til að einfalda innsetningar, breytum svo í vigur í restina
     dx = (x_max - x_min) / n
     dy = (y_max - y_min) / m
 
@@ -43,18 +46,18 @@ def pde(x_min, x_max, y_min, y_max, n,m):
     # m hleypur á x og n hleypur á y
     # setja uppi
     for i in range(0, n):
-        v[m+i] = f_uppi(i)
+        v[m+i] = f.uppi(i, j)
 
     #setja niðri
     for i in range(0, n):
-        v[i] = f_nidri(i)
+        v[i] = f.nidri(i, j)
 
     # setja vinstri
     for i in range(0, m):
-        v[i*m] = f_vinstri(i)
+        v[i*m] = f.vinstri(i, j)
     # setja hægri
     for i in range(0, m):
-        v[(m-1)*i] = f_haegri(i)
+        v[(m-1)*i] = f.haegri(i, j)
 
     print(v)
     # ítra í gegnum A
@@ -96,14 +99,11 @@ def pde(x_min, x_max, y_min, y_max, n,m):
     for i in range(midjupunktur-kvart,midjupunktur+kvart):
         u[i][0] = 100  # test fyrir upphafsgildi þarf að laga
 
-    # Iterate over the grid points and update the values of u using the finite difference formula
-    H = 5e-3
-    K = 1.68
-    d = 0.1
     for i in range(1, n-1):
         for j in range(1, m-1):
             #u[i][j] = (2*u[i-1][j] - 2*u[i+1][j] + u[i][j+1] + 2*u[i][j-1]) / 4
             u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K/d*u[i][j]
+    #ax = np.asarray(ax).ravel() # til að breyta array í vigur
     return u
 
 # def poisson(xl, xr, yb, yt, M, N):
