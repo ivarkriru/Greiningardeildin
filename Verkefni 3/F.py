@@ -1,5 +1,5 @@
 def u(i, j):
-    return 1
+    return i*j
 class F:
     def __init__(self, P, L, delta, K):
         self.P = P
@@ -53,6 +53,40 @@ class F:
         k3 = u(i+h, j+h)
         k4 = h*h
         return (k1 + k2 + k3) / k4
+
+    def innri(self, i, j, h):
+        return self.innrii(i, j, h) + self.innrij(i, j, h)
+
+    def input(self):
+        return self.P/(self.L*self.delta*self.K)
+class F_test:
+    def __init__(self, P, L, delta, K):
+        self.P = P
+        self.L = L
+        self.delta = delta
+        self.K = K
+    @staticmethod
+    def nidri(i, j, h):
+        return i+j
+
+    @staticmethod
+    def uppi(i, j, h):
+        return i+j
+
+    @staticmethod
+    def vinstri(i, j, h):
+        return i+j
+    @staticmethod
+    def haegri(i, j, h):
+        return i+j
+
+    @staticmethod
+    def innrii(i, j, h):
+        return i+j
+
+    @staticmethod
+    def innrij(i, j, h):
+        return i+j
 
     def innri(self, i, j, h):
         return self.innrii(i, j, h) + self.innrij(i, j, h)

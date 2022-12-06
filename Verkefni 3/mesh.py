@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from F import F
+from F import F, F_test, F_str
 P = 1
 L = 1
 delta = 0.1
@@ -33,33 +33,48 @@ def u(x, y):
     return 1
 
 def pde(x_min, x_max, y_min, y_max, n,m):
-    f = F(P, L, delta, K_)
+    f = F_test(P, L, delta, K_)
     A = np.identity(n*m)
     # b er boundaries
     b = np.zeros((1, m*n))  # ath, kannski þarf að bylta
     v = np.zeros((m, n)) # höfum hann 2d til að einfalda innsetningar, breytum svo í vigur í restina
-    dx = (x_max - x_min) / n
-    dy = (y_max - y_min) / m
+    h = (x_max - x_min) / n
+    k = (y_max - y_min) / m
 
     u = np.zeros((n, m))
 
     # m hleypur á x og n hleypur á y
     # setja uppi
-    for i in range(0, n):
-        v[m+i] = f.uppi(i, j)
-
-    #setja niðri
-    for i in range(0, n):
-        v[i] = f.nidri(i, j)
-
-    # setja vinstri
-    for i in range(0, m):
-        v[i*m] = f.vinstri(i, j)
-    # setja hægri
-    for i in range(0, m):
-        v[(m-1)*i] = f.haegri(i, j)
-
+    print("uppi")
+    for i in range(0, m-1):  # -1 því við viljum að upphafsgildi fyrir vigurinn endi ekki í horninu
+        #v[y][x] = v[j][i]
+        j = n-1
+        v[j][i] = f.uppi(i, j, h)
     print(v)
+
+    print("niðri")
+    #setja niðri
+    for i in range(0, m-1):
+        #v[y][x] = v[j][i]
+        j = 0
+        v[j][i] = f.nidri(i, j, h)
+    print(v)
+
+    print("vinstri")
+    # setja vinstri
+    for j in range(0, n-1):
+        #v[y][x] = v[j][i]
+        i=0
+        v[j][i] = f.vinstri(i, j, k)
+    print(v)
+    # setja hægri
+    print("haegri")
+    for j in range(0, n-1):
+        #v[y][x] = v[j][i]
+        i=m-1
+        v[j][i] = f.haegri(i, j, k)
+    print(v)
+    print(v.ravel())
     # ítra í gegnum A
     for i in range(1, m*n):
         # pseudocode
@@ -144,7 +159,7 @@ def pde(x_min, x_max, y_min, y_max, n,m):
 #         b[i + (j-1)*m] = g3(y[j])
 
 if __name__ == '__main__':
-    pde(0, 5, 0, 5, 3, 3)
+    pde(0, 5, 0, 5, 6, 6)
     meshh = mesh(0, 5, 0, 5, 20, 20)
     for mes in meshh:
         for num in mes:
