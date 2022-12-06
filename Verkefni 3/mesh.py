@@ -115,8 +115,10 @@ def pde(x_min, x_max, y_min, y_max, n,m, Lp, P):
             return u[diff]
         try:
             A[i][i] = wij(i, 0)
-            A[i][i-1] = wij(i, -1)
-            A[i][i-4] = wij(i, -4)
+            if i-1 >= 0:
+                A[i][i-1] = wij(i, -1)
+            if i-4 >= 0:
+                A[i][i-4] = wij(i, -4)
             A[i][i+1] = wij(i, +1)
             A[i][i+4] = wij(i, +4)
         except IndexError:  # við vorum að reyna að gera eitthvað útfyrir fylki
