@@ -66,9 +66,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta, L_):
 
     return A, b
 
-
-
-if __name__ == '__main__':
+def spurning4():
     n, m = 10, 10
     Lx, Ly = 2, 2
     Lp = 2
@@ -82,25 +80,39 @@ if __name__ == '__main__':
     # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
-    print("wha")
     t0 = time.time()
     A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
 
-    print("fylki:")
-    for i in range(m*m):
-        for j in range(n*n):
-            print(f"{A[i,j]:.02f}", end="\t")
-        print()
+if __name__ == '__main__':
+    n, m = 3, 91
+    Lx, Ly = 2, 2
+    Lp = 2
+    L = 2
+    delta = 0.1
+    H = 0.005
+    K = 1.68
+    # Lp = (0,2)
+    P = 5
+    umhverfishiti = 20
+    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
+    t0 = time.time()
+    A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
+
+    #print("fylki:")
+    #print(A)
+    # for i in range(m*m):
+    #     for j in range(n*n):
+    #         print(f"{A[i,j]:.02f}", end="\t")
+    #     print()
     for vigur in A:
         print(np.count_nonzero(vigur))
     #print(b)
     v = np.linalg.solve(A, b) + umhverfishiti
     print(f"{time.time()-t0:.02f}s")
-    w = v.reshape((m, n))
-    print(b)
-    print("bla")
-    #print(v)
-    #print(v.reshape((n,m)))
+    w = v.reshape((n, m))
+    #np.savez('n100_m100.npz', w=w)
     print("max: ", np.max(w))
     # for i in range(m):
     #     for j in range(n):
@@ -109,7 +121,8 @@ if __name__ == '__main__':
     hf = plt.figure()
     ha = hf.add_subplot(111, projection='3d')
     from mpl_toolkits.mplot3d import Axes3D
-    X, Y = np.meshgrid([i for i in range(n)], [i for i in range(m)])  # `plot_surface` expects `x` and `y` data to be 2D
+    X, Y = np.meshgrid([i for i in range(m)], [i for i in range(n)])  # `plot_surface` expects `x` and `y` data to be 2D
     ha.plot_surface(X, Y, w)
-    #plt.pcolormesh(w)
+    plt.figure()
+    plt.pcolormesh(w)
     plt.show()
