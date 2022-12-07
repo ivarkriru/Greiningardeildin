@@ -5,35 +5,9 @@ L = 1
 delta = 0.1
 H = 5e-3
 K = 1.68
-def mesh(x_min=0, x_max=0, y_min=1, y_max=1, n=10,m=10):
-    dx = (x_max - x_min) / n
-    dy = (y_max - y_min) / m
-
-    u = np.zeros((n, m))
-
-    # setja upphafsgildi
-    for i in range(1, n):
-        for j in range(1, m):
-            pass
-            #
-            #u[i][j] = u_0(x[i], y[j])
-    midjupunktur = int(n/2)
-    kvart = int(n/4)
-    for i in range(midjupunktur-kvart,midjupunktur+kvart):
-        u[i][0] = 100  # test fyrir upphafsgildi þarf að laga
-
-    # Iterate over the grid points and update the values of u using the finite difference formula
-    for i in range(1, n-1):
-        for j in range(1, m-1):
-            #u[i][j] = (2*u[i-1][j] - 2*u[i+1][j] + u[i][j+1] + 2*u[i][j-1]) / 4
-            u[i][j] = (u[i+1][j] + u[i-1][j]) / 2 + (u[i][j+1] + u[i][j-1]) / 2 + 2*H/K_/delta*u[i][j]
-    return u
-def u(x, y):
-    return 1
-
 def pde(x_min, x_max, y_min, y_max, n,m, Lp, P, H):
     debug = True
-    f = F_test(P, L, delta, K_, H)
+    f = F_test(P, L, delta, K, H)
     A = np.identity(n*m)
     # b er boundaries
     b = np.zeros((1, m*n))  # ath, kannski þarf að bylta
@@ -147,42 +121,6 @@ def pde(x_min, x_max, y_min, y_max, n,m, Lp, P, H):
     print(A)
     return A, v.ravel()
 
-# def poisson(xl, xr, yb, yt, M, N):
-#     f = lambda x, y: 0 # define input function data
-#     g1 = lambda x: log(x**2 + 1) # define boundary values
-#     g2 = lambda x: log(x**2 + 4) # Example 8.8 is shown
-#     g3 = lambda y: 2*log(y)
-#     g4 = lambda y: log(y**2 + 1)
-#     m = M + 1
-#     n = N + 1
-#     mn = m*n
-#     h = (xr-xl)/M
-#     h2 = h**2
-#     k = (yt-yb)/N
-#     k2 = k**2
-#     x = xl + (0:M)*h # set mesh values
-#     y = yb + (0:N)*k
-#     A = zeros(mn, mn)
-#     b = zeros(mn, 1)
-#     for i in range(2, m-1): # interior points
-#         for j in range(2, n-1):
-#             A[i + (j-1)*m, i-1 + (j-1)*m] = 1/h2
-#             A[i + (j-1)*m, i+1 + (j-1)*m] = 1/h2
-#             A[i + (j-1)*m, i + (j-1)*m] = -2/h2 - 2/k2
-#             A[i + (j-1)*m, i + (j-2)*m] = 1/k2
-#             A[i + (j-1)*m, i + j*m] = 1/k2
-#             b[i + (j-1)*m] = f(x[i], y[j])
-#     for i in range(0, m): # bottom and top boundary points
-#         j = 1
-#         A[i + (j-1)*m, i + (j-1)*m] = 1
-#         b[i + (j-1)*m] = g1(x[i])
-#         j = n
-#         A[i + (j-1)*m, i + (j-1)*m] = 1
-#         b[i + (j-1)*m] = g2(x[i])
-#     for j in range(2, n-1): # left and right boundary points
-#         i = 1
-#         A[i + (j-1)*m, i + (j-1)*m] = 1
-#         b[i + (j-1)*m] = g3(y[j])
 
 def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
     # K = 1.68
@@ -198,7 +136,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
     # innra
     for i in range(1, m-1):
         for j in range(1, n-1):
-            t = (i - 1) * m + j
+            t = i + (j-1) * m
             A[t][t] = -2 / h ** 2 - 2 / k ** 2 - 2 * H / (K * delta)
             A[t][t + 1] = 1 / h ** 2
             A[t][t - 1] = 1 / h ** 2
@@ -206,32 +144,32 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
             A[t][t - m] = 1 / k ** 2
 
     # left and right
-    for j in range(1, n + 1):
+    for j in range(0, n):
         i = 1
-        t = (i - 1) * m + j
+        t = i + (j-1) * m
         A[t][t] = -3 / (2 * h)
         A[t][t + 1] = 2 / h
         A[t][t + 2] = -1 / (2 * h)
-        b[t] = -B / (L * delta * K)
+        b[t] = -P / (L * delta * K)
 
     for j in range(1, n + 1):
         i = m
-        t = (i - 1) * m + j
+        t = i + (j-1) * m
         A[t][t] = 3 / (2 * h) + H / K
         A[t][t - 1] = 2 / h
         A[t][t - 2] = -1 / (2 * h)
 
     # top and bottom
-    for i in range(2, m - 1):
+    for i in range(1, m - 1):
         j = 1
-        t = (i - 1) * m + j
+        t = i + (j-1) * m
         A[t][t] = -3 / (2 * k) + H / K
         A[t][t + m] = 2 / k
         A[t][t + 2 * m] = -1 / (2 * k)
 
-    for i in range(2, m - 1):
+    for i in range(1, m - 1):
         j = n
-        t = (i - 1) * m + j
+        t = i + (j-1) * m
         A[t][t] = 3 / (2 * k) + H / K
         A[t][t - m] = 2 / k
         A[t][t - 2 * m] = -1 / (2 * k)
