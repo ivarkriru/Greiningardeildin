@@ -55,11 +55,12 @@ class F:
     def input(self):
         return self.P/(self.L*self.delta*self.K)
 class F_test:
-    def __init__(self, P, L, delta, K):
+    def __init__(self, P, L, delta, K, H):
         self.P = P
         self.L = L
         self.delta = delta
         self.K = K
+        self.H = H
         self.count = 0
     def nidri(self, i, j, h):
         self.count += 1
