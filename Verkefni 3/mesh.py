@@ -157,7 +157,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
         A[t][t - 2] = -1 / (2 * h)
 
     # bottom
-    for i in range(1, m):
+    for i in range(1, m-1):
         j = 0
         t = i + (j) * (m)
         A[t][t] = -3 / (2 * k) + H / K
@@ -197,6 +197,7 @@ if __name__ == '__main__':
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
     print("wha")
     A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
+
     print("fylki:")
     for i in range(m*m):
         for j in range(n*n):
@@ -204,13 +205,16 @@ if __name__ == '__main__':
         print()
     #print(b)
     v = np.linalg.solve(A, b) + umhverfishiti
+    w = v.reshape((m, n))
+    print(b)
     print("bla")
     #print(v)
     #print(v.reshape((n,m)))
-    print("max: ", np.max(v))
+    print("max: ", np.max(w))
     for i in range(m):
         for j in range(n):
-            print(f"{v.reshape((n,m))[i,j]:.02f}", end="\t")
+            print(f"{w[i,j]:.02f}", end="\t")
         print()
-    plt.pcolormesh(v.reshape((n,m)))
+
+    plt.pcolormesh(w)
     plt.show()
