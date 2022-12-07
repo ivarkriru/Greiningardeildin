@@ -1,10 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from F import F, F_test, F_str
-L = 1
-delta = 0.1
-H = 5e-3
-K = 1.68
 def pde(x_min, x_max, y_min, y_max, n,m, Lp, P, H):
     debug = True
     f = F_test(P, L, delta, K, H)
@@ -127,15 +123,16 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
     # H = 0.005
     #
     # P = 5
-    h = L / (m - 1)
-    k = L / (n - 1)
+    h = (x_max - x_min) / m
+    k = (y_max - y_min) / n
+    print(h, k)
     # delta = 0.1
-    A = np.zeros(m * n, m * n)
-    b = np.zeros(m * n, 1)
+    A = np.zeros((m * n, m * n))
+    b = np.zeros((m * n, 1))
 
     # innra
-    for i in range(1, m-1):
-        for j in range(1, n-1):
+    for i in range(1, m):
+        for j in range(1, n):
             t = i + (j-1) * m
             A[t][t] = -2 / h ** 2 - 2 / k ** 2 - 2 * H / (K * delta)
             A[t][t + 1] = 1 / h ** 2
@@ -143,36 +140,44 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
             A[t][t + m] = 1 / k ** 2
             A[t][t - m] = 1 / k ** 2
 
-    # left and right
+    # vinstri
     for j in range(0, n):
-        i = 1
+        i = 0
         t = i + (j-1) * m
         A[t][t] = -3 / (2 * h)
         A[t][t + 1] = 2 / h
         A[t][t + 2] = -1 / (2 * h)
-        b[t] = -P / (L * delta * K)
-
-    for j in range(1, n + 1):
+    # hægri
+    for j in range(0, n):
         i = m
         t = i + (j-1) * m
         A[t][t] = 3 / (2 * h) + H / K
         A[t][t - 1] = 2 / h
         A[t][t - 2] = -1 / (2 * h)
 
-    # top and bottom
-    for i in range(1, m - 1):
-        j = 1
+    # bottom
+    for i in range(0, m ):
+
+        j = 0
         t = i + (j-1) * m
         A[t][t] = -3 / (2 * k) + H / K
         A[t][t + m] = 2 / k
         A[t][t + 2 * m] = -1 / (2 * k)
-
-    for i in range(1, m - 1):
+    # top
+    for i in range(0, m):
         j = n
         t = i + (j-1) * m
         A[t][t] = 3 / (2 * k) + H / K
         A[t][t - m] = 2 / k
         A[t][t - 2 * m] = -1 / (2 * k)
+
+    #  POWER
+    for j in range(0, n):
+        i = 0
+        t = i + (j-1) * m
+        b[t] = -P / (L * delta * K)
+
+    return A, b
 
 
 
@@ -180,22 +185,26 @@ if __name__ == '__main__':
     n, m = 3, 3
     Lx, Ly = 2, 2
     Lp = 2
+    L = 1
+    delta = 0.1
+    H = 5e-3
+    K = 1.68
     # Lp = (0,2)
     P = 5
     # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-    A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H, K)
-    print(A)
-    print(u)
-    v = np.linalg.solve(A, b.T)
-    print(b.reshape(n,m))
-    plt.pcolormesh(v.reshape(n,m))
+    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
+    print("wha")
+    A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
+    print("fylki:")
+    for i in range(m*m):
+        for j in range(n*n):
+            print(f"{A[i,j]:.02f}", end="\t")
+        print()
+    #print(b)
+    v = np.linalg.solve(A, b)
+    print("bla")
+    #print(v)
+    #print(v.reshape((n,m)))
+    plt.pcolormesh(v.reshape((n,m)))
     plt.show()
-    # meshh = mesh(0, 5, 0, 5, 3, 3)
-    # for mes in meshh:
-    #     for num in mes:
-    #         print(f"{num:.00f}", end="\t")
-    #     print()
-
-    # plt.pcolormesh(meshh)
-    # plt.show()
