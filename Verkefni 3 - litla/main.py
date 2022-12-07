@@ -30,7 +30,7 @@ def daemi1():
 
     solutiondata = []
     for x in bil:
-        solutiondata.append(solutionfall(x))
+        solutiondata.append(solutionfall(x,c1=c1,c2=c2))
     A = np.zeros([n - 1, n - 1])
 
     b = np.zeros([n - 1, 1])
@@ -49,15 +49,11 @@ def daemi1():
     A[0, 0] = 1
     A[0, 1] = 0
 
+    A[0, -1] = 0
     A[-1, -1] = 1
-
     A[-2, -1] = gildi[2]
     A[-3, -2] = gildi[2]
     A[-2, -2] = gildi[1]
-    A[0, -1] = 0
-
-    #plt.plot(bil,solutiondata,c="green")
-    #plt.plot(bil[1:-1],datahermi,c="red")
     svar = la.solve(A, b)
 
     plt.plot(bil,solutiondata,c="green")
@@ -110,23 +106,12 @@ def daemi2():
     A[-3, -2] = gildi[2]
     A[-2, -2] = gildi[1]
     A[0, -1] = 0
-    # plt.plot(bil,solutiondata,c="green")
-    # plt.plot(bil[1:-1],datahermi,c="red")
     svar = la.solve(A, b)
 
     plt.plot(bil, solutiondata, c="green")
     plt.plot(bil[1:], svar, c="red")
 
-    '''
-    skekkja = []
-    prosentuskekkja = []
-    for index, x in enumerate(solutiondata[1:-1]):
-        skekkja.append((x - A[index]))
-        prosentuskekkja.append((x - A[index])/x)
-    print(sum(skekkja))
-    plt.plot(bil[1:-1], skekkja)
-    #plt.plot(bil[1:-1], prosentuskekkja)
-    '''
+
     plt.show()
 
 def daemi3():
@@ -167,26 +152,16 @@ def daemi3():
     A[-3, -2] = gildi[2]
     A[-2, -2] = gildi[1]
     A[0, -1] = 0
-    # plt.plot(bil,solutiondata,c="green")
-    # plt.plot(bil[1:-1],datahermi,c="red")
+
     svar = la.solve(A, b)
 
     plt.plot(bil, solutiondata, c="green")
     plt.plot(bil[1:], svar, c="red")
 
-    '''
-    skekkja = []
-    prosentuskekkja = []
-    for index, x in enumerate(solutiondata[1:-1]):
-        skekkja.append((x - A[index]))
-        prosentuskekkja.append((x - A[index])/x)
-    print(sum(skekkja))
-    plt.plot(bil[1:-1], skekkja)
-    #plt.plot(bil[1:-1], prosentuskekkja)
-    '''
     plt.show()
 def daemi4():
-    n = 100
+
+    n = 1000
     c1 = 0
     c2 = -0.5
     bil = np.array([*range(0, n)]) * 1 / (n - 1)
