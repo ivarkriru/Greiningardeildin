@@ -9,27 +9,24 @@ class F:
         self.H = H
 
     def nidri(self, i, j, h):
-        k1 = 3*u(i,j)/2/h
-        k2 = self.H/self.K*u(i,j)
-        k3 = -4 * u(i+1, j) / 2/h
-        k4 = u(i+2, j) / 2 / h
-        return k1 + k2 + k3 + k4
+        k1 = (-3/2*h + self.H/self.K)*u(i,1)
+        k2 = 4 * u(i+1, 2) / 2*h
+        k3 = u(i, 3) / 2 * h
+        return k1 + k2 + k3
     def uppi(self, i, j, h):
-        k1 = -3*u(i,j)/2/h
-        k2 = -self.H/self.K*u(i,j)
-        k3 = -4 * u(i-1, j) / 2/h
-        k4 = u(i-2, j) / 2 / h
-        return k1 + k2 + k3 + k4
+        k1 = (3 / 2 * h - self.H / self.K) * u(i, self.n)
+        k2 = (-2/h)*u(i,self.n-1)
+        k3 = (1/2*h)*u(i,self.n-2)
+        return k1 + k2 + k3
 
     def vinstri(self, i, j, h):
-        k1 = -3*u(i,j)
-        k2 = 4*u(i, j+h)
-        k3 = -u(i, j+h+h)
-        k4 = 2*h
-        return (k1 + k2 + k3) / k4
+        k1 = (3/2*h-self.H/self.K)*u(1,j)
+        k2 = (-2/h)*u(2, j)
+        k3 = (1/2*h)*u(3, j)
+        return k1 + k2 + k3
 
     def haegri(self, i, j, h):
-        k1 = -3*u(i, j)
+        k1 = (1/2*h)*-3*u(i, j)
         k2 = 4*u(i+h, j)
         k3 = -u(i+2*h, j)
         k4 = -2*h

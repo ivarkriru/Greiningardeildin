@@ -12,7 +12,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta, L_):
     # P = 5
     h = (x_max - x_min) / (m-1)
     k = (y_max - y_min) / (n-1)
-    print(h, k)
+    #print(h, k)
     # delta = 0.1
     A = np.zeros((m * n, m * n))
     b = np.zeros((m * n, 1))
@@ -84,7 +84,7 @@ def spurning4():
     A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
 
 if __name__ == '__main__':
-    n, m = 3, 91
+    n, m = 20, 10
     Lx, Ly = 2, 2
     Lp = 2
     L = 2
@@ -98,6 +98,7 @@ if __name__ == '__main__':
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
     t0 = time.time()
+
     A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
 
     #print("fylki:")
@@ -110,10 +111,16 @@ if __name__ == '__main__':
         print(np.count_nonzero(vigur))
     #print(b)
     v = np.linalg.solve(A, b) + umhverfishiti
-    print(f"{time.time()-t0:.02f}s")
+    print("Fyrir "+ str(n) +" X "+ str(m)+ " fylki er tíminn: "  f"{time.time()-t0:.02f}s")
     w = v.reshape((n, m))
-    #np.savez('n100_m100.npz', w=w)
-    print("max: ", np.max(w))
+    print("Hitastig áætlað: "+ str(v[0,0]))
+    print()
+    #print(b)
+    #print("bla")
+    #print(v)
+    #print(v.reshape((n,m)))
+
+    #print("max: ", np.max(w))
     # for i in range(m):
     #     for j in range(n):
     #         print(f"{w[i,j]:.02f}", end="\t")
