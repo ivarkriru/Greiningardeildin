@@ -1,5 +1,4 @@
 import time
-
 import numpy as np
 import matplotlib.pyplot as plt
 from F import F, F_test, F_str
@@ -96,7 +95,36 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta, L_):
 
     return A, b
 
+def spurning1():
+    pass
+
+def spurning2():
+    pass
+
+def spurning3():
+    pass
+
 def spurning4():
+
+    mesh_i_n = 20
+    mesh_j_m = 10
+    Lx, Ly = 2, 2
+    Lp = 2
+    L = 2
+    delta = 0.1
+    H = 0.005
+    K = 1.68
+    # Lp = (0,2)
+    P = 5
+    umhverfishiti = 20
+    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
+    t0 = time.time()
+    A, b = bua_til_fylki(0, Lx, 0, Ly, mesh_i_n, mesh_j_m, Lp, P, H, K, delta, L)
+
+def spurning5():
+    n, m = 10, 10
     Lx, Ly = 2, 2
     Lp = 2
     L = 2
@@ -124,12 +152,10 @@ def spurning4():
     print(arr)
     np.savez('sp4.npz', arr=arr)
 
-if __name__ == '__main__':
-    spurning4()
-    exit()
-    n, m = 101, 11
-    Lx, Ly = 4, 4
-    Lp = (1,4)
+def spurning6():
+    n, m = 10, 10
+    Lx, Ly = 2, 2
+    Lp = 2
     L = 2
     delta = 0.1
     H = 0.005
@@ -144,6 +170,41 @@ if __name__ == '__main__':
 
     A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
 
+def spurning7():
+    pass
+
+def spurning8():
+    pass
+
+def spurning9():
+    pass
+
+def auka():
+    pass
+
+if __name__ == '__main__':
+    # stærð á meshinu sem reiknar út hitadreyfinguna
+    mesh_i_n = 20
+    mesh_j_m = 10
+    Lengdx = 20
+    Lengdy = 10
+    Lengd_power = 2
+    Lengd_orgjorva = 2
+    delta = 0.1
+    H = 0.005
+    K = 1.68
+
+    #
+    Lpowertuple = (0, 2)
+    P = 5
+    umhverfishiti = 20
+    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
+    t0 = time.time()
+
+    A, b = bua_til_fylki(0, Lengdx, 0, Lengdy, mesh_i_n, mesh_j_m, Lengd_power, P, H, K, delta, Lengd_orgjorva)
+
     #print("fylki:")
     #print(A)
     # for i in range(m*m):
@@ -152,8 +213,8 @@ if __name__ == '__main__':
     #     print()
     #print(b)
     v = np.linalg.solve(A, b) + umhverfishiti
-    print("Fyrir "+ str(n) +" X "+ str(m)+ " fylki er tíminn: "  f"{time.time()-t0:.02f}s")
-    w = v.reshape((n, m))
+    print("Fyrir " + str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er tíminn: "  f"{time.time() - t0:.02f}s")
+    w = v.reshape((mesh_i_n, mesh_j_m))
     print("Hitastig áætlað: "+ str(v[0,0]))
     print()
     #print(b)
@@ -169,7 +230,7 @@ if __name__ == '__main__':
     hf = plt.figure()
     ha = hf.add_subplot(111, projection='3d')
     from mpl_toolkits.mplot3d import Axes3D
-    X, Y = np.meshgrid([i for i in range(m)], [i for i in range(n)])  # `plot_surface` expects `x` and `y` data to be 2D
+    X, Y = np.meshgrid([i for i in range(mesh_j_m)], [i for i in range(mesh_i_n)])  # `plot_surface` expects `x` and `y` data to be 2D
     ha.plot_surface(X, Y, w)
     plt.figure()
     plt.pcolormesh(w)
