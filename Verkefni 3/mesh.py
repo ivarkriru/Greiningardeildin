@@ -5,7 +5,7 @@ L = 1
 delta = 0.1
 H = 5e-3
 K = 1.68
-def mesh(x_min, x_max, y_min, y_max, n,m):
+def mesh(x_min=0, x_max=0, y_min=1, y_max=1, n=10,m=10):
     dx = (x_max - x_min) / n
     dy = (y_max - y_min) / m
 
