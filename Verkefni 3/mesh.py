@@ -123,50 +123,57 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
     # H = 0.005
     #
     # P = 5
-    h = (x_max - x_min) / m
-    k = (y_max - y_min) / n
+    h = (x_max - x_min) / (m-1)
+    k = (y_max - y_min) / (n-1)
     print(h, k)
     # delta = 0.1
     A = np.zeros((m * n, m * n))
     b = np.zeros((m * n, 1))
 
     # innra
+
     for i in range(1, m):
         for j in range(1, n):
-            t = i + (j-1) * m
+            t = i + (j-1) * m-1
             A[t][t] = -2 / h ** 2 - 2 / k ** 2 - 2 * H / (K * delta)
             A[t][t + 1] = 1 / h ** 2
-            A[t][t - 1] = 1 / h ** 2
+            if t-1 <0:
+                print("t er minna en 0")
+            else:
+                A[t][t - 1] = 1 / h ** 2
             A[t][t + m] = 1 / k ** 2
-            A[t][t - m] = 1 / k ** 2
+            if t-1 <0:
+                print("t er minna en 0")
+            else:
+                A[t][t - m] = 1 / k ** 2
 
     # vinstri
     for j in range(0, n):
         i = 0
-        t = i + (j-1) * m
+        t = i + (j) * m-1
         A[t][t] = -3 / (2 * h)
         A[t][t + 1] = 2 / h
         A[t][t + 2] = -1 / (2 * h)
     # hægri
     for j in range(0, n):
-        i = m
-        t = i + (j-1) * m
-        A[t][t] = 3 / (2 * h) + H / K
+        i = m-1
+        t = i + (j) * m-1
+        A[t][t] = -3 / (2 * h) - H / K
         A[t][t - 1] = 2 / h
         A[t][t - 2] = -1 / (2 * h)
 
     # bottom
-    for i in range(0, m ):
+    for i in range(1, m):
 
         j = 0
-        t = i + (j-1) * m
+        t = i + (j) * m-1
         A[t][t] = -3 / (2 * k) + H / K
-        A[t][t + m] = 2 / k
-        A[t][t + 2 * m] = -1 / (2 * k)
+        A[t][t + 1] = 2 / k
+        A[t][t + 2 * 1] = -1 / (2 * k)
     # top
-    for i in range(0, m):
-        j = n
-        t = i + (j-1) * m
+    for i in range(1, m):
+        j = n-1
+        t = i + (j) * m-1
         A[t][t] = 3 / (2 * k) + H / K
         A[t][t - m] = 2 / k
         A[t][t - 2 * m] = -1 / (2 * k)
@@ -174,7 +181,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
     #  POWER
     for j in range(0, n):
         i = 0
-        t = i + (j-1) * m
+        t = i + (j) * m
         b[t] = -P / (L * delta * K)
 
     return A, b
@@ -191,6 +198,7 @@ if __name__ == '__main__':
     K = 1.68
     # Lp = (0,2)
     P = 5
+    umhverfishiti = 20
     # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
@@ -202,9 +210,14 @@ if __name__ == '__main__':
             print(f"{A[i,j]:.02f}", end="\t")
         print()
     #print(b)
-    v = np.linalg.solve(A, b)
+    v = np.linalg.solve(A, b) + umhverfishiti
     print("bla")
     #print(v)
     #print(v.reshape((n,m)))
+    print("max: ", np.max(v))
+    for i in range(m):
+        for j in range(n):
+            print(f"{v.reshape((n,m))[i,j]:.02f}", end="\t")
+        print()
     plt.pcolormesh(v.reshape((n,m)))
     plt.show()
