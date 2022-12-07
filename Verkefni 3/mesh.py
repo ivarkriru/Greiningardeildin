@@ -167,7 +167,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, n, m, Lp, P, H, K, delta):
     for i in range(1, m-1):
         j = n-1
         t = i + (j) * (m)
-        A[t][t] = 3 / (2 * k) + H / K
+        A[t][t] = -3 / (2 * k) + H / K
         A[t][t - m] = 2 / k
         A[t][t - 2 * m] = -1 / (2 * k)
 
