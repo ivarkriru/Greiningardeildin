@@ -29,7 +29,7 @@ tolerance = 0.0001
 x0 = np.array([0, 0, 6370, 0])
 sat_teljari = 0
 skekkja = 1e-8
-satkerfi_fjoldi = 24
+satkerfi_fjoldi = 6
 sample_fjoldi = 200
 N = 100
 
