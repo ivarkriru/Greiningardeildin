@@ -178,26 +178,8 @@ def spurning3():
 
     plotlausn3d(w=v,mesh_i_n=mesh_i_n,mesh_j_m=mesh_j_m)
 
+
 def spurning4():
-
-    mesh_i_n = 20
-    mesh_j_m = 10
-    Lx, Ly = 2, 2
-    Lp = 2
-    L = 2
-    delta = 0.1
-    H = 0.005
-    K = 1.68
-    # Lp = (0,2)
-    P = 5
-    umhverfishiti = 20
-    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
-    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
-    t0 = time.time()
-    A, b = bua_til_fylki(0, Lx, 0, Ly, mesh_i_n, mesh_j_m, Lp, P, H, K, delta, L)
-
-def spurning5():
     n, m = 10, 10
     Lx, Ly = 2, 2
     Lp = 2
@@ -226,6 +208,24 @@ def spurning5():
     print(arr[0])
     #print(arr)
     #np.savez('sp4.npz', arr=arr)
+def spurning5():
+
+    mesh_i_n = 20
+    mesh_j_m = 10
+    Lx, Ly = 2, 2
+    Lp = 2
+    L = 2
+    delta = 0.1
+    H = 0.005
+    K = 1.68
+    # Lp = (0,2)
+    P = 5
+    umhverfishiti = 20
+    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
+    t0 = time.time()
+    A, b = bua_til_fylki(0, Lx, 0, Ly, mesh_i_n, mesh_j_m, Lp, P, H, K, delta, L)
 
 def spurning6():
     n, m = 10, 10
