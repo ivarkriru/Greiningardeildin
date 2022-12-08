@@ -32,8 +32,8 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         padding /= 2
         Lengd_power_min = int(padding)
         Lengd_power_max = int(mesh_n - padding)
-    print("Power min : " + str(Lengd_power_min), end=" ")
-    print("Power max : " + str(Lengd_power_max))
+    #print("Power min : " + str(Lengd_power_min), end=" ")
+    #print("Power max : " + str(Lengd_power_max))
     #print(f"aflið er á þessu bili {Lengd_power_min=}, {Lengd_power_max=} ")
 
     # innra
@@ -329,22 +329,80 @@ def spurning6():
     for row in arr:
         print(row)
 
-
 def spurning7():
     from Verkefni1.newton import bisection
-    ideal_skekkja = (bisection(bisecfall, a, b, 1e-15))#f'{num:.3}'
+    mesh_i_n = 40
+    mesh_j_m = 40
 
-    # bisection
-    pass
+    lengdfrax = 0
+    lengdfray = 0
+    lengdtilx = 4
+    lengdtily = 4
+    delta = 0.1
+    Heattransfer_co = 0.005
+    K_thermal_cond = 1.68
+
+    Lengd_power = (0, 2)
+    Power = 5
+    umhverfishiti = 20
+    def bisecfall(Power_):
+        Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                       mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power_, Heattransfer_co=Heattransfer_co,
+                                       Kthermal_cond=K_thermal_cond, delta=delta)
+
+        v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+
+        return np.max(v) - 100
+    # stærð á meshinu sem reiknar út hitadreyfinguna
+
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+
+    t0 = time.time()
+    a = 1  # Power
+    b = 10  # Power
+    ideal_skekkja = (bisection(bisecfall, a, b, 1e-15))#f'{num:.3}'
+    print(ideal_skekkja)
 
 def spurning8():
-    pass
+    from Verkefni1.newton import bisection
+    mesh_i_n = 40
+    mesh_j_m = 40
 
-def spurning9():
-    pass
+    lengdfrax = 0
+    lengdfray = 0
+    lengdtilx = 4
+    lengdtily = 4
+    delta = 0.1
+    Heattransfer_co = 0.005
+    K_thermal_cond = 1.68
 
-def auka():
-    pass
+    Lengd_power = (0, 2)
+    Power = 5
+    umhverfishiti = 20
+    def bisecfall(Power_):
+        Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                       mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power_, Heattransfer_co=Heattransfer_co,
+                                       Kthermal_cond=K_thermal_cond, delta=delta)
+
+        v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+
+        return np.max(v) - 100
+    # stærð á meshinu sem reiknar út hitadreyfinguna
+
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+
+    t0 = time.time()
+    a = 1  # Power
+    b = 10  # Power
+    for K in range(1,6):
+        ideal_skekkja = (bisection(bisecfall, a, b, 1e-15))#f'{num:.3}'
+        print(ideal_skekkja, K)
+
+    def spurning9():
+        pass
+
+    def auka():
+        pass
 
 '''
 from mesh import *
