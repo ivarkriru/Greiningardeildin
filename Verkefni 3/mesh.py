@@ -19,7 +19,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         lengd_orgjorva = Lengd_power[1] - Lengd_power[0]
 
         # búum til bil fyrir Lengd power bilið
-        Lengd_power_min = int(Lengd_power[0] / k_yskref)
+        Lengd_power_min = int(np.ceil(Lengd_power[0] / k_yskref))
         Lengd_power_max = int(np.floor((Lengd_power[1] / k_yskref)))
     else:
         if Lengd_power > y_max:
@@ -288,9 +288,8 @@ def spurning6():
         for i in range(0, skref+1):  # +1 til að fá endabilið (2,4)
             t0 = time.time()
             L = 2
-            print(i)
             Lp = (0+i*breyting_per_skref, i*breyting_per_skref+L)
-            print(Lp)
+            # print(f"Lmin: {Lp[0]:.01f}, Lmax: {Lp[1]:.01f}   ", end="")
             A, b= bua_til_fylki(x_min=0, x_max=Lx, y_min=0, y_max=Ly, mesh_n=n,
                                        mesh_m=m, Lengd_power=Lp, Power=P, Heattransfer_co=H,
                                        Kthermal_cond=K, delta=delta)
