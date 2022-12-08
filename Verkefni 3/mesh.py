@@ -28,7 +28,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         Lengd_power_min = int(padding)
         Lengd_power_max = int(mesh_n - padding)
 
-    print(f"aflið er á þessu bili {Lengd_power_min=}, {Lengd_power_max=} ")
+    #print(f"aflið er á þessu bili {Lengd_power_min=}, {Lengd_power_max=} ")
 
     # innra
 
@@ -93,7 +93,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         A_fylki[t][t - 2 * mesh_m] = -1 / (2 * k_yskref)
 
     #  POWER
-    for j in range(Lengd_power_min, Lengd_power_max + 1):
+    for j in range(Lengd_power_min, Lengd_power_max+1):
         i = 0
         t = i + (j) * (mesh_m)
         b_fylki[t] = -Power / (lengd_orgjorva * delta * Kthermal_cond)
@@ -114,11 +114,33 @@ def plotlausn3d(w,mesh_i_n,mesh_j_m):
     plt.title('matplotlib.pyplot.pcolormesh() function Example', fontweight ="bold")
     plt.show()
 
+
 def spurning1():
     pass
 
 def spurning2():
     pass
+
+def spurning3rett():
+    mesh_i_n = 10
+    mesh_j_m = 10
+    n, m = 10, 10
+    Lx, Ly = 2, 2
+    Lp = 2
+    L = 2
+    delta = 0.1
+    H = 0.005
+    K = 1.68
+    P = 5
+    umhverfishiti = 20
+    Afylki, bfylki = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
+    v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+    w = v.reshape((mesh_i_n, mesh_j_m))
+    #print(v)
+    #print(w)
+    print("Hitastig í (0,0): " + str(w[0,0]))
+    print("Hitastig í (0,Ly): " + str(w[-1,0]))
+    plotlausn3d(w=w, mesh_i_n=mesh_i_n, mesh_j_m=mesh_j_m)
 
 def spurning3():
     # stærð á meshinu sem reiknar út hitadreyfinguna
@@ -134,7 +156,6 @@ def spurning3():
     delta = 0.1
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
-
 
     Lengd_power = (2, 7)
     Power = 5
@@ -152,9 +173,10 @@ def spurning3():
     v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
     print("Fyrir " + str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er tíminn: "  f"{time.time() - t0:.02f}s")
     w = v.reshape((mesh_i_n, mesh_j_m))
+
     print("Hitastig áætlað: " + str(v[0, 0]))
 
-    plotlausn3d(w=w,mesh_i_n=mesh_i_n,mesh_j_m=mesh_j_m)
+    plotlausn3d(w=v,mesh_i_n=mesh_i_n,mesh_j_m=mesh_j_m)
 
 def spurning4():
 
@@ -201,8 +223,9 @@ def spurning5():
             temp = np.linalg.solve(A, b)[0,0] + umhverfishiti
             arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti}
             count +=1
-    print(arr)
-    np.savez('sp4.npz', arr=arr)
+    print(arr[0])
+    #print(arr)
+    #np.savez('sp4.npz', arr=arr)
 
 def spurning6():
     n, m = 10, 10
@@ -237,7 +260,7 @@ def auka():
 if __name__ == '__main__':
     spurning1()
     spurning2()
-    spurning3()
+    spurning3rett()
     #spurning4()
     #spurning5()
     #spurning6()
