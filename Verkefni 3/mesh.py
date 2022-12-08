@@ -382,58 +382,66 @@ def spurning7():
 def spurning8():
     from Verkefni1.newton import bisection
     t0 = time.time()
-    ranger = np.array([*range(1,2)])/10
     print("[",end="")
-    for K_ in ranger:
-        mesh_i_n = 40
-        mesh_j_m = 40
+    svarx = []
+    svary = []
+    calc_again = False
+    if calc_again:
+        for K_ in range(1,10):
+            K_ /= 10
+            mesh_i_n = 40
+            mesh_j_m = 40
 
-        lengdfrax = 0
-        lengdfray = 0
-        lengdtilx = 4
-        lengdtily = 4
-        delta = 0.1
-        Heattransfer_co = 0.005
-        K_thermal_cond = 1.68
+            lengdfrax = 0
+            lengdfray = 0
+            lengdtilx = 4
+            lengdtily = 4
+            delta = 0.1
+            Heattransfer_co = 0.005
+            K_thermal_cond = 1.68
 
-        Lengd_power = (0, 2)
-        Power = 5
-        umhverfishiti = 20
-        def bisecfall(Power_):
+            Lengd_power = (0, 2)
+            Power = 5
+            umhverfishiti = 20
+            def bisecfall(Power_):
+                Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                               mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power_, Heattransfer_co=Heattransfer_co,
+                                               Kthermal_cond=K_, delta=delta)
+
+                v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+
+                return np.max(v) - 100
+            # stærð á meshinu sem reiknar út hitadreyfinguna
+
+            # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+
+            a = 1  # Power
+            b = 30  # Power
+            ideal_skekkja = (bisection(bisecfall, a, b, 1e-3))#f'{num:.3}'
+
             Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
-                                           mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power_, Heattransfer_co=Heattransfer_co,
+                                           mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=ideal_skekkja, Heattransfer_co=Heattransfer_co,
                                            Kthermal_cond=K_, delta=delta)
 
             v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
-
-            return np.max(v) - 100
-        # stærð á meshinu sem reiknar út hitadreyfinguna
-
-        # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-
-        a = 1  # Power
-        b = 30  # Power
-        ideal_skekkja = (bisection(bisecfall, a, b, 1e-3))#f'{num:.3}'
-
-        Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
-                                       mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=ideal_skekkja, Heattransfer_co=Heattransfer_co,
-                                       Kthermal_cond=K_, delta=delta)
-
-        v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
-
-        print(ideal_skekkja, K_, np.max(v))
-        print(f"[{ideal_skekkja:0.3f},\t {K_:.1f}]",end=",")
+            svarx.append(K_)
+            svary.append(ideal_skekkja)
+            print(ideal_skekkja, K_, np.max(v))
+            print(f"[{ideal_skekkja:0.3f},\t {K_:.1f}]",end=",")
+    else:
+        svar = np.array([[1.642,	 0.1],[2.493,	 0.2],[3.187,	 0.3],[3.780,	 0.4],[4.297,	 0.5],[4.752,	 0.6],[5.157,	 0.7],[5.519,	 0.8],[5.846,	 0.9],[6.143,	 1.0],[6.413,	 1.1],[6.659,	 1.2],[6.886,	 1.3],[7.095,	 1.4],[7.289,	 1.5],[7.468,	 1.6],[7.634,	 1.7],[7.790,	 1.8],[7.935,	 1.9],[8.071,	 2.0],[8.199,	 2.1],[8.319,	 2.2],[8.432,	 2.3],[8.539,	 2.4],[8.640,	 2.5],[8.736,	 2.6],[8.826,	 2.7],[8.912,	 2.8],[8.994,	 2.9],[9.072,	 3.0],[9.146,	 3.1],[9.217,	 3.2],[9.285,	 3.3],[9.350,	 3.4],[9.411,	 3.5],[9.471,	 3.6],[9.528,	 3.7],[9.582,	 3.8],[9.635,	 3.9],[9.685,	 4.0],[9.734,	 4.1],[9.780,	 4.2],[9.825,	 4.3],[9.869,	 4.4],[9.911,	 4.5],[9.951,	 4.6],[9.990,	 4.7],[10.028,	 4.8],[10.064,	 4.9],[10.099,	 5.0],])
     print("]\n")
     print(time.time()-t0)
-
-    svar = np.array([[1.642,	 0.1],[2.493,	 0.2],[3.187,	 0.3],[3.780,	 0.4],[4.297,	 0.5],[4.752,	 0.6],[5.157,	 0.7],[5.519,	 0.8],[5.846,	 0.9],[6.143,	 1.0],[6.413,	 1.1],[6.659,	 1.2],[6.886,	 1.3],[7.095,	 1.4],[7.289,	 1.5],[7.468,	 1.6],[7.634,	 1.7],[7.790,	 1.8],[7.935,	 1.9],[8.071,	 2.0],[8.199,	 2.1],[8.319,	 2.2],[8.432,	 2.3],[8.539,	 2.4],[8.640,	 2.5],[8.736,	 2.6],[8.826,	 2.7],[8.912,	 2.8],[8.994,	 2.9],[9.072,	 3.0],[9.146,	 3.1],[9.217,	 3.2],[9.285,	 3.3],[9.350,	 3.4],[9.411,	 3.5],[9.471,	 3.6],[9.528,	 3.7],[9.582,	 3.8],[9.635,	 3.9],[9.685,	 4.0],[9.734,	 4.1],[9.780,	 4.2],[9.825,	 4.3],[9.869,	 4.4],[9.911,	 4.5],[9.951,	 4.6],[9.990,	 4.7],[10.028,	 4.8],[10.064,	 4.9],[10.099,	 5.0],])
-    for x in svar:
-        plt.scatter(x[1],x[0],c="orange")
+    if calc_again:
+        plt.scatter(svarx, svary)
+    else:
+        for x in svar:
+            plt.scatter(x[1],x[0],c="orange")
     plt.xlabel("Mismunandi gildi á K (W/cm°C) ")
     plt.ylabel("Afl fyrir <100° (W)")
 
-    plt.show
-    plt.pause(100)
+    plt.show()
+    #plt.pause(100)
 
     def spurning9():
         pass
