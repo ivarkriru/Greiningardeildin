@@ -277,20 +277,23 @@ def spurning6():
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
     t0 = time.time()
-    skref = 10
-    arr = [[]]*skref
+    skref = int(n/2)
+    breyting_per_skref = Ly/n
+    arr = [[]]*(skref+1)
     count = 0
     t_total = time.time()
     reikna_upp_a_nytt = True
     if reikna_upp_a_nytt:
         # við viljum að Lp
-        for n in range(0, skref):
+        for i in range(0, skref+1):  # +1 til að fá endabilið (2,4)
             t0 = time.time()
             L = 2
-            Lp = (n/skref, n/skref+L)
-            Lp = (0,2)
+            print(i)
+            Lp = (0+i*breyting_per_skref, i*breyting_per_skref+L)
             print(Lp)
-            A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
+            A, b= bua_til_fylki(x_min=0, x_max=Lx, y_min=0, y_max=Ly, mesh_n=n,
+                                       mesh_m=m, Lengd_power=Lp, Power=P, Heattransfer_co=H,
+                                       Kthermal_cond=K, delta=delta)
             temp = np.min(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að lágmarka hitastig svo min er tekið
             arr[count] = {"lengd_power": Lp,  "timi": time.time()-t0}
             count +=1
