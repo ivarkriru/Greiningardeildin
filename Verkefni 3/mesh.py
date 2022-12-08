@@ -410,9 +410,16 @@ def spurning8():
         # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
 
         a = 1  # Power
-        b = 10  # Power
-        ideal_skekkja = (bisection(bisecfall, a, b, 1e-15))#f'{num:.3}'
-        print(ideal_skekkja, K_)
+        b = 20  # Power
+        ideal_skekkja = (bisection(bisecfall, a, b, 1e-3))#f'{num:.3}'
+
+        Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                       mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=ideal_skekkja, Heattransfer_co=Heattransfer_co,
+                                       Kthermal_cond=K_, delta=delta)
+
+        v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+
+        print(ideal_skekkja, K_, np.max(v))
     print(time.time()-t0)
 
     def spurning9():
