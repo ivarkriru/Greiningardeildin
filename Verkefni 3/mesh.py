@@ -31,7 +31,8 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         padding /= 2
         Lengd_power_min = int(padding)
         Lengd_power_max = int(mesh_n - padding)
-    print(Lengd_power_min, Lengd_power_max)
+    print("Power min : " + str(Lengd_power_min), end=" ")
+    print("Power max : " + str(Lengd_power_max))
     #print(f"aflið er á þessu bili {Lengd_power_min=}, {Lengd_power_max=} ")
 
     # innra
@@ -120,34 +121,26 @@ def plotlausn3d(w,mesh_i_n,mesh_j_m):
 
 
 def spurning1():
+    '''
+
+    Er í skýrslunni
+
+    '''
     pass
 
 def spurning2():
+    '''
+
+    Er í skýrslunni
+
+    '''
     pass
 
-def spurning3rett():
+def spurning3():
+
+    # stærð á meshinu sem reiknar út hitadreyfinguna
     mesh_i_n = 10
     mesh_j_m = 10
-    n, m = 10, 10
-    Lx, Ly = 2, 2
-    Lp = 2
-    L = 2
-    delta = 0.1
-    H = 0.005
-    K = 1.68
-    P = 5
-    umhverfishiti = 20
-    Afylki, bfylki = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
-    v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
-    w = v.reshape((mesh_i_n, mesh_j_m))
-    #print(v)
-    #print(w)
-    print("Hitastig í (0,0): " + str(w[0,0]))
-    print("Hitastig í (0,Ly): " + str(w[-1,0]))
-    plotlausn3d(w=w, mesh_i_n=mesh_i_n, mesh_j_m=mesh_j_m)
-
-def spurning3():
-    # stærð á meshinu sem reiknar út hitadreyfinguna
     mesh_i_n = 10
     mesh_j_m = 10
 
@@ -155,6 +148,7 @@ def spurning3():
     lengdfray = 0
     lengdtilx = 2
     lengdtily = 2
+    Lengd_power = 2
     delta = 0.1
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
@@ -164,7 +158,6 @@ def spurning3():
     umhverfishiti = 20
 
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-
 
     t0 = time.time()
 
@@ -176,9 +169,11 @@ def spurning3():
     print("Fyrir " + str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er tíminn: "  f"{time.time() - t0:.02f}s")
     w = v.reshape((mesh_i_n, mesh_j_m))
 
-    print("Hitastig áætlað: " + str(v[0, 0]))
 
-    plotlausn3d(w=w,mesh_i_n=mesh_i_n,mesh_j_m=mesh_j_m)
+    print("Hitastig í (0,0): " + str(w[0,0]))
+    print("Hitastig í (0,Ly): " + str(w[-1,0]))
+
+    plotlausn3d(w=w, mesh_i_n=mesh_i_n, mesh_j_m=mesh_j_m)
 
 
 def spurning4():
