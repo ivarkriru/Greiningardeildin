@@ -289,19 +289,24 @@ def spurning6():
             t0 = time.time()
             L = 2
             Lp = (0+i*breyting_per_skref, i*breyting_per_skref+L)
-            # print(f"Lmin: {Lp[0]:.01f}, Lmax: {Lp[1]:.01f}   ", end="")
+            print(f"Lmin: {Lp[0]:.01f}, Lmax: {Lp[1]:.01f}   ", end="")
             A, b= bua_til_fylki(x_min=0, x_max=Lx, y_min=0, y_max=Ly, mesh_n=n,
                                        mesh_m=m, Lengd_power=Lp, Power=P, Heattransfer_co=H,
                                        Kthermal_cond=K, delta=delta)
-            temp = np.min(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að lágmarka hitastig svo min er tekið
-            arr[count] = {"lengd_power": Lp,  "timi": time.time()-t0}
+            max_temp = np.min(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að lágmarka hitastig svo min er tekið
+            arr[count] = {"lengd_power": Lp,  "timi": time.time()-t0, "max_temp": max_temp}
             count +=1
-        print(f"Reikna {count}kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
+        print(f"Reikna {count-1} kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
         print(arr[0])
         #print(arr)
         np.savez('sp6.npz', arr=arr)
     else:
         arr = np.load('sp6.npz', allow_pickle=True)['arr']
+    if type(arr) is not list:
+        arr = arr.tolist()
+    arr.sort(key=operator.itemgetter('max_temp'))
+    for row in arr:
+        print(row)
 
 
 def spurning7():
