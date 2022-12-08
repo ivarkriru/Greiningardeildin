@@ -51,7 +51,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
             A_fylki[t][t - mesh_m] = 1 / k_yskref ** 2
 
     # vinstri POWER
-    for j in range(Lengd_power_min, Lengd_power_max):
+    for j in range(Lengd_power_min, Lengd_power_max+1):
         i = 0
         t = i + (j) * (mesh_m)
         A_fylki[t][t] = -3 / (2 * h_xskref)
@@ -66,7 +66,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         A_fylki[t][t + 1] = 2 / h_xskref
         A_fylki[t][t + 2] = -1 / (2 * h_xskref)
 
-    for j in range(Lengd_power_max, mesh_n):
+    for j in range(Lengd_power_max+1, mesh_n):
         i = 0
         t = i + (j) * (mesh_m)
         A_fylki[t][t] = -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
@@ -155,13 +155,11 @@ def spurning3():
     lengdfray = 0
     lengdtilx = 2
     lengdtily = 2
-    Lengd_power = 2
-    Lengd_orgjorva = 2
     delta = 0.1
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
 
-    Lengd_power = (0, 1)
+    Lengd_power = (0, 2)
     Power = 5
     umhverfishiti = 20
 
