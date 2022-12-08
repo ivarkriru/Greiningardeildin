@@ -198,16 +198,24 @@ def spurning4():
     #arr = np.zeros((9*9, 1))
     arr = [[]]*9*9
     count = 0
-    for n in range(10, 100, 10):
-        for m in range(10, 100, 10):
-
-            A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
-            temp = np.linalg.solve(A, b)[0,0] + umhverfishiti
-            arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti}
-            count +=1
-    print(arr[0])
-    #print(arr)
-    #np.savez('sp4.npz', arr=arr)
+    t_total = time.time()
+    reikna_upp_a_nytt = False
+    if reikna_upp_a_nytt:
+        for n in range(10, 100, 10):
+            for m in range(10, 100, 10):
+                # todo: væri gaman að interpolate'a stóru fylkin í 10x10 og bera saman þannig
+                t0 = time.time()
+                A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
+                temp = np.linalg.solve(A, b)[0,0] + umhverfishiti
+                arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti, "timi": time.time()-t0}
+                count +=1
+        print("Reikna 81 kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
+        print(arr[0])
+        #print(arr)
+        np.savez('sp4.npz', arr=arr)
+    else:
+        arr = np.load('sp4.npz', allow_pickle=True)['arr']
+        print(arr)
 def spurning5():
 
     mesh_i_n = 20
@@ -258,10 +266,10 @@ def auka():
     pass
 
 if __name__ == '__main__':
-    spurning1()
-    spurning2()
-    spurning3rett()
-    #spurning4()
+    #spurning1()
+    #spurning2()
+    #spurning3rett()
+    spurning4()
     #spurning5()
     #spurning6()
     #spurning7()
