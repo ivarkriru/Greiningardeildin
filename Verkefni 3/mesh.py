@@ -116,7 +116,7 @@ def plotlausn3d(w,mesh_i_n,mesh_j_m):
     plt.ylabel('Y')
     plt.title(r"Titill")
     plt.pcolormesh(w)
-    plt.title('matplotlib.pyplot.pcolormesh() function Example', fontweight ="bold")
+    # plt.title('matplotlib.pyplot.pcolormesh() function Example', fontweight ="bold")
     plt.show()
 
 
@@ -148,7 +148,6 @@ def spurning3():
     lengdfray = 0
     lengdtilx = 2
     lengdtily = 2
-    Lengd_power = 2
     delta = 0.1
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
@@ -234,6 +233,7 @@ def spurning4():
         diff_array[n][m] = result['timi']
     for row in diff_array:
         print(row)
+    plotlausn3d(np.array(diff_array), 9, 9)
 
 
 
