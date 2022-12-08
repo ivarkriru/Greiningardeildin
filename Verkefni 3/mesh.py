@@ -113,9 +113,9 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     ax = plt.axes(projection='3d')
 
     # Create the contour plot
-    X = [*range(0, w.shape[0])]
-    Y = [*range(0, w.shape[1])]
-    ax.contour3D(X, Y, w, 200, cmap="viridis")
+    X = [*range( 0,w.shape[0])]
+    Y = [*range(0,w.shape[1])]
+    ax.contourf3D(X, Y, w,200, cmap="viridis")
 
     # Create a ScalarMappable and set the color limits
     sm = cm.ScalarMappable(cmap="viridis")
@@ -126,7 +126,6 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     cb = hf.colorbar(sm, ax=ax, shrink=0.7, pad=0.15)
     cb.set_label(colorbartitill)
     # Add a title
-    plt.title(r""+str(titill))
 
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -134,14 +133,17 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     if log:
         ax.set_zlabel("log af " + zlabel)
 
+    plt.title(r""+str(titill))
     # Show the plot
     plt.show()
+
 
 
 def spurning1():
     '''
 
     Er í skýrslunni
+
 
     '''
     pass
@@ -157,8 +159,8 @@ def spurning2():
 def spurning3():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 10
-    mesh_j_m = 10
+    mesh_i_n = 100
+    mesh_j_m = 100
 
     lengdfrax = 0
     lengdfray = 0
@@ -186,8 +188,7 @@ def spurning3():
     w = v.reshape((mesh_i_n, mesh_j_m))
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
-    plotlausn3d(w=w, mesh_i_n=mesh_i_n, mesh_j_m=mesh_j_m,xlabel1="X", xlabel2="Y", ylabel1="", ylabel2="", titill1="",titill2="")
-
+    plotlausn3d(w=w)
 
 def spurning4():
     n, m = 10, 10
@@ -257,32 +258,47 @@ def spurning4():
     for row in timi_array:
         print(row)
     diff_array = np.array(diff_array)
+    timi_array = np.array(timi_array)
+    #timi_array = np.log(timi_array)
     # todo: búa til log 3d plot, þarf bara að taka log af diff_array, timi_array, laga zticks á z ás til að það sé log
-    plotlausn3d(diff_array)
-    plotlausn3d(timi_array,colorbartitill="Tími (s)")
-
-
-
-
+    #plotlausn3d(diff_array)
+    plotlausn3d(timi_array,colorbartitill="Tími (s)",log=True)
 
 def spurning5():
 
-    mesh_i_n = 20
-    mesh_j_m = 10
-    Lx, Ly = 2, 2
-    Lp = 2
-    L = 2
+    # stærð á meshinu sem reiknar út hitadreyfinguna
+    mesh_i_n = 40
+    mesh_j_m = 40
+
+    lengdfrax = 0
+    lengdfray = 0
+    lengdtilx = 4
+    lengdtily = 4
+
     delta = 0.1
-    H = 0.005
-    K = 1.68
-    # Lp = (0,2)
-    P = 5
+    Heattransfer_co = 0.005
+    K_thermal_cond = 1.68
+
+    Lengd_power = (0, 2)
+    Power = 5
     umhverfishiti = 20
-    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið,
+
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
-    # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
+
     t0 = time.time()
-    A, b = bua_til_fylki(0, Lx, 0, Ly, mesh_i_n, mesh_j_m, Lp, P, H, K, delta)
+
+    Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                   mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power, Heattransfer_co=Heattransfer_co,
+                                   Kthermal_cond=K_thermal_cond, delta=delta)
+
+    v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+    print("Niðurstöður fyrir svar við lið 5")
+    print(str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er "  f"{time.time() - t0:.02f}s"+ " að keyra.")
+    w = v.reshape((mesh_i_n, mesh_j_m))
+    print(f"Hitastig í (0,0): {w[0,0]:.04f}")
+    print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
+    plotlausn3d(w=w)
+
 
 def spurning6():
     n, m = 40, 40   # 40*40 var valið sem gott compromise milli tíma og skekkju,
