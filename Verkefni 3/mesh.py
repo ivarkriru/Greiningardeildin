@@ -136,6 +136,7 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     plt.show()
 
 
+
 def spurning1():
     '''
 
