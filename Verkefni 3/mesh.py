@@ -113,7 +113,7 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     # Create the contour plot
     X = [*range(0, w.shape[0])]
     Y = [*range(0, w.shape[1])]
-    ax.contour3D(X, Y, w, 100, cmap="viridis")
+    ax.contour3D(X, Y, w, 200, cmap="viridis")
 
     # Create a ScalarMappable and set the color limits
     sm = cm.ScalarMappable(cmap="viridis")
@@ -121,7 +121,7 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     sm.set_clim(np.min(w), np.max(w))
 
     # Add the colorbar
-    cb = hf.colorbar(sm, ax=ax)
+    cb = hf.colorbar(sm, ax=ax, shrink=0.7, pad=0.15)
     cb.set_label(colorbartitill)
     # Add a title
     plt.title(r""+str(titill))
