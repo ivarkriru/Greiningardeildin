@@ -144,6 +144,7 @@ def spurning1():
 
     Er í skýrslunni
 
+
     '''
     pass
 
