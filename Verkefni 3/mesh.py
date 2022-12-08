@@ -208,21 +208,29 @@ def spurning4():
         np.savez('sp4.npz', arr=arr)
     else:
         arr = np.load('sp4.npz', allow_pickle=True)['arr']
-        #print(arr)
-        new_results = []
-        for result in arr:
-            diff = abs(result['reasonable_estimate'] - result['temp'])
-            timi = result['timi']
-            if diff < 0.01 and timi < 0.5:
-                result['diff'] = diff
-                print(result, diff)
+    new_results = []
+    for result in arr:
+        diff = abs(result['reasonable_estimate'] - result['temp'])
+        timi = result['timi']
+        if diff < 0.01 and timi < 0.5:
+            result['diff'] = diff
+            print(result, diff)
 
-                new_results.append(result)
+            new_results.append(result)
 
-        new_results.sort(key=operator.itemgetter('diff'))
-        print("sorted:")
-        for result in new_results:
-            print(result)
+    new_results.sort(key=operator.itemgetter('diff'))
+    print("sorted:")
+    for result in new_results:
+        print(result)
+
+    diff_array = [[0 for _ in range(9)] for _ in range(9)]
+    for result in arr:
+        n = int(result['n']/10-1)
+        m = int(result['m']/10-1)
+        diff_array[n][m] = result['timi']
+    for row in diff_array:
+        print(row)
+
 
 
 
