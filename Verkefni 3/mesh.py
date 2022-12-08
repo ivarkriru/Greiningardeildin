@@ -20,7 +20,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         lengd_orgjorva = Lengd_power[1] - Lengd_power[0]
 
         # búum til bil fyrir Lengd power bilið
-        Lengd_power_min = int(Lengd_power[0] / k_yskref)
+        Lengd_power_min = int(np.ceil(Lengd_power[0] / k_yskref))
         Lengd_power_max = int(np.floor((Lengd_power[1] / k_yskref)))
     else:
         if Lengd_power > y_max:
@@ -135,6 +135,7 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     # Show the plot
     plt.show()
 
+
 def spurning1():
     '''
 
@@ -161,7 +162,6 @@ def spurning3():
     lengdfray = 0
     lengdtilx = 2
     lengdtily = 2
-    Lengd_power = 2
     delta = 0.1
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
@@ -226,6 +226,7 @@ def spurning4():
     new_results = []
     for result in arr:
         diff = abs(result['reasonable_estimate'] - result['temp'])
+        result['diff'] = diff
         timi = result['timi']
         if diff < 0.01 and timi < 0.5:
             result['diff'] = diff
@@ -239,15 +240,26 @@ def spurning4():
         print(result)
 
     diff_array = [[0 for _ in range(9)] for _ in range(9)]
-    diff_array = np.array(diff_array)
+
     for result in arr:
         n = int(result['n']/10-1)
         m = int(result['m']/10-1)
-        diff_array[n][m] = result['timi']
-    #for row in diff_array:
-    #    print(row)
+        diff_array[n][m] = result['diff']
+    for row in diff_array:
+        print(row)
+    timi_array = [[0 for _ in range(9)] for _ in range(9)]
+    for result in arr:
+        n = int(result['n']/10-1)
+        m = int(result['m']/10-1)
+        timi_array[n][m] = result['timi']
+    for row in timi_array:
+        print(row)
+    diff_array = np.array(diff_array)
+    # todo: búa til log 3d plot, þarf bara að taka log af diff_array, timi_array, laga zticks á z ás til að það sé log
+    plotlausn3d(diff_array)
+    plotlausn3d(timi_array,colorbartitill="Tími (s)")
 
-    plotlausn3d(diff_array,colorbartitill="Tími (s)")
+
 
 
 
@@ -271,9 +283,9 @@ def spurning5():
     A, b = bua_til_fylki(0, Lx, 0, Ly, mesh_i_n, mesh_j_m, Lp, P, H, K, delta)
 
 def spurning6():
-    n, m = 10, 10
-    Lx, Ly = 2, 2
-    Lp = 2
+    n, m = 40, 40   # 40*40 var valið sem gott compromise milli tíma og skekkju,
+                    # þurftum best resolution í báðar áttir því við vorum ekki lengur að horfa á uniform breytingu mv. m ás
+    Lx, Ly = 4, 4
     delta = 0.1
     H = 0.005
     K = 1.68
@@ -284,8 +296,32 @@ def spurning6():
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
     t0 = time.time()
+    skref = int(n/2)
+    breyting_per_skref = Ly/n
+    arr = [[]]*(skref+1)
+    count = 0
+    t_total = time.time()
+    reikna_upp_a_nytt = True
+    if reikna_upp_a_nytt:
+        # við viljum að Lp
+        for i in range(0, skref+1):  # +1 til að fá endabilið (2,4)
+            t0 = time.time()
+            L = 2
+            Lp = (0+i*breyting_per_skref, i*breyting_per_skref+L)
+            # print(f"Lmin: {Lp[0]:.01f}, Lmax: {Lp[1]:.01f}   ", end="")
+            A, b= bua_til_fylki(x_min=0, x_max=Lx, y_min=0, y_max=Ly, mesh_n=n,
+                                       mesh_m=m, Lengd_power=Lp, Power=P, Heattransfer_co=H,
+                                       Kthermal_cond=K, delta=delta)
+            temp = np.min(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að lágmarka hitastig svo min er tekið
+            arr[count] = {"lengd_power": Lp,  "timi": time.time()-t0}
+            count +=1
+        print(f"Reikna {count}kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
+        print(arr[0])
+        #print(arr)
+        np.savez('sp6.npz', arr=arr)
+    else:
+        arr = np.load('sp6.npz', allow_pickle=True)['arr']
 
-    A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
 
 def spurning7():
     pass
