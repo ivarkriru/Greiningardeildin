@@ -257,14 +257,18 @@ def spurning9():
 def auka():
     pass
 
+'''
+from mesh import *
+
 if __name__ == '__main__':
     spurning1()
     spurning2()
     spurning3rett()
-    #spurning4()
-    #spurning5()
-    #spurning6()
-    #spurning7()
-    #spurning8()
-    #spurning9()
-    #auka()
+    spurning4()
+    spurning5()
+    spurning6()
+    spurning7()
+    spurning8()
+    spurning9()
+    auka()
+'''
