@@ -107,7 +107,11 @@ def plotlausn3d(w,mesh_i_n,mesh_j_m):
                        [i for i in range(mesh_i_n)])  # `plot_surface` expects `x` and `y` data to be 2D
     ha.plot_surface(X, Y, w)
     plt.figure()
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title(r"Titill")
     plt.pcolormesh(w)
+    plt.title('matplotlib.pyplot.pcolormesh() function Example', fontweight ="bold")
     plt.show()
 
 def spurning1():
