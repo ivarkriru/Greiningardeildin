@@ -104,6 +104,10 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
     for j in range(Lengd_power_min, Lengd_power_max+1):
         i = 0
         t = i + (j) * (mesh_m)
+        if False:
+            x = (j/mesh_n)
+            Power = (np.sinc((j-25)/2.5))*150
+            print(j, x, Power)
         b_fylki[t] = -Power / (lengd_orgjorva * delta * Kthermal_cond)
 
     return A_fylki, b_fylki
@@ -159,8 +163,8 @@ def spurning2():
 def spurning3():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 100
-    mesh_j_m = 100
+    mesh_i_n = 50
+    mesh_j_m = 50
 
     lengdfrax = 0
     lengdfray = 0
@@ -387,8 +391,8 @@ def spurning8():
     svary = []
     calc_again = False
     if calc_again:
-        for K_ in range(1,10):
-            K_ /= 10
+        for K_ in range(1,6):
+            #K_ /= 10
             mesh_i_n = 40
             mesh_j_m = 40
 
