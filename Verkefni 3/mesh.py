@@ -1,3 +1,4 @@
+import operator
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -208,7 +209,7 @@ def spurning4():
             for m in range(10, 100, 10):
                 # todo: væri gaman að interpolate'a stóru fylkin í 10x10 og bera saman þannig
                 t0 = time.time()
-                A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta, L)
+                A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
                 temp = np.linalg.solve(A, b)[0,0] + umhverfishiti
                 arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti, "timi": time.time()-t0}
                 count +=1
@@ -218,7 +219,24 @@ def spurning4():
         np.savez('sp4.npz', arr=arr)
     else:
         arr = np.load('sp4.npz', allow_pickle=True)['arr']
-        print(arr)
+        #print(arr)
+        new_results = []
+        for result in arr:
+            diff = abs(result['reasonable_estimate'] - result['temp'])
+            timi = result['timi']
+            if diff < 0.01 and timi < 0.5:
+                result['diff'] = diff
+                print(result, diff)
+
+                new_results.append(result)
+
+        new_results.sort(key=operator.itemgetter('diff'))
+        print("sorted:")
+        for result in new_results:
+            print(result)
+
+
+
 def spurning5():
 
     mesh_i_n = 20
