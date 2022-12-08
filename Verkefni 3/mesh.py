@@ -105,18 +105,18 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
 
     return A_fylki, b_fylki
 
-def plotlausn3d(w,mesh_i_n,mesh_j_m):
+def plotlausn3d(w,mesh_i_n,mesh_j_m, xlabel1="", xlabel2="", ylabel1="", ylabel2="", titill1="",titill2=""):
     hf = plt.figure()
     ha = hf.add_subplot(111, projection='3d')
     X, Y = np.meshgrid([i for i in range(mesh_j_m)],
                        [i for i in range(mesh_i_n)])  # `plot_surface` expects `x` and `y` data to be 2D
-    ha.plot_surface(X, Y, w)
+    ha.plot_surface(X, Y, w, cmap='viridis')
     plt.figure()
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title(r"Titill")
+    plt.xlabel(xlabel1)
+    plt.ylabel(ylabel1)
+    plt.title(titill1, fontweight ="bold")
     plt.pcolormesh(w)
-    plt.title('matplotlib.pyplot.pcolormesh() function Example', fontweight ="bold")
+    plt.title(titill2, fontweight ="bold")
     plt.show()
 
 
@@ -139,8 +139,6 @@ def spurning2():
 def spurning3():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 10
-    mesh_j_m = 10
     mesh_i_n = 10
     mesh_j_m = 10
 
@@ -166,14 +164,12 @@ def spurning3():
                                    Kthermal_cond=K_thermal_cond, delta=delta)
 
     v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
-    print("Fyrir " + str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er tíminn: "  f"{time.time() - t0:.02f}s")
+    print("Niðurstöður fyrir svar við lið 3")
+    print(str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er "  f"{time.time() - t0:.02f}s"+ " að keyra.")
     w = v.reshape((mesh_i_n, mesh_j_m))
-
-
-    print("Hitastig í (0,0): " + str(w[0,0]))
-    print("Hitastig í (0,Ly): " + str(w[-1,0]))
-
-    plotlausn3d(w=w, mesh_i_n=mesh_i_n, mesh_j_m=mesh_j_m)
+    print(f"Hitastig í (0,0): {w[0,0]:.04f}")
+    print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
+    plotlausn3d(w=w, mesh_i_n=mesh_i_n, mesh_j_m=mesh_j_m,xlabel1="X", xlabel2="Y", ylabel1="", ylabel2="", titill1="",titill2="")
 
 
 def spurning4():
