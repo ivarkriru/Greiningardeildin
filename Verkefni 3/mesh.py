@@ -264,9 +264,9 @@ def spurning5():
     A, b = bua_til_fylki(0, Lx, 0, Ly, mesh_i_n, mesh_j_m, Lp, P, H, K, delta)
 
 def spurning6():
-    n, m = 10, 10
-    Lx, Ly = 2, 2
-    Lp = 2
+    n, m = 40, 40   # 40*40 var valið sem gott compromise milli tíma og skekkju,
+                    # þurftum best resolution í báðar áttir því við vorum ekki lengur að horfa á uniform breytingu mv. m ás
+    Lx, Ly = 4, 4
     delta = 0.1
     H = 0.005
     K = 1.68
@@ -277,8 +277,30 @@ def spurning6():
     # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
     # A, b = pde(0, Lx, 0, Ly, n, m, Lp, P, H)
     t0 = time.time()
+    skref = 10
+    arr = [[]]*skref
+    count = 0
+    t_total = time.time()
+    reikna_upp_a_nytt = True
+    if reikna_upp_a_nytt:
+        # við viljum að Lp
+        for n in range(0, skref):
+            t0 = time.time()
+            L = 2
+            Lp = (n/skref, n/skref+L)
+            Lp = (0,2)
+            print(Lp)
+            A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
+            temp = np.min(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að lágmarka hitastig svo min er tekið
+            arr[count] = {"lengd_power": Lp,  "timi": time.time()-t0}
+            count +=1
+        print(f"Reikna {count}kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
+        print(arr[0])
+        #print(arr)
+        np.savez('sp6.npz', arr=arr)
+    else:
+        arr = np.load('sp6.npz', allow_pickle=True)['arr']
 
-    A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
 
 def spurning7():
     pass
