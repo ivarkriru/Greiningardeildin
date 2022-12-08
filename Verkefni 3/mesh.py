@@ -2,6 +2,7 @@ import operator
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
 def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power, Heattransfer_co, Kthermal_cond, delta):
 
@@ -105,18 +106,33 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
 
     return A_fylki, b_fylki
 
-def plotlausn3d(w,mesh_i_n,mesh_j_m, xlabel1="", xlabel2="", ylabel1="", ylabel2="", titill1="",titill2=""):
+def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°"):
     hf = plt.figure()
-    ha = hf.add_subplot(111, projection='3d')
-    X, Y = np.meshgrid([i for i in range(mesh_j_m)],
-                       [i for i in range(mesh_i_n)])  # `plot_surface` expects `x` and `y` data to be 2D
-    ha.plot_surface(X, Y, w, cmap='viridis')
-    plt.figure()
-    plt.xlabel(xlabel1)
-    plt.ylabel(ylabel1)
-    plt.title(titill1, fontweight ="bold")
-    plt.pcolormesh(w)
-    plt.title(titill2, fontweight ="bold")
+    ax = plt.axes(projection='3d')
+
+    # Create the contour plot
+    X = [*range(0, w.shape[0])]
+    Y = [*range(0, w.shape[1])]
+    ax.contour3D(X, Y, w, 200, cmap="viridis")
+
+    # Create a ScalarMappable and set the color limits
+    sm = cm.ScalarMappable(cmap="viridis")
+    sm.set_array(w)
+    sm.set_clim(np.min(w), np.max(w))
+
+    # Add the colorbar
+    cb = hf.colorbar(sm, ax=ax, shrink=0.7, pad=0.15)
+    cb.set_label(colorbartitill)
+    # Add a title
+    plt.title(r""+str(titill))
+
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_zlabel(zlabel)
+    if log:
+        ax.set_zlabel("log af " + zlabel)
+
+    # Show the plot
     plt.show()
 
 
@@ -224,6 +240,7 @@ def spurning4():
         print(result)
 
     diff_array = [[0 for _ in range(9)] for _ in range(9)]
+
     for result in arr:
         n = int(result['n']/10-1)
         m = int(result['m']/10-1)
@@ -237,9 +254,11 @@ def spurning4():
         timi_array[n][m] = result['timi']
     for row in timi_array:
         print(row)
+    diff_array = np.array(diff_array)
     # todo: búa til log 3d plot, þarf bara að taka log af diff_array, timi_array, laga zticks á z ás til að það sé log
-    plotlausn3d(np.array(diff_array), 9, 9)
-    plotlausn3d(np.array(timi_array), 9, 9)
+    plotlausn3d(diff_array)
+    plotlausn3d(timi_array,colorbartitill="Tími (s)")
+
 
 
 
