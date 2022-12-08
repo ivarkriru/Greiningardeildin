@@ -53,6 +53,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
             A_fylki[t][t - mesh_m] = 1 / k_yskref ** 2
 
     # vinstri POWER
+    # print("power:", Lengd_power_min, Lengd_power_max+1)
     for j in range(Lengd_power_min, Lengd_power_max+1):
         i = 0
         t = i + (j) * (mesh_m)
@@ -61,13 +62,14 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         A_fylki[t][t + 2] = -1 / (2 * h_xskref)
 
     # vinstri no POWER
+    # print("ekki power lower:", 0, Lengd_power_min)
     for j in range(0, Lengd_power_min):
         i = 0
         t = i + (j) * (mesh_m)
         A_fylki[t][t] = -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
         A_fylki[t][t + 1] = 2 / h_xskref
         A_fylki[t][t + 2] = -1 / (2 * h_xskref)
-
+    # print("ekki power upper:", Lengd_power_max+1, mesh_n)
     for j in range(Lengd_power_max+1, mesh_n):
         i = 0
         t = i + (j) * (mesh_m)
@@ -329,6 +331,10 @@ def spurning6():
 
 
 def spurning7():
+    from Verkefni1.newton import bisection
+    ideal_skekkja = (bisection(bisecfall, a, b, 1e-15))#f'{num:.3}'
+
+    # bisection
     pass
 
 def spurning8():
