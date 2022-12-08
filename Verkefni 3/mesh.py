@@ -210,6 +210,7 @@ def spurning4():
     new_results = []
     for result in arr:
         diff = abs(result['reasonable_estimate'] - result['temp'])
+        result['diff'] = diff
         timi = result['timi']
         if diff < 0.01 and timi < 0.5:
             result['diff'] = diff
@@ -226,10 +227,19 @@ def spurning4():
     for result in arr:
         n = int(result['n']/10-1)
         m = int(result['m']/10-1)
-        diff_array[n][m] = result['timi']
+        diff_array[n][m] = result['diff']
     for row in diff_array:
         print(row)
+    timi_array = [[0 for _ in range(9)] for _ in range(9)]
+    for result in arr:
+        n = int(result['n']/10-1)
+        m = int(result['m']/10-1)
+        timi_array[n][m] = result['timi']
+    for row in timi_array:
+        print(row)
+    # todo: búa til log 3d plot, þarf bara að taka log af diff_array, timi_array, laga zticks á z ás til að það sé log
     plotlausn3d(np.array(diff_array), 9, 9)
+    plotlausn3d(np.array(timi_array), 9, 9)
 
 
 
