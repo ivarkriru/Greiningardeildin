@@ -3,7 +3,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
-
+np.set_printoptions(linewidth=500)
 def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power, Heattransfer_co, Kthermal_cond, delta):
 
     h_xskref = (x_max - x_min) / (mesh_m - 1)
@@ -163,8 +163,8 @@ def spurning2():
 def spurning3():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 50
-    mesh_j_m = 50
+    mesh_i_n = 20
+    mesh_j_m = 20
 
     lengdfrax = 0
     lengdfray = 0
