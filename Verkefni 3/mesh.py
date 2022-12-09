@@ -345,7 +345,7 @@ def spurning6():
     arr = [[]]*(skref+1)
     count = 0
     t_total = time.time()
-    reikna_upp_a_nytt = True
+    reikna_upp_a_nytt = False
     if reikna_upp_a_nytt:
         for i in range(0, skref+1):  # +1 til að fá endabilið (2,4)
             t0 = time.time()
@@ -355,7 +355,7 @@ def spurning6():
             A, b= bua_til_fylki(x_min=0, x_max=Lx, y_min=0, y_max=Ly, mesh_n=n,
                                        mesh_m=m, Lengd_power=Lp, Power=P, Heattransfer_co=H,
                                        Kthermal_cond=K, delta=delta)
-            max_temp = np.max(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að lágmarka hitastig svo min er tekið
+            max_temp = np.max(np.linalg.solve(A, b)) + umhverfishiti  # beðið var um að taka hámarks hitastig svo max er tekið
             arr[count] = {"lengd_power": Lp,  "timi": time.time()-t0, "max_temp": max_temp}
             count +=1
         print(f"Reikna {count-1} kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
