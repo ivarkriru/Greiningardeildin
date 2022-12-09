@@ -213,10 +213,11 @@ def spurning4():
     n100m100_hiti = np.load("n100_m100.npz")['w'][0, 0]
     #arr = np.zeros((9*9, 1))
     arr = [[]]*9*9
-    np.fylki9X9=np.zeros( (9, 9) )
+    fylki9X9=np.zeros( (9, 9) )
+    timafylki9X9=np.zeros( (9, 9) )
     count = 0
     t_total = time.time()
-    reikna_upp_a_nytt = True
+    reikna_upp_a_nytt = False
     if reikna_upp_a_nytt:
         for n in range(10, 100, 10):
             for m in range(10, 100, 10):
@@ -227,7 +228,7 @@ def spurning4():
                 nnew=int((n/10)-1)
                 mnew=int((m/10)-1)
 
-                np.fylki9X9[nnew][mnew] = abs(temp- n100m100_hiti)
+
                 arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti, "timi": time.time()-t0}
                 count +=1
         print("Reikna 81 kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
@@ -236,6 +237,10 @@ def spurning4():
         np.savez('sp4.npz', arr=arr)
     else:
         arr = np.load('sp4.npz', allow_pickle=True)['arr']
+
+    for result in arr:
+        fylki9X9[int(result['m']/10)-1][int(result['n']/10)-1] = abs(result['temp']- n100m100_hiti)
+        timafylki9X9[int(result['m']/10)-1][int(result['n']/10)-1] = result['timi']
     new_results = []
     for result in arr:
         diff = abs(result['reasonable_estimate'] - result['temp'])
@@ -247,8 +252,13 @@ def spurning4():
 
             new_results.append(result)
     print("Allar niðurstöður ")
+    np.set_printoptions(suppress=True, precision=5)
     print('Fylki 9X9:')
-    print(np.fylki9X9)
+    for i in fylki9X9[::-1]:
+        print(i)
+    print("timafylki")
+    for i in timafylki9X9[::-1]:
+        print(i)
     print()
     print('Niðurstöður raðað upp með upplýsingum:')
     for result in arr:
