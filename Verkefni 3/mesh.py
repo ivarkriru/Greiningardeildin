@@ -163,8 +163,8 @@ def spurning2():
 def spurning3():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 20
-    mesh_j_m = 20
+    mesh_i_n = 10
+    mesh_j_m = 10
 
     lengdfrax = 0
     lengdfray = 0
@@ -192,7 +192,7 @@ def spurning3():
     w = v.reshape((mesh_i_n, mesh_j_m))
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
-    plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°")
+    plotlausn3d(w, xlabel="n", ylabel="m", zlabel="Celsius°", titill="Sp.3 - Hitastig á stöku blaði, n=m=10",log=False,colorbartitill = "Celsius°")
 
 
 def spurning4():
