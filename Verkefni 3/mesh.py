@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 np.set_printoptions(linewidth=500)
-def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power, Heattransfer_co, Kthermal_cond, delta):
+def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power, Heattransfer_co, Kthermal_cond, delta, sincpower=False):
 
     h_xskref = (x_max - x_min) / (mesh_m - 1)
     k_yskref = (y_max - y_min) / (mesh_n - 1)
@@ -101,18 +101,22 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         A_fylki[t][t - 2 * mesh_m] = -1 / (2 * k_yskref)
 
     #  POWER
+    sincpower_fylki = []
     for j in range(Lengd_power_min, Lengd_power_max+1):
         i = 0
         t = i + (j) * (mesh_m)
-        if False:
+        if sincpower:
             x = (j/mesh_n)
-            Power = (np.sinc((j-25)/2.5))*150
+            Power = ((np.sinc((j-(mesh_n/2))/2.5))*1+.2)*5
+            sincpower_fylki.append(Power)
             print(j, x, Power)
         b_fylki[t] = -Power / (lengd_orgjorva * delta * Kthermal_cond)
+    if sincpower:
+        return A_fylki, b_fylki, sincpower_fylki
+    else:
+        return A_fylki, b_fylki
 
-    return A_fylki, b_fylki
-
-def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°",xticks="",yticks=""):
+def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°",xticks="",yticks="", savefig=""):
     hf = plt.figure()
     ax = plt.axes(projection='3d')
 
@@ -142,6 +146,8 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
 
     plt.title(r""+str(titill))
     # Show the plot
+    if savefig:
+        plt.savefig(savefig)
     plt.show()
 
 
@@ -495,11 +501,69 @@ def spurning8():
     plt.show()
     #plt.pause(100)
 
-    def spurning9():
-        pass
+def spurning9():
+    pass
 
-    def auka():
-        pass
+def auka():
+    pass
+def spurningauka():
+
+    # stærð á meshinu sem reiknar út hitadreyfinguna
+    mesh_i_n = 50
+    mesh_j_m = 50
+
+    lengdfrax = 0
+    lengdfray = 0
+    lengdtilx = 2
+    lengdtily = 2
+    delta = 0.1
+    Heattransfer_co = 0.005
+    K_thermal_cond = 1.68
+
+    Lengd_power = (0, 2)
+    Power = 5
+    umhverfishiti = 20
+
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+
+    t0 = time.time()
+
+    Afylki, bfylki, sincpower = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                   mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power, Heattransfer_co=Heattransfer_co,
+                                   Kthermal_cond=K_thermal_cond, delta=delta, sincpower=True)
+    sincpower = np.average(sincpower)
+    nytt_power = sincpower
+
+    v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+    print("Niðurstöður fyrir svar við lið 3")
+    print(str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er "  f"{time.time() - t0:.02f}s"+ " að keyra.")
+    w = v.reshape((mesh_i_n, mesh_j_m))
+    print(f"Hitastig í (0,0): {w[0,0]:.04f}")
+    print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
+    plt.pcolormesh(w)
+    plt.xlabel('m')
+    plt.ylabel('n')
+    plt.title("Input power er sinc(n)")
+    plt.savefig('aukaa.png')
+    plt.show()
+    plotlausn3d(w, xlabel="n", ylabel="m", zlabel="Celsius°", titill="Hitastig þar sem aflið inn er sinc(n) n=m=50",log=False,colorbartitill = "Celsius°", savefig='aukab.png')
+
+
+    Afylki, bfylki = bua_til_fylki(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                              mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=nytt_power, Heattransfer_co=Heattransfer_co,
+                                              Kthermal_cond=K_thermal_cond, delta=delta)
+    v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+    w_med_jofnu_afli = v.reshape((mesh_i_n, mesh_j_m))
+    print(nytt_power)
+    plt.pcolormesh(w_med_jofnu_afli)
+    plt.xlabel('m')
+    plt.ylabel('n')
+    plt.title("Input power er sinc(n)")
+    plt.savefig('aukac.png')
+
+    print(f"average hiti með sinc: {np.average(w)}, average hiti með meðalafl sinc dreift yfir  : {np.average(w_med_jofnu_afli)}, mism: {abs(np.average(w) - np.average(w_med_jofnu_afli))}")
+    print(f"max hiti með sinc: {np.max(w)}, max hiti með meðalafl sinc dreift yfir {np.max(w_med_jofnu_afli)}, mism: {abs(np.max(w) - np.max(w_med_jofnu_afli))}")
+
 
 '''
 from mesh import *
