@@ -192,7 +192,8 @@ def spurning3():
     w = v.reshape((mesh_i_n, mesh_j_m))
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
-    plotlausn3d(w=w)
+    plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°")
+
 
 def spurning4():
     n, m = 10, 10
@@ -212,9 +213,10 @@ def spurning4():
     n100m100_hiti = np.load("n100_m100.npz")['w'][0, 0]
     #arr = np.zeros((9*9, 1))
     arr = [[]]*9*9
+    np.fylki9X9=np.zeros( (9, 9) )
     count = 0
     t_total = time.time()
-    reikna_upp_a_nytt = False
+    reikna_upp_a_nytt = True
     if reikna_upp_a_nytt:
         for n in range(10, 100, 10):
             for m in range(10, 100, 10):
@@ -222,6 +224,10 @@ def spurning4():
                 t0 = time.time()
                 A, b = bua_til_fylki(0, Lx, 0, Ly, n, m, Lp, P, H, K, delta)
                 temp = np.linalg.solve(A, b)[0,0] + umhverfishiti
+                nnew=int((n/10)-1)
+                mnew=int((m/10)-1)
+
+                np.fylki9X9[nnew][mnew] = abs(temp- n100m100_hiti)
                 arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti, "timi": time.time()-t0}
                 count +=1
         print("Reikna 81 kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
@@ -237,30 +243,46 @@ def spurning4():
         timi = result['timi']
         if diff < 0.01 and timi < 0.5:
             result['diff'] = diff
-            print(result, diff)
+            #print(result, diff)
 
             new_results.append(result)
-
+    print("Allar niðurstöður ")
+    print('Fylki 9X9:')
+    print(np.fylki9X9)
+    print()
+    print('Niðurstöður raðað upp með upplýsingum:')
+    for result in arr:
+        print(result)
+    print()
     new_results.sort(key=operator.itemgetter('diff'))
-    print("sorted:")
+
+    print("Úrtak til skoðunar til að sjá breytingu á n og m:")
+    i=0
+    listimednm=[4,36,40,44,76]
+    for nextresult in arr:
+        if i in listimednm:
+            print(nextresult)
+        i=i+1
+    print()
+    print("Gildi sem eru <0.01 í mun og <0.5 raðað í tímaröð:")
     for result in new_results:
         print(result)
+    print()
 
     diff_array = [[0 for _ in range(9)] for _ in range(9)]
-
     for result in arr:
         n = int(result['n']/10-1)
         m = int(result['m']/10-1)
         diff_array[n][m] = result['diff']
-    for row in diff_array:
-        print(row)
+#    for row in diff_array:
+#        print(row)
     timi_array = [[0 for _ in range(9)] for _ in range(9)]
     for result in arr:
         n = int(result['n']/10-1)
         m = int(result['m']/10-1)
         timi_array[n][m] = result['timi']
-    for row in timi_array:
-        print(row)
+#    for row in timi_array:
+#        print(row)
     diff_array = np.array(diff_array)
     timi_array = np.array(timi_array)
     #timi_array = np.log(timi_array)
