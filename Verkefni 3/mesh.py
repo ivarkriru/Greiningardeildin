@@ -112,7 +112,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
 
     return A_fylki, b_fylki
 
-def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°"):
+def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°",xticks="",yticks=""):
     hf = plt.figure()
     ax = plt.axes(projection='3d')
 
@@ -130,7 +130,10 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     cb = hf.colorbar(sm, ax=ax, shrink=0.7, pad=0.15)
     cb.set_label(colorbartitill)
     # Add a title
-
+    if xticks != "":
+        plt.xticks([0,10,20,30,40],xticks)
+    if yticks != "":
+        plt.yticks([0, 10, 20, 30, 40], yticks)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
@@ -213,7 +216,7 @@ def spurning4():
     n100m100_hiti = np.load("n100_m100.npz")['w'][0, 0]
     #arr = np.zeros((9*9, 1))
     arr = [[]]*9*9
-    np.fylki9X9=np.zeros( (9, 9) )
+    fylki9X9=np.zeros( (9, 9) )
     count = 0
     t_total = time.time()
     reikna_upp_a_nytt = True
@@ -227,7 +230,7 @@ def spurning4():
                 nnew=int((n/10)-1)
                 mnew=int((m/10)-1)
 
-                np.fylki9X9[nnew][mnew] = abs(temp- n100m100_hiti)
+                fylki9X9[nnew][mnew] = abs(temp- n100m100_hiti)
                 arr[count] = {"n": n, "m": m, "temp": temp, "reasonable_estimate": n100m100_hiti, "timi": time.time()-t0}
                 count +=1
         print("Reikna 81 kerfi f. sp 4: "  f"{time.time() - t_total:.02f}s")
@@ -248,7 +251,8 @@ def spurning4():
             new_results.append(result)
     print("Allar niðurstöður ")
     print('Fylki 9X9:')
-    print(np.fylki9X9)
+    print(fylki9X9)
+    #plotlausn3d(fylki9X9)
     print()
     print('Niðurstöður raðað upp með upplýsingum:')
     for result in arr:
@@ -288,7 +292,7 @@ def spurning4():
     #timi_array = np.log(timi_array)
     # todo: búa til log 3d plot, þarf bara að taka log af diff_array, timi_array, laga zticks á z ás til að það sé log
     #plotlausn3d(diff_array)
-    plotlausn3d(timi_array,colorbartitill="Tími (s)",log=True)
+    #plotlausn3d(timi_array,colorbartitill="Tími (s)",log=True)
 
 def spurning5():
 
@@ -319,11 +323,12 @@ def spurning5():
 
     v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
     print("Niðurstöður fyrir svar við lið 5")
-    print(str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er "  f"{time.time() - t0:.02f}s"+ " að keyra.")
+    print("Notað var " + str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki sem var "  f"{time.time() - t0:.02f}s"+ " að keyra.")
     w = v.reshape((mesh_i_n, mesh_j_m))
+    print(f"Hæsta hitastig: {np.max(w):.04f}")
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
-    plotlausn3d(w=w)
+    plotlausn3d(w=w, xlabel="cm", ylabel="cm", titill="Dreifing hita í blaði, Lx=4cm Ly=4cm, L=2", xticks=[0, 0.5, 1, 1.5, 2], yticks=[0, 0.5, 1, 1.5, 2])
 
 
 def spurning6():
