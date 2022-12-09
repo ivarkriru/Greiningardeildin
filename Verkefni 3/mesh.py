@@ -112,7 +112,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
 
     return A_fylki, b_fylki
 
-def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°"):
+def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°",xticks="",yticks=""):
     hf = plt.figure()
     ax = plt.axes(projection='3d')
 
@@ -130,7 +130,10 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     cb = hf.colorbar(sm, ax=ax, shrink=0.7, pad=0.15)
     cb.set_label(colorbartitill)
     # Add a title
-
+    if xticks != "":
+        plt.xticks([0,10,20,30,40],xticks)
+    if yticks != "":
+        plt.yticks([0, 10, 20, 30, 40], yticks)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
@@ -163,8 +166,8 @@ def spurning2():
 def spurning3():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 20
-    mesh_j_m = 20
+    mesh_i_n = 10
+    mesh_j_m = 10
 
     lengdfrax = 0
     lengdfray = 0
@@ -192,7 +195,7 @@ def spurning3():
     w = v.reshape((mesh_i_n, mesh_j_m))
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
-    plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°")
+    plotlausn3d(w, xlabel="n", ylabel="m", zlabel="Celsius°", titill="Sp.3 - Hitastig á stöku blaði, n=m=10",log=False,colorbartitill = "Celsius°")
 
 
 def spurning4():
@@ -298,7 +301,7 @@ def spurning4():
     #timi_array = np.log(timi_array)
     # todo: búa til log 3d plot, þarf bara að taka log af diff_array, timi_array, laga zticks á z ás til að það sé log
     #plotlausn3d(diff_array)
-    plotlausn3d(timi_array,colorbartitill="Tími (s)",log=True)
+    #plotlausn3d(timi_array,colorbartitill="Tími (s)",log=True)
 
 def spurning5():
 
@@ -329,11 +332,12 @@ def spurning5():
 
     v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
     print("Niðurstöður fyrir svar við lið 5")
-    print(str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er "  f"{time.time() - t0:.02f}s"+ " að keyra.")
+    print("Notað var " + str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki sem var "  f"{time.time() - t0:.02f}s"+ " að keyra.")
     w = v.reshape((mesh_i_n, mesh_j_m))
+    print(f"Hæsta hitastig: {np.max(w):.04f}")
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
-    plotlausn3d(w=w)
+    plotlausn3d(w=w, xlabel="cm", ylabel="cm", titill="Dreifing hita í blaði, Lx=4cm Ly=4cm, L=2", xticks=[0, 0.5, 1, 1.5, 2], yticks=[0, 0.5, 1, 1.5, 2])
 
 
 def spurning6():
