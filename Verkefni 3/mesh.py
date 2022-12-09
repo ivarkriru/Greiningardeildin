@@ -381,8 +381,17 @@ def spurning6():
     if type(arr) is not list:
         arr = arr.tolist()
     arr.sort(key=operator.itemgetter('max_temp'))
+    x = []
+    y = []
     for row in arr:
         print(row)
+        x.append(row['lengd_power'][0])
+        y.append(row['max_temp'])
+    plt.scatter(x, y)
+    plt.xlabel("færsla frá botni[cm]")
+    plt.ylabel("hæsti hiti [°C]")
+    plt.savefig('6a.png')
+    plt.show()
 
 def spurning7():
     from Verkefni1.newton import bisection
