@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 np.set_printoptions(linewidth=500)
+
 def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power, Heattransfer_co, Kthermal_cond, delta, sincpower=False):
 
     h_xskref = (x_max - x_min) / (mesh_m - 1)
@@ -69,6 +70,7 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
         A_fylki[t][t] = -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
         A_fylki[t][t + 1] = 2 / h_xskref
         A_fylki[t][t + 2] = -1 / (2 * h_xskref)
+
     # print("ekki power upper:", Lengd_power_max+1, mesh_n)
     for j in range(Lengd_power_max+1, mesh_n):
         i = 0
@@ -116,19 +118,170 @@ def bua_til_fylki(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power
     else:
         return A_fylki, b_fylki
 
+def bua_til_fylkicut(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Power, Heattransfer_co, Kthermal_cond, delta,cut=0):
+    if (mesh_n - cut < 3 or mesh_m - cut < 3) and not (cut == 1 or cut == 0):
+        raise "cut is too big for this case"
+
+    h_xskref = (x_max - x_min) / (mesh_m - 1)
+    k_yskref = (y_max - y_min) / (mesh_n - 1)
+
+    A_fylki = np.zeros((mesh_m * mesh_n, mesh_m * mesh_n))
+    b_fylki = np.zeros((mesh_m * mesh_n, 1))
+
+    # ef Lp er tuple, (0,1) þá er [0] min gildið og [1] er max gildið, t.d.
+    if type(Lengd_power) is tuple:
+        if (Lengd_power[1] - Lengd_power[0]) > y_max:
+            raise ValueError("Lengd aflsins má ekki vera lengri en allur y ásinn")
+
+        lengd_orgjorva = Lengd_power[1] - Lengd_power[0]
+
+        # búum til bil fyrir Lengd power bilið
+        Lengd_power_min = int(np.ceil(Lengd_power[0] / k_yskref))
+        Lengd_power_max = int(np.floor((Lengd_power[1] / k_yskref)))
+    else:
+        if Lengd_power > y_max:
+            raise ValueError("Lengd aflsins má ekki vera lengri en allur y ásinn")
+
+        lengd_orgjorva = Lengd_power
+        # hérna er best ef h gengur upp í Lp en þarf að testa
+        padding = mesh_n - np.round(Lengd_power / k_yskref)  # n[i] - Lp[cm]/h[cm/i]
+        padding /= 2
+        Lengd_power_min = int(padding)
+        Lengd_power_max = int(mesh_n - padding)
+    #print("Power min : " + str(Lengd_power_min), end=" ")
+    #print("Power max : " + str(Lengd_power_max))
+    #print(f"aflið er á þessu bili {Lengd_power_min=}, {Lengd_power_max=} ")
+
+    # innra
+
+    for i in range(1, mesh_m - 1):
+        for j in range(1, mesh_n - 1):
+            # hér stekkur t yfir dálk
+            t = i + (j) * (mesh_m)
+            A_fylki[t][t] += -2 / h_xskref ** 2 - 2 / k_yskref ** 2 - 2 * Heattransfer_co / (Kthermal_cond * delta)
+            # hægri
+            A_fylki[t][t + 1] += 1 / h_xskref ** 2
+            #vinstri
+            A_fylki[t][t - 1] += 1 / h_xskref ** 2
+            #neðan
+            A_fylki[t][t + mesh_m] += 1 / k_yskref ** 2
+            #ofan
+            A_fylki[t][t - mesh_m] += 1 / k_yskref ** 2
+
+    # vinstri POWER
+    # print("power:", Lengd_power_min, Lengd_power_max+1)
+    for j in range(Lengd_power_min, Lengd_power_max+1):
+        i = 0
+        t = i + (j) * (mesh_m)
+
+        A_fylki[t][t] += -3 / (2 * h_xskref)
+        A_fylki[t][t + 1] += 2 / h_xskref
+        A_fylki[t][t + 2] += -1 / (2 * h_xskref)
+
+    # vinstri no POWER
+    # print("ekki power lower:", 0, Lengd_power_min)
+    for j in range(0, Lengd_power_min):
+        i = 0
+        t = i + (j) * (mesh_m)
+
+        A_fylki[t][t] += -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t + 1] += 2 / h_xskref
+        A_fylki[t][t + 2] += -1 / (2 * h_xskref)
+
+    # print("ekki power upper:", Lengd_power_max+1, mesh_n)
+
+    for j in range(Lengd_power_max+1, mesh_n):
+        i = 0
+        t = i + (j) * (mesh_m)
+
+        A_fylki[t][t] += -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t + 1] += 2 / h_xskref
+        A_fylki[t][t + 2] += -1 / (2 * h_xskref)
+
+    # hægri
+    for j in range(0, mesh_n):
+        i = mesh_m - 1
+        t = i + (j) * (mesh_m)
+
+        A_fylki[t][t] += -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t - 1] += 2 / h_xskref
+        A_fylki[t][t - 2] += -1 / (2 * h_xskref)
+
+    # bottom
+    for i in range(0, mesh_m):
+        j = 0
+        t = i + (j) * (mesh_m)
+
+        A_fylki[t][t] += -3 / (2 * k_yskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t + mesh_m] += 2 / k_yskref
+        A_fylki[t][t + 2 * mesh_m] += -1 / (2 * k_yskref)
+
+    # top
+    for i in range(0, mesh_m):
+        j = mesh_n - 1
+        t = i + (j) * (mesh_m)
+
+        A_fylki[t][t] += -3 / (2 * k_yskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t - mesh_m] += 2 / k_yskref
+        A_fylki[t][t - 2 * mesh_m] += -1 / (2 * k_yskref)
+
+    #  POWER
+    for j in range(Lengd_power_min, Lengd_power_max+1):
+        i = 0
+        t = i + (j) * (mesh_m)
+        b_fylki[t] += -Power / (lengd_orgjorva * delta * Kthermal_cond)
+
+    #cut clear
+    for j in range(mesh_m-cut, mesh_m):
+        for i in range(mesh_n-cut,mesh_n):
+            t = i + (j) * (mesh_n)
+
+            A_fylki[t][:] = 0
+            A_fylki[t][t] = 1
+            b_fylki[t] = -10000
+
+    #vinstricut clear and set ( hægri)
+    for j in range(mesh_m-cut, mesh_m):
+        i = mesh_m - cut - 1
+        t = i + (j) * (mesh_n)
+
+        A_fylki[t][:] = 0
+
+        A_fylki[t][t] += -3 / (2 * h_xskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t - 1] += 2 / h_xskref
+        A_fylki[t][t - 2] += -1 / (2 * h_xskref)
+
+    # bottomcut clear and set ( toppur )
+    for i in range(mesh_n-cut, mesh_n):
+        j = mesh_m - cut - 1
+        t = i + (j) * (mesh_n)
+
+        A_fylki[t][:] = 0
+
+        A_fylki[t][t] += -3 / (2 * k_yskref) + Heattransfer_co / Kthermal_cond
+        A_fylki[t][t - mesh_n] += 2 / k_yskref
+        A_fylki[t][t - 2 * mesh_n] += -1 / (2 * k_yskref)
+
+    return A_fylki, b_fylki
+
 def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,colorbartitill = "Celsius°",xticks="",yticks="", savefig=""):
     hf = plt.figure()
     ax = plt.axes(projection='3d')
 
+    threshold = -1000
+
+    # Use the masked_where method to create a masked array
+    w_masked = np.ma.masked_where(w < threshold, w)
+
     # Create the contour plot
     X = [*range( 0,w.shape[0])]
     Y = [*range(0,w.shape[1])]
-    ax.contourf3D(X, Y, w,200, cmap="viridis")
+    ax.contourf3D(X, Y, w_masked, 200 ,cmap="viridis")
 
     # Create a ScalarMappable and set the color limits
     sm = cm.ScalarMappable(cmap="viridis")
-    sm.set_array(w)
-    sm.set_clim(np.min(w), np.max(w))
+    sm.set_array(w_masked)
+    sm.set_clim(np.min(w_masked), np.max(w_masked))
 
     # Add the colorbar
     cb = hf.colorbar(sm, ax=ax, shrink=0.7, pad=0.15)
@@ -149,8 +302,6 @@ def plotlausn3d(w, xlabel="X", ylabel="Y", zlabel="Z", titill="",log=False,color
     if savefig:
         plt.savefig(savefig)
     plt.show()
-
-
 
 def spurning1():
     '''
@@ -202,7 +353,6 @@ def spurning3():
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
     plotlausn3d(w, xlabel="n", ylabel="m", zlabel="Celsius°", titill="Sp.3 - Hitastig á stöku blaði, n=m=10",log=False,colorbartitill = "Celsius°")
-
 
 def spurning4():
     n, m = 10, 10
@@ -344,7 +494,6 @@ def spurning5():
     print(f"Hitastig í (0,0): {w[0,0]:.04f}")
     print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
     plotlausn3d(w=w, xlabel="cm", ylabel="cm", titill="Dreifing hita í blaði, Lx=4cm Ly=4cm, L=2", xticks=[0, 0.5, 1, 1.5, 2], yticks=[0, 0.5, 1, 1.5, 2])
-
 
 def spurning6():
     n, m = 40, 40   # 40*40 var valið sem gott compromise milli tíma og skekkju,
@@ -502,10 +651,41 @@ def spurning8():
     #plt.pause(100)
 
 def spurning9():
-    pass
 
-def auka():
-    pass
+    # stærð á meshinu sem reiknar út hitadreyfinguna
+    mesh_i_n = 10
+    mesh_j_m = 10
+
+    lengdfrax = 0
+    lengdfray = 0
+    lengdtilx = 10
+    lengdtily = 10
+    delta = 0.1
+    Heattransfer_co = 0.005
+    K_thermal_cond = 1.68
+
+    cut = 5
+
+    Lengd_power = (3, 6)
+    Power = 5
+    umhverfishiti = 20
+
+    # ef Lp er float þá er powerið miðjað á gridið að lengd Lp
+
+    t0 = time.time()
+
+    Afylki, bfylki = bua_til_fylkicut(x_min=lengdfrax, x_max=lengdtilx, y_min=lengdfray, y_max=lengdtily, mesh_n=mesh_i_n,
+                                   mesh_m=mesh_j_m, Lengd_power=Lengd_power, Power=Power, Heattransfer_co=Heattransfer_co,
+                                   Kthermal_cond=K_thermal_cond, delta=delta,cut=cut)
+
+    v = np.linalg.solve(Afylki, bfylki) + umhverfishiti
+    print("Niðurstöður fyrir svar við lið 3")
+    print(str(mesh_i_n) + " X " + str(mesh_j_m) + " fylki er "  f"{time.time() - t0:.02f}s"+ " að keyra.")
+    w = v.reshape((mesh_i_n, mesh_j_m))
+    print(f"Hitastig í (0,0): {w[0,0]:.04f}")
+    print(f"Hitastig í (0,Ly): {w[-1,0]:.04f}")
+    plotlausn3d(w, xlabel="n", ylabel="m", zlabel="Celsius°", titill="Sp.3 - Hitastig á stöku blaði, n=m=10",log=False,colorbartitill = "Celsius°")
+
 def spurningauka():
 
     # stærð á meshinu sem reiknar út hitadreyfinguna
@@ -566,6 +746,8 @@ def spurningauka():
 
 
 '''
+# gerið eigin main.py skjal til að keyra hverja spurningu í þessari möppu
+
 from mesh import *
 
 if __name__ == '__main__':
@@ -578,5 +760,5 @@ if __name__ == '__main__':
     spurning7()
     spurning8()
     spurning9()
-    auka()
+    spurningauka()
 '''
