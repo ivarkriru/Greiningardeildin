@@ -244,8 +244,8 @@ def bua_til_fylkicut(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Po
             A_fylki[t][t] = 1
             b_fylki[t] = -10000
 
-    # vinstricut clear and set ( hægri)
-    for j in range(mesh_m - cut, mesh_m):
+    # vinstricut clear and set
+    for j in range(mesh_n - cut, mesh_n):
         i = mesh_m - cut - 1
         t = i + (j) * (mesh_n)
 
@@ -255,7 +255,7 @@ def bua_til_fylkicut(x_min, x_max, y_min, y_max, mesh_n, mesh_m, Lengd_power, Po
         A_fylki[t][t - 1] += 2 / h_xskref
         A_fylki[t][t - 2] += -1 / (2 * h_xskref)
 
-    # bottomcut clear and set ( toppur )
+    # bottomcut clear and set
     for i in range(mesh_n - cut, mesh_n):
         j = mesh_m - cut - 1
         t = i + (j) * (mesh_n)
@@ -689,8 +689,8 @@ def spurning8():
 
 def spurning9():
     # stærð á meshinu sem reiknar út hitadreyfinguna
-    mesh_i_n = 40
-    mesh_j_m = 40
+    mesh_i_n = 10
+    mesh_j_m = 10
     lengdfrax = 0
     lengdfray = 0
     lengdtilx = 10
@@ -699,9 +699,11 @@ def spurning9():
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
 
-    cut = 20
-    Lengd_power = (3.5, 5.5)
-    Power = 14.606539434965075
+    cut = 5
+    #Lengd_power = (3.5, 5.5)
+    Lengd_power = (3,6)
+    #Power = 14.606539434965075
+    Power = 5
     umhverfishiti = 20
 
     def spurning9_6():
@@ -789,7 +791,7 @@ def spurning9():
         mesh_j_m) + ", skurður = " + str(cut) + "x" + str(cut)
     plotlausn3d(w, xlabel="n", ylabel="m", zlabel="Celsius°", titill=titill, log=False, colorbartitill="Celsius°")
 
-    #spurning9_6()
+    spurning9_6()
     #spurning9_7()
 
 
