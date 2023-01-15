@@ -699,7 +699,7 @@ def spurning9():
     Heattransfer_co = 0.005
     K_thermal_cond = 1.68
 
-    cut = 5
+    cut = 0
     #Lengd_power = (3.5, 5.5)
     Lengd_power = (3,6)
     #Power = 14.606539434965075
