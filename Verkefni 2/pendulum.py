@@ -105,7 +105,7 @@ def spurning7(plot=False):
 pi_= {"π/3":np.pi/3, "π/6":np.pi/6, "π/2":np.pi/2, "π":np.pi, "π/4":np.pi/4, 0:0, "π/12":np.pi/12, "-π/12": -np.pi/12}
 def spurning8(plot=False):
 
-    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=1000, lengd=20, nafn=""):
+    def runspurning8(L_1=2, m_1=1, L_2=2, m_2=1, horn1=np.pi /2, horn2=np.pi /2, hornhradi1=1, hornhradi2=0, fjoldiskrefa=1000, lengd=0, nafn=""):
         global i
         i= i+1
         p= Pendulum()
@@ -451,11 +451,11 @@ def spurning12(plot=False):
         plt.xticks([i for i in range(1,13)], [i for i in range(1,13)])
         plt.show()
 def frjals(plot=False):
-    p = Pendulum(L_1=4, m_1=4, L_2=2, m_2=2,L_3=1,m_3=1)
-    lengd = 40
-    hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi*2/3, horn2=np.pi*4/3, horn3=np.pi*2/3,
+    p = Pendulum(L_1=4, m_1=1, L_2=4, m_2=1,L_3=4,m_3=1)
+    lengd = 1000
+    hnitsenior, hnitjunior,hnitjuniorjunior, y1, y2, y3 = p.hnitforanimationusingRK3(horn1=np.pi, horn2=np.pi, horn3=np.pi/2,
                                                                 hornhradi1=0, hornhradi2=0, hornhradi3=0,
-                                                                fjoldiskrefa=1000, lengd=lengd, dempunarstuðull=0.1)
+                                                                fjoldiskrefa=10000, lengd=lengd, dempunarstuðull=0.1)
     if plot:
         plt.clf()
         plt.plot(y1)
